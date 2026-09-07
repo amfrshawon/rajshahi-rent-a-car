@@ -124,6 +124,16 @@ html[lang="en"] :is(h1, h2, h3, h4) {
 
 p { text-wrap: pretty; }
 
+/*
+  English content embedded inside a Bangla page — the untranslated article
+  fallback. Without this it inherits the Bangla face, whose Latin glyphs are
+  serviceable but not built for long-form English.
+*/
+[lang="en"] {
+  font-family: var(--font-en);
+  line-height: 1.65;
+}
+
 :where(a, button, input, select, textarea):focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
