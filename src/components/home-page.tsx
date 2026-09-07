@@ -13,7 +13,7 @@ const COPY = {
     en: "Sedans, microbuses and ambulance service. Fixed rates, no hidden costs.",
   },
   priceFrom: { bn: "ভাড়া শুরু", en: "From" },
-  perDay: { bn: "/ দিন", en: "/ day" },
+  perDay: { bn: " / দিন", en: " / day" },
   bookNow: { bn: "বুক করুন", en: "Book now" },
   callNow: { bn: "এখনই কল করুন", en: "Call now" },
   fleetTitle: { bn: "আমাদের গাড়িবহর", en: "Our Fleet" },
