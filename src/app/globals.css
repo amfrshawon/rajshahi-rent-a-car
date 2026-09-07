@@ -1,26 +1,144 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------------------------------------------------------------------
+   Design tokens
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+   Semantic names only. Components never reference a raw hex value, so the
+   dark palette below is the single place dark mode is defined.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --bg: #ffffff;
+  --surface: #f5f7f6;
+  --surface-raised: #ffffff;
+  --fg: #0f1613;
+  --muted: #57635c;
+  --border: #e1e6e3;
+
+  /* Deep green reads as "available / go" and sits close to the national
+     palette without being a flag pastiche. */
+  --brand: #0b6b3a;
+  --brand-strong: #085730;
+  --brand-soft: #e8f3ec;
+  --brand-fg: #ffffff;
+
+  /* Warm amber for primary calls to action, so CTAs never compete with
+     the WhatsApp green. */
+  --accent: #b45309;
+  --accent-soft: #fdf3e3;
+  --accent-fg: #ffffff;
+
+  --whatsapp: #25d366;
+
+  --ring: color-mix(in oklab, var(--brand) 45%, transparent);
+  --shadow-card: 0 1px 2px rgb(15 22 19 / 0.05), 0 8px 24px -12px rgb(15 22 19 / 0.18);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #0a0f0c;
+    --surface: #121a16;
+    --surface-raised: #172019;
+    --fg: #e8efea;
+    --muted: #9aa8a1;
+    --border: #232e28;
+
+    --brand: #45b277;
+    --brand-strong: #63c48f;
+    --brand-soft: #12291d;
+    --brand-fg: #04140b;
+
+    --accent: #e0952f;
+    --accent-soft: #2a1e0c;
+    --accent-fg: #1a1000;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-fg: var(--brand-fg);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-whatsapp: var(--whatsapp);
+
+  --font-bn: var(--font-bangla), "Noto Sans Bengali", sans-serif;
+  --font-en: var(--font-latin), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Base typography
+
+   Bangla needs materially more leading than Latin — conjuncts (যুক্তাক্ষর) plus
+   the matra line make tight line-height genuinely hard to read. Headings get
+   looser leading than a Latin design would use for the same reason.
+   --------------------------------------------------------------------------- */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html[lang="bn"] body {
+  font-family: var(--font-bn);
+  line-height: 1.8;
+}
+
+html[lang="en"] body {
+  font-family: var(--font-en);
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4 {
+  text-wrap: balance;
+  font-weight: 600;
+}
+
+html[lang="bn"] :is(h1, h2, h3, h4) {
+  line-height: 1.45;
+  /* Hind Siliguri's bold is heavy; 600 keeps Bangla headings readable. */
+  letter-spacing: 0;
+}
+
+html[lang="en"] :is(h1, h2, h3, h4) {
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+p { text-wrap: pretty; }
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Room for the sticky mobile action bar, including the home indicator. */
+@utility pb-action-bar {
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
 }
