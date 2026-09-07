@@ -142,3 +142,76 @@ p { text-wrap: pretty; }
 @utility pb-action-bar {
   padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
 }
+
+/* ---------------------------------------------------------------------------
+   Article body
+
+   WordPress hands us raw HTML, so this styles bare tags. Written by hand
+   instead of @tailwindcss/typography so Bangla keeps its looser leading.
+   --------------------------------------------------------------------------- */
+
+.prose {
+  color: var(--fg);
+  max-width: 68ch;
+}
+
+.prose :is(h2, h3, h4) {
+  margin-block: 1.8em 0.6em;
+  font-weight: 600;
+}
+
+.prose h2 { font-size: 1.5rem; }
+.prose h3 { font-size: 1.25rem; }
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose figure,
+.prose table {
+  margin-block: 1.1em;
+}
+
+.prose :is(ul, ol) { padding-inline-start: 1.4em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin-block: 0.35em; }
+
+.prose a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose strong { font-weight: 600; }
+
+.prose blockquote {
+  border-inline-start: 3px solid var(--brand);
+  padding-inline-start: 1em;
+  color: var(--muted);
+}
+
+.prose :is(img, video) {
+  height: auto;
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose :is(th, td) {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: start;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin-block: 2em;
+}
