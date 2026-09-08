@@ -60,6 +60,7 @@ masked in logs.
 | Variable | Value |
 | --- | --- |
 | `WP_API_URL` | `https://rajshahirentacar.bd/wp-json/wp/v2` (change to `cms.` after the CMS move) |
+| `FTP_CONFIGURED` | `true` — set this last. The deploy job is skipped until it is, so pushes do not fail while the secrets are still missing. |
 
 **Environments** — create `staging` and `production`. On `production`, add
 yourself as a **required reviewer** so a deploy to the live domain always

@@ -6,8 +6,14 @@
  * moves to cms.rajshahirentacar.bd; override with WP_API_URL.
  */
 
+/*
+ * `||`, not `??`. CI passes WP_API_URL through from a repository variable,
+ * and an unset variable arrives as an empty string rather than undefined —
+ * which `??` happily accepts, leaving every request pointed at "/posts?..."
+ * and failing the build with ERR_INVALID_URL.
+ */
 const WP_API =
-  process.env.WP_API_URL ?? "https://rajshahirentacar.bd/wp-json/wp/v2";
+  process.env.WP_API_URL?.trim() || "https://rajshahirentacar.bd/wp-json/wp/v2";
 
 export type WpPost = {
   id: number;

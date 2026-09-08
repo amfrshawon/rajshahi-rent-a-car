@@ -49,6 +49,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # Nothing to deploy to until the FTP secrets are configured
+    # (docs/DEPLOY.md §3). Skip rather than fail every push until then.
+    if: ${{ vars.FTP_CONFIGURED == 'true' }}
     environment: ${{ inputs.target || 'staging' }}
     steps:
       - uses: actions/download-artifact@v4
