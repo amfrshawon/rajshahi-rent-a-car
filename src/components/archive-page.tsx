@@ -41,7 +41,10 @@ export function ArchivePage({
         ) : (
           <ul className="mt-8 space-y-6">
             {articles.map((a) => (
-              <li key={a.slug} className="border-border border-b pb-6 last:border-0">
+              <li
+                key={a.slug}
+                className="content-auto border-border border-b pb-6 last:border-0"
+              >
                 <h2 className="text-xl font-semibold">
                   <Link
                     href={localePath(locale, `/${a.slug}/`)}

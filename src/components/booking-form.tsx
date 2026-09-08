@@ -110,7 +110,7 @@ export function BookingForm({ locale }: { locale: Locale }) {
         <button
           type="submit"
           disabled={pending}
-          className="bg-whatsapp inline-flex min-h-12 w-full items-center justify-center rounded-lg px-6 font-semibold text-black disabled:opacity-70 sm:w-auto"
+          className="bg-whatsapp inline-flex min-h-12 w-full items-center justify-center rounded-xl px-6 font-semibold text-black transition active:scale-[0.98] disabled:opacity-70 sm:w-auto"
         >
           {t(locale, COPY.submit)}
         </button>

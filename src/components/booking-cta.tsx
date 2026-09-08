@@ -14,7 +14,7 @@ const COPY = {
 
 export function BookingCta({ locale }: { locale: Locale }) {
   return (
-    <section className="bg-surface">
+    <section className="content-auto bg-surface">
       <div className="mx-auto w-full max-w-6xl px-4 py-12 text-center">
         <h2 className="text-2xl font-semibold">{t(locale, COPY.title)}</h2>
         <p className="text-muted mx-auto mt-2 max-w-lg">{t(locale, COPY.lead)}</p>
@@ -22,13 +22,13 @@ export function BookingCta({ locale }: { locale: Locale }) {
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <a
             href={`tel:${SITE.phone}`}
-            className="bg-accent text-accent-fg inline-flex min-h-12 items-center rounded-lg px-6 font-semibold"
+            className="bg-accent text-accent-fg inline-flex min-h-12 items-center rounded-xl px-6 font-semibold transition hover:brightness-110 active:scale-[0.97]"
           >
             {t(locale, COPY.call)}
           </a>
           <Link
             href={localePath(locale, "/contact/")}
-            className="border-border text-fg inline-flex min-h-12 items-center rounded-lg border px-6 font-semibold"
+            className="border-border text-fg hover:bg-surface inline-flex min-h-12 items-center rounded-xl border px-6 font-semibold transition active:scale-[0.97]"
           >
             {t(locale, COPY.book)}
           </Link>

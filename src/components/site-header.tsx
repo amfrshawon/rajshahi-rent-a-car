@@ -12,8 +12,8 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const other: Locale = locale === "bn" ? "en" : "bn";
 
   return (
-    <header className="border-border bg-bg/90 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3">
+    <header className="border-border bg-bg/95 sticky top-0 z-40 border-b backdrop-blur">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-2.5">
         <Link href={localePath(locale, "/")} className="flex items-center gap-2.5">
           {/* Decorative: the brand name is right beside it as real text. */}
           <img
@@ -43,13 +43,14 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <a
             href={`tel:${SITE.phone}`}
             className="text-fg hidden text-sm font-semibold sm:inline"
           >
             {t(locale, SITE.phoneDisplay)}
           </a>
+
           {/*
             A full page load is correct here: the two locales are separate root
             layouts, so this is a document-level switch, not a client nav.
@@ -57,40 +58,54 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <a
             href={localePath(other, "/")}
             hrefLang={other}
-            className="border-border text-muted hover:text-fg rounded-full border px-3 py-1 text-sm"
+            className="border-border text-muted hover:text-fg inline-flex min-h-9 items-center rounded-full border px-3 text-sm"
           >
             {other === "bn" ? "বাংলা" : "English"}
           </a>
+
+          {/*
+            The menu lives inside the header row as a dropdown rather than in a
+            second bar below it — that second bar was costing ~40px of a phone
+            screen on every page. <details> keeps it at zero client JavaScript.
+          */}
+          <details className="relative lg:hidden">
+            <summary
+              aria-label={t(locale, COPY.menu)}
+              className="border-border text-fg marker:content-none flex size-9 cursor-pointer list-none items-center justify-center rounded-full border [&::-webkit-details-marker]:hidden"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                aria-hidden="true"
+                className="size-5"
+              >
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+            </summary>
+
+            <nav
+              aria-label={t(locale, COPY.primaryNav)}
+              className="border-border bg-surface-raised shadow-card absolute end-0 top-full z-50 mt-2 w-56 rounded-xl border p-1.5"
+            >
+              <ul>
+                {NAV.map((item) => (
+                  <li key={item.path}>
+                    <Link
+                      href={localePath(locale, item.path)}
+                      className="text-fg hover:bg-surface active:bg-surface flex min-h-11 items-center rounded-lg px-3 text-sm"
+                    >
+                      {t(locale, item.label)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </details>
         </div>
       </div>
-
-      {/*
-        Disclosure menu for narrow screens. <details> gives us the toggle with
-        no client JavaScript at all, which keeps the mobile bundle at zero for
-        the most common interaction on the site.
-      */}
-      <details className="border-border group border-t lg:hidden">
-        <summary className="text-muted marker:content-none flex cursor-pointer list-none items-center justify-between px-4 py-2 text-sm font-medium">
-          {t(locale, COPY.menu)}
-          <span aria-hidden="true" className="transition-transform group-open:rotate-180">
-            ▾
-          </span>
-        </summary>
-        <nav aria-label={t(locale, COPY.primaryNav)} className="px-4 pb-3">
-          <ul className="grid grid-cols-2 gap-x-4">
-            {NAV.map((item) => (
-              <li key={item.path}>
-                <Link
-                  href={localePath(locale, item.path)}
-                  className="text-fg block py-2 text-sm"
-                >
-                  {t(locale, item.label)}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </details>
     </header>
   );
 }

@@ -124,14 +124,14 @@ export function HomePage({ locale }: { locale: Locale }) {
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href={`tel:${SITE.phone}`}
-              className="bg-accent text-accent-fg inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold shadow-lg transition hover:brightness-110"
+              className="bg-accent text-accent-fg inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold shadow-lg transition hover:brightness-110 active:scale-[0.97]"
             >
               <PhoneIcon className="size-5" />
               {t(locale, COPY.callNow)}
             </a>
             <a
               href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-white/10 px-6 font-semibold text-white ring-1 ring-white/30 backdrop-blur transition hover:bg-white/20"
+              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-white/10 px-6 font-semibold text-white ring-1 ring-white/30 backdrop-blur transition hover:bg-white/20 active:scale-[0.97]"
             >
               <WhatsAppIcon className="size-5" />
               {t(locale, COPY.whatsapp)}
@@ -150,7 +150,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* --------------------------------------------------------------- Fleet */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
+      <section className="content-auto mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold md:text-3xl">
@@ -166,11 +166,11 @@ export function HomePage({ locale }: { locale: Locale }) {
           </Link>
         </div>
 
-        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3">
           {FLEET.map((v) => (
             <li
               key={v.slug}
-              className="border-border bg-surface-raised group overflow-hidden rounded-2xl border shadow-card transition hover:-translate-y-0.5 hover:shadow-lg"
+              className="border-border bg-surface-raised group shadow-card w-[82%] shrink-0 snap-center overflow-hidden rounded-2xl border transition hover:-translate-y-0.5 hover:shadow-lg sm:w-auto sm:shrink"
             >
               <div className="bg-surface aspect-[16/10] overflow-hidden">
                 <Photo
@@ -201,7 +201,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* --------------------------------------------------------------- Trust */}
-      <section className="bg-surface border-border border-y">
+      <section className="content-auto bg-surface border-border border-y">
         <div className="mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
           <h2 className="text-2xl font-semibold md:text-3xl">
             {t(locale, COPY.trustTitle)}

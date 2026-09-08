@@ -31,21 +31,21 @@ export function MobileActionBar({ locale }: { locale: Locale }) {
     >
       <a
         href={`tel:${SITE.phone}`}
-        className="text-fg flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium"
+        className="text-fg active:bg-surface flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium transition-colors"
       >
         <PhoneIcon className="size-5" />
         {t(locale, COPY.call)}
       </a>
       <a
         href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-        className="text-whatsapp flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium"
+        className="text-whatsapp active:bg-surface flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium transition-colors"
       >
         <WhatsAppIcon className="size-5" />
         {t(locale, COPY.whatsapp)}
       </a>
       <a
         href="#booking"
-        className="bg-accent text-accent-fg flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-semibold"
+        className="bg-accent text-accent-fg flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-semibold transition active:brightness-90"
       >
         {t(locale, COPY.book)}
       </a>

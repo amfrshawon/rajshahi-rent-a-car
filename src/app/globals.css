@@ -229,3 +229,42 @@ p { text-wrap: pretty; }
   border-top: 1px solid var(--border);
   margin-block: 2em;
 }
+
+/* ---------------------------------------------------------------------------
+   Touch behaviour
+
+   The grey flash on tap and the legacy 300ms click delay both make a site feel
+   sluggish on Android in particular. Components add their own :active styles
+   so a tap still gives immediate feedback.
+   --------------------------------------------------------------------------- */
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(a, button, summary, label, [role="button"]) {
+  touch-action: manipulation;
+}
+
+/* Anchor targets must clear the sticky header. */
+:target {
+  scroll-margin-top: 5rem;
+}
+
+/*
+  Skip layout and paint for sections that are still off screen. The blog
+  archives and long service pages are tall on a phone, and this keeps
+  scrolling smooth on low-end hardware.
+*/
+@utility content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
+
+/* Horizontal snap rail, used for the fleet on phones. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
