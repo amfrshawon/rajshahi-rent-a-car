@@ -1,3 +1,4 @@
+import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { SITE } from "@/config/site";
 import { type Locale, t } from "@/lib/locale";
 
@@ -32,14 +33,14 @@ export function MobileActionBar({ locale }: { locale: Locale }) {
         href={`tel:${SITE.phone}`}
         className="text-fg flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium"
       >
-        <span aria-hidden="true">📞</span>
+        <PhoneIcon className="size-5" />
         {t(locale, COPY.call)}
       </a>
       <a
         href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
         className="text-whatsapp flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium"
       >
-        <span aria-hidden="true">💬</span>
+        <WhatsAppIcon className="size-5" />
         {t(locale, COPY.whatsapp)}
       </a>
       <a

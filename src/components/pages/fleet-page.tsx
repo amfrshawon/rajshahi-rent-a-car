@@ -2,6 +2,7 @@ import { BookingCta } from "@/components/booking-cta";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
+import { Photo } from "@/components/photo";
 import { FLEET } from "@/config/site";
 import { formatTaka, type Locale, t } from "@/lib/locale";
 import { fleetSchema } from "@/lib/schema";
@@ -30,11 +31,17 @@ export function FleetPage({ locale }: { locale: Locale }) {
           {FLEET.map((v) => (
             <li
               key={v.slug}
-              className="border-border bg-surface-raised overflow-hidden rounded-xl border"
+              className="border-border bg-surface-raised shadow-card overflow-hidden rounded-2xl border"
             >
-              {/* Placeholder until real photography lands — docs/PLAN.md §11. */}
-              <div className="bg-surface text-muted flex aspect-[16/10] items-center justify-center text-sm">
-                {v.name}
+              <div className="bg-surface aspect-[16/10] overflow-hidden">
+                <Photo
+                  name={v.photo.name}
+                  width={v.photo.width}
+                  height={v.photo.height}
+                  alt={v.name}
+                  sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 92vw"
+                  className="h-full w-full object-cover"
+                />
               </div>
 
               <div className="p-5">

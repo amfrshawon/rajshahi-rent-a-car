@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && npm run verify:routes",
+    "dev": "npm run images && next dev",
+    "build": "npm run images && next build && npm run verify:routes",
     "start": "next start",
     "lint": "eslint",
     "build:only": "next build",
-    "verify:routes": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-legacy-routes.mts"
+    "verify:routes": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-legacy-routes.mts",
+    "images": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-images.mts"
   },
   "dependencies": {
     "next": "16.3.4",
@@ -22,6 +23,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

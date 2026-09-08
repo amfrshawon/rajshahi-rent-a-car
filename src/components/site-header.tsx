@@ -14,8 +14,18 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   return (
     <header className="border-border bg-bg/90 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href={localePath(locale, "/")} className="text-brand text-lg font-semibold">
-          {t(locale, SITE.name)}
+        <Link href={localePath(locale, "/")} className="flex items-center gap-2.5">
+          {/* Decorative: the brand name is right beside it as real text. */}
+          <img
+            src="/media/brand/logo-mark.png"
+            alt=""
+            width={40}
+            height={40}
+            className="size-9 shrink-0 rounded-md"
+          />
+          <span className="text-brand text-base leading-tight font-semibold sm:text-lg">
+            {t(locale, SITE.name)}
+          </span>
         </Link>
 
         <nav

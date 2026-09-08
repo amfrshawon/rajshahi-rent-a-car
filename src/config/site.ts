@@ -31,7 +31,12 @@ export type Vehicle = {
   transmission: { bn: string; en: string };
   /** Taka per day. */
   pricePerDay: number;
-  image: string;
+  /**
+   * Basename in public/media/generated/, plus the intrinsic size of the
+   * original. Declared here rather than read from the generated manifest so
+   * the build does not depend on image generation having run first.
+   */
+  photo: { name: string; width: number; height: number };
 };
 
 export const FLEET: readonly Vehicle[] = [
@@ -43,7 +48,7 @@ export const FLEET: readonly Vehicle[] = [
     fuel: { bn: "এলপিজি / পেট্রোল", en: "LPG / Petrol" },
     transmission: { bn: "অটোমেটিক", en: "Automatic" },
     pricePerDay: 4500,
-    image: "/media/fleet/toyota-premio.webp",
+    photo: { name: "toyota-premio", width: 1200, height: 749 },
   },
   {
     slug: "toyota-axio",
@@ -53,7 +58,7 @@ export const FLEET: readonly Vehicle[] = [
     fuel: { bn: "এলপিজি / পেট্রোল", en: "LPG / Petrol" },
     transmission: { bn: "অটোমেটিক", en: "Automatic" },
     pricePerDay: 4000,
-    image: "/media/fleet/toyota-axio.webp",
+    photo: { name: "toyota-axio", width: 1000, height: 666 },
   },
   {
     slug: "toyota-hiace",
@@ -63,6 +68,6 @@ export const FLEET: readonly Vehicle[] = [
     fuel: { bn: "এলপিজি / পেট্রোল", en: "LPG / Petrol" },
     transmission: { bn: "ম্যানুয়াল", en: "Manual" },
     pricePerDay: 8000,
-    image: "/media/fleet/toyota-hiace.webp",
+    photo: { name: "toyota-hiace", width: 700, height: 525 },
   },
 ];
