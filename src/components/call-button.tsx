@@ -34,10 +34,12 @@ export function CallButton({
        */
       className={`bg-brand-soft text-brand animate-call-ring group min-h-11 items-center gap-2 rounded-full px-4 font-semibold transition hover:brightness-95 active:scale-[0.97] ${className}`}
     >
-      <span aria-hidden="true" className="relative flex size-2 shrink-0">
-        <span className="bg-brand absolute inline-flex size-full animate-ping rounded-full opacity-75" />
-        <span className="bg-brand relative inline-flex size-2 rounded-full" />
-      </span>
+      {/*
+        A static dot, not a pulsing one. The ping animation ran on a 1s cycle
+        in a sticky header, so it blinked in the corner of the eye on every
+        page including long articles. The slow ring below is enough of a cue.
+      */}
+      <span aria-hidden="true" className="bg-brand size-2 shrink-0 rounded-full" />
       <PhoneIcon className="size-4 shrink-0" />
       <span className="whitespace-nowrap">{t(locale, SITE.phoneDisplay)}</span>
       <span className="sr-only">— {t(locale, COPY.available)}</span>

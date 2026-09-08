@@ -1,19 +1,22 @@
 /**
- * WordPress REST client.
+ * WordPress content, read from a snapshot committed to this repo.
  *
- * Runs at build time only — the production site is a static export, so no
- * request reaches WordPress from a visitor's browser. After cutover the CMS
- * moves to cms.rajshahirentacar.bd; override with WP_API_URL.
+ * It used to fetch the live REST API during `next build`. When
+ * rajshahirentacar.bd went down on 2026-09-08 that took the build with it —
+ * CI could not produce a deploy because the CMS was unreachable. A static
+ * site should not be able to fail that way.
+ *
+ * Builds are now offline and reproducible: the same commit always produces
+ * the same pages. The cost is that new WordPress posts do not appear until
+ * someone refreshes the snapshot:
+ *
+ *     npm run content:pull      # requires the CMS to be reachable
+ *
+ * That is a deliberate trade — a build that cannot break because of someone
+ * else's hosting is worth an explicit refresh step.
  */
 
-/*
- * `||`, not `??`. CI passes WP_API_URL through from a repository variable,
- * and an unset variable arrives as an empty string rather than undefined —
- * which `??` happily accepts, leaving every request pointed at "/posts?..."
- * and failing the build with ERR_INVALID_URL.
- */
-const WP_API =
-  process.env.WP_API_URL?.trim() || "https://rajshahirentacar.bd/wp-json/wp/v2";
+import snapshot from "@/content/wordpress.json";
 
 export type WpPost = {
   id: number;
@@ -37,59 +40,54 @@ export type WpTerm = {
   count: number;
 };
 
-async function wpFetch<T>(path: string): Promise<T> {
-  const url = `${WP_API}${path}`;
-  const res = await fetch(url, {
-    headers: { accept: "application/json" },
-    // Build-time only; cache aggressively within a single build.
-    next: { revalidate: false },
-  });
-  if (!res.ok) {
-    throw new Error(`WordPress REST ${res.status} for ${url}`);
-  }
-  return (await res.json()) as T;
-}
+export type WpPage = {
+  id: number;
+  slug: string;
+  date: string;
+  modified: string;
+  title: { rendered: string };
+  excerpt: { rendered: string };
+  content: { rendered: string };
+};
 
-let postsCache: Promise<WpPost[]> | null = null;
-let categoriesCache: Promise<WpTerm[]> | null = null;
-let tagsCache: Promise<WpTerm[]> | null = null;
+const POSTS = snapshot.posts as WpPost[];
+const CATEGORIES = snapshot.categories as WpTerm[];
+const TAGS = snapshot.tags as WpTerm[];
+const PAGES = (snapshot.pages ?? []) as WpPage[];
 
 /** All published posts, newest first. */
-export function getAllPosts(): Promise<WpPost[]> {
-  postsCache ??= wpFetch<WpPost[]>(
-    "/posts?per_page=100&orderby=date&order=desc&_fields=id,slug,date,modified,modified_gmt,title,excerpt,content,categories,tags",
-  );
-  return postsCache;
+export async function getAllPosts(): Promise<WpPost[]> {
+  return [...POSTS].sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function getAllCategories(): Promise<WpTerm[]> {
-  categoriesCache ??= wpFetch<WpTerm[]>(
-    "/categories?per_page=100&_fields=id,slug,name,description,parent,count",
-  );
-  return categoriesCache;
+export async function getAllCategories(): Promise<WpTerm[]> {
+  return CATEGORIES;
 }
 
-export function getAllTags(): Promise<WpTerm[]> {
-  tagsCache ??= wpFetch<WpTerm[]>(
-    "/tags?per_page=100&_fields=id,slug,name,description,parent,count",
-  );
-  return tagsCache;
+export async function getAllTags(): Promise<WpTerm[]> {
+  return TAGS;
+}
+
+export async function getAllPages(): Promise<WpPage[]> {
+  return PAGES;
+}
+
+export async function getPageBySlug(slug: string): Promise<WpPage | undefined> {
+  return PAGES.find((p) => p.slug === slug);
 }
 
 export async function getPostBySlug(slug: string): Promise<WpPost | undefined> {
-  return (await getAllPosts()).find((p) => p.slug === slug);
+  return POSTS.find((p) => p.slug === slug);
 }
 
 export async function getPostsInCategory(categorySlug: string): Promise<WpPost[]> {
-  const categories = await getAllCategories();
-  const term = categories.find((c) => c.slug === categorySlug);
+  const term = CATEGORIES.find((c) => c.slug === categorySlug);
   if (!term) return [];
   return (await getAllPosts()).filter((p) => p.categories.includes(term.id));
 }
 
 export async function getPostsWithTag(tagSlug: string): Promise<WpPost[]> {
-  const tags = await getAllTags();
-  const term = tags.find((t) => t.slug === tagSlug);
+  const term = TAGS.find((t) => t.slug === tagSlug);
   if (!term) return [];
   return (await getAllPosts()).filter((p) => p.tags.includes(term.id));
 }
@@ -98,7 +96,7 @@ export async function getPostsWithTag(tagSlug: string): Promise<WpPost[]> {
 export function plainText(html: string): string {
   return html
     .replace(/<[^>]+>/g, "")
-    .replace(/&#8217;|&#039;|&#39;/g, "’")
+    .replace(/&#8217;|&#039;|&#39;|&#x27;/g, "’")
     .replace(/&#8216;/g, "‘")
     .replace(/&#8211;/g, "–")
     .replace(/&#8212;/g, "—")
@@ -111,27 +109,4 @@ export function plainText(html: string): string {
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .trim();
-}
-
-export type WpPage = {
-  id: number;
-  slug: string;
-  date: string;
-  modified: string;
-  title: { rendered: string };
-  excerpt: { rendered: string };
-  content: { rendered: string };
-};
-
-let pagesCache: Promise<WpPage[]> | null = null;
-
-export function getAllPages(): Promise<WpPage[]> {
-  pagesCache ??= wpFetch<WpPage[]>(
-    "/pages?per_page=100&_fields=id,slug,date,modified,title,excerpt,content",
-  );
-  return pagesCache;
-}
-
-export async function getPageBySlug(slug: string): Promise<WpPage | undefined> {
-  return (await getAllPages()).find((p) => p.slug === slug);
 }
