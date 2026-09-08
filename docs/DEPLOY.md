@@ -82,6 +82,47 @@ Set Bangla as the default language and add English as the second.
 Until this is done, Bangla titles and excerpts come from the repo overlay in
 `src/content/bn-posts.ts`, and article bodies fall back to English.
 
+## 5b. Booking API
+
+The site is static, so the booking endpoint is a separate small Node app in
+`api/`. It runs under cPanel's **Setup Node.js App** on the same account.
+
+MySQL rather than SQLite: `better-sqlite3` is a native module and compiling it
+inside a 700 MB LVE is fragile, whereas cPanel already provisions MySQL and
+ExonHost backs it up.
+
+1. **Database** — cPanel → *MySQL Database Wizard*. Create a database and a
+   user, and grant that user all privileges on it. Then open *phpMyAdmin*,
+   select the database, and run `api/schema.sql`.
+2. **Upload** — put the contents of `api/` in a folder outside `public_html`,
+   e.g. `/home/rajshah5/booking-api`.
+3. **Create the app** — cPanel → *Setup Node.js App* → Create:
+   - Application root: `booking-api`
+   - Application URL: `rajshahirentacar.bd/api`
+   - Startup file: `src/server.js`
+   Then click **Run NPM Install**.
+4. **Environment variables** — add every key from `api/.env.example` in that
+   same screen. `ADMIN_TOKEN` should be a long random string; it guards
+   `GET /api/bookings`. Never commit real values.
+5. **Restart** the app, then check `https://rajshahirentacar.bd/api/health`,
+   which should return `{"ok":true}`.
+
+Reading bookings:
+
+```
+curl -H "Authorization: Bearer $ADMIN_TOKEN" https://rajshahirentacar.bd/api/bookings
+```
+
+Notes:
+
+- A failed email never fails the request. Once the row is committed the
+  booking is safe, and reporting failure would make a customer submit again.
+- The browser form falls back to WhatsApp if the API is unreachable, so a
+  booking is never lost to a server problem.
+- Rate limited to 5 submissions per IP per 10 minutes, plus a honeypot field.
+- The `ip` column exists for abuse investigation but is **not** currently
+  populated. Decide a retention period before you start storing it.
+
 ## 6. Cutover
 
 1. Move WordPress to `cms.rajshahirentacar.bd`, set it to **noindex**, and
