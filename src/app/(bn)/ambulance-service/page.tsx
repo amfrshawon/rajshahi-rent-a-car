@@ -1,31 +1,19 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { ArticlePage } from "@/components/article-page";
-import { getPageContent } from "@/lib/content";
-import { localePath } from "@/lib/locale";
+import { AmbulancePage } from "@/components/pages/ambulance-page";
 
-const SLUG = "ambulance-service";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const page = await getPageContent("bn", SLUG);
-  if (!page) return {};
-
-  return {
-    title: page.title,
-    description: page.excerpt,
-    alternates: {
-      canonical: localePath("bn", `/${SLUG}/`),
-      languages: {
-        bn: `/${SLUG}/`,
-        en: `/en/${SLUG}/`,
-        "x-default": `/${SLUG}/`,
-      },
+export const metadata: Metadata = {
+  title: "অ্যাম্বুলেন্স সার্ভিস — রাজশাহী, ২৪ ঘণ্টা",
+  description: "রাজশাহীতে ২৪ ঘণ্টা জরুরি অ্যাম্বুলেন্স সেবা। রাজশাহী মেডিকেল এলাকায় অবস্থান, রাজশাহী ও সারা দেশে রোগী পরিবহন।",
+  alternates: {
+    canonical: "/ambulance-service/",
+    languages: {
+      bn: "/ambulance-service/",
+      en: "/en/ambulance-service/",
+      "x-default": "/ambulance-service/",
     },
-  };
-}
+  },
+};
 
-export default async function Page() {
-  const page = await getPageContent("bn", SLUG);
-  if (!page) notFound();
-  return <ArticlePage locale="bn" article={page} showBackToBlog={false} />;
+export default function Page() {
+  return <AmbulancePage locale="bn" />;
 }

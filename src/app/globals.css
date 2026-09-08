@@ -28,6 +28,16 @@
   --accent-soft: #fdf3e3;
   --accent-fg: #ffffff;
 
+  /*
+   * Emergency red, used only on the ambulance page. The rest of the site is
+   * green; an emergency number needs to read as urgent and distinct.
+   * #c81e1e is 5.74:1 both as white-on-fill and as ink on white.
+   */
+  --emergency: #c81e1e;
+  --emergency-ink: #b91c1c;
+  --emergency-soft: #fdeaea;
+  --emergency-fg: #ffffff;
+
   --whatsapp: #25d366;
   /*
    * #25d366 is only 1.98:1 on white — acceptable as a button fill with
@@ -58,6 +68,12 @@
     --accent-soft: #2a1e0c;
     --accent-fg: #1a1000;
 
+    --emergency: #dc2626;
+    /* 6.99:1 on the dark ground. */
+    --emergency-ink: #f87171;
+    --emergency-soft: #2a1113;
+    --emergency-fg: #ffffff;
+
     /* On the dark ground #25d366 is already 9.74:1. */
     --whatsapp-ink: #25d366;
 
@@ -79,6 +95,10 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-accent-fg: var(--accent-fg);
+  --color-emergency: var(--emergency);
+  --color-emergency-ink: var(--emergency-ink);
+  --color-emergency-soft: var(--emergency-soft);
+  --color-emergency-fg: var(--emergency-fg);
   --color-whatsapp: var(--whatsapp);
   --color-whatsapp-ink: var(--whatsapp-ink);
 

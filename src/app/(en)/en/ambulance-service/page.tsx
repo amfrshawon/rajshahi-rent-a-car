@@ -1,31 +1,19 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { ArticlePage } from "@/components/article-page";
-import { getPageContent } from "@/lib/content";
-import { localePath } from "@/lib/locale";
+import { AmbulancePage } from "@/components/pages/ambulance-page";
 
-const SLUG = "ambulance-service";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const page = await getPageContent("en", SLUG);
-  if (!page) return {};
-
-  return {
-    title: page.title,
-    description: page.excerpt,
-    alternates: {
-      canonical: localePath("en", `/${SLUG}/`),
-      languages: {
-        bn: `/${SLUG}/`,
-        en: `/en/${SLUG}/`,
-        "x-default": `/${SLUG}/`,
-      },
+export const metadata: Metadata = {
+  title: "Ambulance Service in Rajshahi — 24 Hours",
+  description: "24-hour emergency ambulance service in Rajshahi. Based at Rajshahi Medical, with patient transport across Rajshahi and nationwide.",
+  alternates: {
+    canonical: "/en/ambulance-service/",
+    languages: {
+      bn: "/ambulance-service/",
+      en: "/en/ambulance-service/",
+      "x-default": "/ambulance-service/",
     },
-  };
-}
+  },
+};
 
-export default async function Page() {
-  const page = await getPageContent("en", SLUG);
-  if (!page) notFound();
-  return <ArticlePage locale="en" article={page} showBackToBlog={false} />;
+export default function Page() {
+  return <AmbulancePage locale="en" />;
 }

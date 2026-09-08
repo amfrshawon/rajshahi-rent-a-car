@@ -62,3 +62,41 @@ export function WhatsAppIcon(props: { className?: string }) {
     </svg>
   );
 }
+
+export function AmbulanceIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 17V8a1 1 0 0 1 1-1h9v10z" />
+      <path d="M13 10h4l3 3.5V17h-7z" />
+      <circle cx="7.5" cy="17.5" r="1.8" />
+      <circle cx="16.5" cy="17.5" r="1.8" />
+      <path d="M8 10v3M6.5 11.5h3" />
+    </svg>
+  );
+}
+
+export function BoltIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M13 3 5 13h6l-1 8 8-10h-6z" />
+    </svg>
+  );
+}
+
+export function MapPinIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </svg>
+  );
+}
+
+export function ChecklistIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M9 5h9M9 12h9M9 19h9" />
+      <path d="m4 4.5 1.2 1.2L7 4M4 11.5l1.2 1.2L7 11M4 18.5l1.2 1.2L7 18" />
+    </svg>
+  );
+}
