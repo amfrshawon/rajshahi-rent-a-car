@@ -51,6 +51,37 @@ for (const dir of SOURCE_DIRS) {
   }
 }
 
+/*
+ * The supplied logo has "RAJSHAHI RENT A CAR" baked into it. Beside the Bangla
+ * brand name in the header that reads as duplicated and, at header size, its
+ * lettering is illegible anyway. Crop to the car-and-pin device; the words are
+ * set as real text next to it.
+ *
+ * sharp applies trim before extract within a single pipeline, so this runs in
+ * two passes.
+ */
+{
+  const source = "public/media/brand/logo-mark.png";
+  const meta = await sharp(source).metadata();
+  if (meta.width && meta.height) {
+    const deviceOnly = await sharp(source)
+      .extract({
+        left: 0,
+        top: 0,
+        width: meta.width,
+        height: Math.round(meta.height * 0.49),
+      })
+      .png()
+      .toBuffer();
+
+    await sharp(deviceOnly)
+      .trim({ threshold: 5 })
+      .png()
+      .toFile(path.join(OUT_DIR, "logo-device.png"));
+    written += 1;
+  }
+}
+
 await writeFile(
   path.join(OUT_DIR, "manifest.json"),
   JSON.stringify(manifest, null, 2) + "\n",

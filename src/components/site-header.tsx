@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { NAV } from "@/config/navigation";
 import { CallButton } from "@/components/call-button";
-import { asset, href } from "@/config/deploy";
+import { LanguageSwitch } from "@/components/language-switch";
+import { NAV } from "@/config/navigation";
+import { asset } from "@/config/deploy";
 import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, localePath, t } from "@/lib/locale";
@@ -12,21 +13,27 @@ const COPY = {
 } as const;
 
 export function SiteHeader({ locale }: { locale: Locale }) {
-  const other: Locale = locale === "bn" ? "en" : "bn";
-
   return (
     <header className="border-border bg-bg/95 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-3 md:gap-6 md:px-6 md:py-4">
-        <Link href={localePath(locale, "/")} className="flex items-center gap-2.5">
-          {/* Decorative: the brand name is right beside it as real text. */}
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 py-3 md:gap-6 md:px-6 md:py-4">
+        {/*
+          min-w-0 plus a truncating name is what keeps the header inside the
+          viewport. Without it the Bangla name refused to shrink and pushed the
+          whole bar 63px past the edge of a 360px Android screen.
+        */}
+        <Link
+          href={localePath(locale, "/")}
+          className="flex min-w-0 items-center gap-2 sm:gap-2.5"
+        >
+          {/* The device only; the brand name sits beside it as real text. */}
           <img
-            src={asset("/media/brand/logo-mark.png")}
+            src={asset("/media/generated/logo-device.png")}
             alt=""
-            width={40}
-            height={40}
-            className="size-9 shrink-0 rounded-md"
+            width={236}
+            height={64}
+            className="h-6 w-auto shrink-0 sm:h-7"
           />
-          <span className="text-brand text-base leading-tight font-semibold sm:text-lg">
+          <span className="text-brand truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
             {t(locale, SITE.name)}
           </span>
         </Link>
@@ -39,27 +46,18 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             <Link
               key={item.key}
               href={route(locale, item.key)}
-              className="text-muted hover:text-fg text-sm font-medium"
+              className="text-muted hover:text-fg text-sm font-medium whitespace-nowrap"
             >
               {t(locale, item.label)}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <CallButton locale={locale} className="hidden text-sm sm:inline-flex" />
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          {/* Shown from md up; below that the sticky bottom bar carries Call. */}
+          <CallButton locale={locale} className="hidden text-sm md:inline-flex" />
 
-          {/*
-            A full page load is correct here: the two locales are separate root
-            layouts, so this is a document-level switch, not a client nav.
-          */}
-          <a
-            href={href(localePath(other, "/"))}
-            hrefLang={other}
-            className="border-border text-muted hover:text-fg inline-flex min-h-9 items-center rounded-full border px-3 text-sm"
-          >
-            {other === "bn" ? "বাংলা" : "English"}
-          </a>
+          <LanguageSwitch locale={locale} />
 
           {/*
             The menu lives inside the header row as a dropdown rather than in a
@@ -86,7 +84,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
             <nav
               aria-label={t(locale, COPY.primaryNav)}
-              className="border-border bg-surface-raised shadow-card absolute end-0 top-full z-50 mt-2 w-56 rounded-xl border p-1.5"
+              className="border-border bg-surface-raised shadow-card absolute end-0 top-full z-50 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-xl border p-1.5"
             >
               <ul>
                 {NAV.map((item) => (

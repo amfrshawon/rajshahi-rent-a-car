@@ -26,7 +26,13 @@ export function CallButton({
     <a
       href={`tel:${SITE.phone}`}
       aria-label={`${t(locale, COPY.callAria)} ${t(locale, SITE.phoneDisplay)}`}
-      className={`bg-brand-soft text-brand animate-call-ring group inline-flex min-h-11 items-center gap-2 rounded-full px-4 font-semibold transition hover:brightness-95 active:scale-[0.97] ${className}`}
+      /*
+       * No display utility here on purpose. Baking `inline-flex` in fought the
+       * `hidden` the caller passes for small screens — same specificity, so
+       * source order decided, and the button stayed visible on a 360px screen
+       * and squeezed the brand name out of the header. The caller owns display.
+       */
+      className={`bg-brand-soft text-brand animate-call-ring group min-h-11 items-center gap-2 rounded-full px-4 font-semibold transition hover:brightness-95 active:scale-[0.97] ${className}`}
     >
       <span aria-hidden="true" className="relative flex size-2 shrink-0">
         <span className="bg-brand absolute inline-flex size-full animate-ping rounded-full opacity-75" />
