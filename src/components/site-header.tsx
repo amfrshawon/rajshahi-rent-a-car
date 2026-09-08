@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NAV } from "@/config/navigation";
+import { CallButton } from "@/components/call-button";
 import { asset, href } from "@/config/deploy";
 import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
@@ -15,7 +16,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
   return (
     <header className="border-border bg-bg/95 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-2.5">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-3 md:gap-6 md:px-6 md:py-4">
         <Link href={localePath(locale, "/")} className="flex items-center gap-2.5">
           {/* Decorative: the brand name is right beside it as real text. */}
           <img
@@ -46,12 +47,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href={`tel:${SITE.phone}`}
-            className="text-fg hidden text-sm font-semibold sm:inline"
-          >
-            {t(locale, SITE.phoneDisplay)}
-          </a>
+          <CallButton locale={locale} className="hidden text-sm sm:inline-flex" />
 
           {/*
             A full page load is correct here: the two locales are separate root

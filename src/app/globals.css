@@ -121,6 +121,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* Keeps a smooth-scrolled anchor clear of the sticky header. */
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -289,6 +291,28 @@ html {
 @utility content-auto {
   content-visibility: auto;
   contain-intrinsic-size: auto 640px;
+}
+
+/*
+  Header call button. A slow ring, not a flashing one — the phone number is
+  the most valuable link on the site and should read as live without becoming
+  an irritant on a page someone is trying to read. Suppressed entirely by the
+  reduced-motion block above.
+*/
+@keyframes call-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--brand) 40%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 9px color-mix(in oklab, var(--brand) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--brand) 0%, transparent);
+  }
+}
+
+@utility animate-call-ring {
+  animation: call-ring 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Horizontal snap rail, used for the fleet on phones. */
