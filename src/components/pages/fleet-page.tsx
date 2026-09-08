@@ -1,8 +1,10 @@
 import { BookingCta } from "@/components/booking-cta";
+import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { FLEET } from "@/config/site";
 import { formatTaka, type Locale, t } from "@/lib/locale";
+import { fleetSchema } from "@/lib/schema";
 
 const COPY = {
   title: { bn: "আমাদের গাড়িবহর", en: "Our Fleet" },
@@ -20,6 +22,7 @@ const COPY = {
 export function FleetPage({ locale }: { locale: Locale }) {
   return (
     <PageShell locale={locale}>
+      <JsonLd data={fleetSchema(locale)} />
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-12">

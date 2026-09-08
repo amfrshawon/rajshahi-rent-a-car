@@ -18,10 +18,20 @@ ErrorDocument 404 /404.html
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
 
+  # Next emits OG images with no file extension, so the server would guess the
+  # wrong type and Facebook/WhatsApp would reject the image. Force it.
+  <FilesMatch "^opengraph-image-[A-Za-z0-9_-]+$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set X-Frame-Options "SAMEORIGIN"
 </IfModule>
+
+<FilesMatch "^opengraph-image-[A-Za-z0-9_-]+$">
+  ForceType image/png
+</FilesMatch>
 
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml \
@@ -30,6 +40,11 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Yoast sitemap URLs Google already has indexed. The new build emits a
+  # single /sitemap.xml, so point the old paths at it rather than 404.
+  RewriteRule ^sitemap_index\.xml$ /sitemap.xml [R=301,L]
+  RewriteRule ^(post|page|category|post_tag|author)-sitemap\.xml$ /sitemap.xml [R=301,L]
 
   # Force HTTPS.
   RewriteCond %{HTTPS} !=on

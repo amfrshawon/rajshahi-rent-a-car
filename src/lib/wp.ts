@@ -14,6 +14,7 @@ export type WpPost = {
   slug: string;
   date: string;
   modified: string;
+  modified_gmt: string;
   title: { rendered: string };
   excerpt: { rendered: string };
   content: { rendered: string };
@@ -50,7 +51,7 @@ let tagsCache: Promise<WpTerm[]> | null = null;
 /** All published posts, newest first. */
 export function getAllPosts(): Promise<WpPost[]> {
   postsCache ??= wpFetch<WpPost[]>(
-    "/posts?per_page=100&orderby=date&order=desc&_fields=id,slug,date,modified,title,excerpt,content,categories,tags",
+    "/posts?per_page=100&orderby=date&order=desc&_fields=id,slug,date,modified,modified_gmt,title,excerpt,content,categories,tags",
   );
   return postsCache;
 }

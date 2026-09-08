@@ -13,6 +13,10 @@ export const metadata: Metadata = {
 export default async function Page() {
   const articles = await listArticles("en");
   return (
-    <ArchivePage locale="en" title="Blog" articles={articles} />
+    <ArchivePage
+      locale="en"
+      title="Blog" articles={articles}
+      crumbs={[{ name: "Blog", path: "/blog/" }]}
+    />
   );
 }

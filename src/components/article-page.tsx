@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { formatArticleDate, type Article } from "@/lib/content";
 import { type Locale, localePath, t } from "@/lib/locale";
+import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 
 const COPY = {
   backToBlog: { bn: "← সব লেখা", en: "← All posts" },
+  home: { bn: "হোম", en: "Home" },
+  blog: { bn: "ব্লগ", en: "Blog" },
   untranslated: {
     bn: "এই লেখাটির বাংলা অনুবাদ এখনো তৈরি হচ্ছে। নিচের লেখাটি ইংরেজিতে দেওয়া হলো।",
     en: "",
@@ -21,8 +25,21 @@ export function ArticlePage({
   /** Standalone pages (e.g. the ambulance service page) are not blog posts. */
   showBackToBlog?: boolean;
 }) {
+  const crumbs = showBackToBlog
+    ? [
+        { name: t(locale, COPY.home), path: "/" },
+        { name: t(locale, COPY.blog), path: "/blog/" },
+        { name: article.title, path: `/${article.slug}/` },
+      ]
+    : [
+        { name: t(locale, COPY.home), path: "/" },
+        { name: article.title, path: `/${article.slug}/` },
+      ];
+
   return (
     <PageShell locale={locale}>
+      {showBackToBlog ? <JsonLd data={articleSchema(locale, article)} /> : null}
+      <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <article className="mx-auto w-full max-w-3xl px-4 py-10 md:py-14">
         {showBackToBlog ? (
           <Link

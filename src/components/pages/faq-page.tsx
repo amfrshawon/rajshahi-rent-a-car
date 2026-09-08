@@ -1,3 +1,4 @@
+import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { FLEET, SITE } from "@/config/site";
@@ -99,10 +100,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
         </dl>
       </section>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
+      <JsonLd data={schema} />
     </PageShell>
   );
 }

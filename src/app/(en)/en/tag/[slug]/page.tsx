@@ -37,6 +37,10 @@ export default async function Page({ params }: Params) {
       title={archive.title}
       description={archive.description}
       articles={archive.articles}
+      crumbs={[
+        { name: "Blog", path: "/blog/" },
+        { name: archive.title, path: `/tag/${slug}/` },
+      ]}
     />
   );
 }
