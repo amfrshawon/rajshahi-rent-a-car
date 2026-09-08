@@ -1,0 +1,75 @@
+name: Build and deploy
+
+# Staging deploys on every push to main. Production is manual only — the
+# apex still serves the live WordPress site until cutover, and an accidental
+# overwrite there would take the business offline.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Where to deploy
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      # `build` also runs verify:routes, which fails if any of the 27 legacy
+      # URLs is missing from the export.
+      - run: npm run build
+        env:
+          WP_API_URL: ${{ vars.WP_API_URL }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: out/
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target || 'staging' }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: out
+
+      - name: Upload to ExonHost
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./out/
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          # Never touch the WordPress install sharing this account.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/wp-admin/**
+            **/wp-content/**
+            **/wp-includes/**
