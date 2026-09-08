@@ -166,7 +166,15 @@ export function HomePage({ locale }: { locale: Locale }) {
           </Link>
         </div>
 
-        <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+        {/*
+          A scrollable region needs a keyboard route in; without tabIndex a
+          keyboard user cannot reach the cards that are off screen.
+        */}
+        <ul
+          tabIndex={0}
+          aria-label={t(locale, COPY.fleetTitle)}
+          className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3"
+        >
           {FLEET.map((v) => (
             <li
               key={v.slug}

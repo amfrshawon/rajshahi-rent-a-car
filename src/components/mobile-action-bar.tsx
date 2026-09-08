@@ -38,7 +38,7 @@ export function MobileActionBar({ locale }: { locale: Locale }) {
       </a>
       <a
         href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-        className="text-whatsapp active:bg-surface flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium transition-colors"
+        className="text-whatsapp-ink active:bg-surface flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium transition-colors"
       >
         <WhatsAppIcon className="size-5" />
         {t(locale, COPY.whatsapp)}

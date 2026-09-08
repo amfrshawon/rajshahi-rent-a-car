@@ -158,6 +158,42 @@ Fonts were the fixable half and went from 231 KB to 125 KB preloaded:
 Bengali subsets are ~40 KB each, so every extra weight is a real cost on a
 Bangladeshi mobile connection. Add one only with a reason.
 
+### Accessibility, 2026-09-08
+
+axe-core (WCAG 2.0/2.1 A and AA) across 18 pages in both locales:
+**0 violations**. Re-run by serving `out/`, copying
+`node_modules/axe-core/axe.min.js` beside it, and running `axe.run()` in each
+page.
+
+Three real defects were found and fixed in that pass:
+
+1. `#25d366` — WhatsApp green — as text on white is **1.98:1**, well under the
+   4.5:1 minimum. It is fine as a button fill with black text on it, so there
+   are now two tokens: `--whatsapp` for fills and `--whatsapp-ink` (5.28:1)
+   for text and icons on light surfaces.
+2. The fleet scroll-snap rail had no keyboard route in, so its off-screen
+   cards were unreachable without a pointer.
+3. `/ambulance-service/` shipped a 6.8 KB `<style>` block from WordPress
+   containing a `*` reset and `body { font-family: 'Segoe UI' }`, which wiped
+   spacing site-wide on that page and replaced the Bangla face with one that
+   has no Bengali glyphs. Its heading also carried
+   `color: #ffffff !important`, legible only against a hero background defined
+   in that same stylesheet — so once the block was removed it was white on
+   white. `src/lib/sanitize.ts` now strips document-scope markup and colour
+   declarations from all WordPress content.
+
+**Still to do on real hardware.** LCP and FCP could not be measured here: the
+preview pane renders the page hidden, and browsers do not report paint timing
+for a page that was never visible. Run Lighthouse or PageSpeed Insights
+against the staging URL over a real mobile connection — that is the only
+measurement that counts anyway, since BDIX latency is the whole point of
+hosting locally.
+
+**Content still needing attention:** the ambulance page is a hand-built HTML
+landing page pasted into WordPress. It cannot carry its own design inside this
+one, so it now renders as plain themed content. It should be rewritten as
+ordinary page content.
+
 ## 8. Fleet and contact facts (from the live site — to be re-confirmed)
 
 | Vehicle | Type | Seats | Fuel | Transmission | Rate |

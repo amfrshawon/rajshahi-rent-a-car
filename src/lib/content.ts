@@ -9,6 +9,7 @@
 import { LEGACY_CATEGORIES, LEGACY_TAGS } from "@/config/legacy-routes";
 import { BN_CATEGORIES, BN_PAGES, BN_POSTS, BN_TAGS } from "@/content/bn-posts";
 import type { Locale } from "@/lib/locale";
+import { sanitizeWordPressHtml } from "@/lib/sanitize";
 import {
   getAllCategories,
   getAllPosts,
@@ -73,8 +74,9 @@ export async function getArticle(
   return {
     ...summary,
     modified: post.modified,
-    contentHtml:
+    contentHtml: sanitizeWordPressHtml(
       locale === "bn" && bn?.content ? bn.content : post.content.rendered,
+    ),
   };
 }
 
@@ -201,6 +203,8 @@ export async function getPageContent(
     date: page.date,
     modified: page.modified,
     untranslated: locale === "bn" && bn?.content === undefined,
-    contentHtml: useBangla && bn.content ? bn.content : page.content.rendered,
+    contentHtml: sanitizeWordPressHtml(
+      useBangla && bn.content ? bn.content : page.content.rendered,
+    ),
   };
 }

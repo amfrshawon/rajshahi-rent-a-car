@@ -29,6 +29,12 @@
   --accent-fg: #ffffff;
 
   --whatsapp: #25d366;
+  /*
+   * #25d366 is only 1.98:1 on white — acceptable as a button fill with
+   * black text on it, an AA failure as text or an icon. This is the ink
+   * for light surfaces (5.28:1) and still reads as WhatsApp green.
+   */
+  --whatsapp-ink: #0f7b52;
 
   --ring: color-mix(in oklab, var(--brand) 45%, transparent);
   --card-shadow: 0 1px 2px rgb(15 22 19 / 0.05), 0 8px 24px -12px rgb(15 22 19 / 0.18);
@@ -52,6 +58,9 @@
     --accent-soft: #2a1e0c;
     --accent-fg: #1a1000;
 
+    /* On the dark ground #25d366 is already 9.74:1. */
+    --whatsapp-ink: #25d366;
+
     --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
   }
 }
@@ -71,6 +80,7 @@
   --color-accent-soft: var(--accent-soft);
   --color-accent-fg: var(--accent-fg);
   --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-ink: var(--whatsapp-ink);
 
   --shadow-card: var(--card-shadow);
 
