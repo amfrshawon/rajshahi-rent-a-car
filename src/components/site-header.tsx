@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NAV } from "@/config/navigation";
+import { asset, href } from "@/config/deploy";
 import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, localePath, t } from "@/lib/locale";
@@ -18,7 +19,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         <Link href={localePath(locale, "/")} className="flex items-center gap-2.5">
           {/* Decorative: the brand name is right beside it as real text. */}
           <img
-            src="/media/brand/logo-mark.png"
+            src={asset("/media/brand/logo-mark.png")}
             alt=""
             width={40}
             height={40}
@@ -57,7 +58,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             layouts, so this is a document-level switch, not a client nav.
           */}
           <a
-            href={localePath(other, "/")}
+            href={href(localePath(other, "/"))}
             hrefLang={other}
             className="border-border text-muted hover:text-fg inline-flex min-h-9 items-center rounded-full border px-3 text-sm"
           >

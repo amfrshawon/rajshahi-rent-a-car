@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "../globals.css";
 import { RootHtml } from "@/components/root-html";
+import { IS_PREVIEW } from "@/config/deploy";
 import { SITE } from "@/config/site";
 
 /** English root layout. Every English route lives under /en/. */
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
   },
   description:
     "Rent sedans, microbuses and ambulances in Rajshahi. Fixed rates, experienced drivers, available 24/7.",
+  // A public preview must not compete with the real domain in search.
+  robots: IS_PREVIEW ? { index: false, follow: false } : undefined,
   alternates: {
     canonical: "/en/",
     languages: { bn: "/", en: "/en/", "x-default": "/" },

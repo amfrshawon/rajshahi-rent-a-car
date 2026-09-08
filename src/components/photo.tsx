@@ -6,6 +6,8 @@
  * must already exist as a file. AVIF first, WebP as the fallback.
  */
 
+import { asset } from "@/config/deploy";
+
 const WIDTHS = [480, 800, 1200, 1600] as const;
 
 export function Photo({
@@ -29,14 +31,16 @@ export function Photo({
   const available = WIDTHS.filter((w) => w <= width);
   const widths = available.length > 0 ? available : [width];
   const srcSet = (ext: string) =>
-    widths.map((w) => `/media/generated/${name}-${w}.${ext} ${w}w`).join(", ");
+    widths
+      .map((w) => `${asset(`/media/generated/${name}-${w}.${ext}`)} ${w}w`)
+      .join(", ");
 
   return (
     <picture>
       <source type="image/avif" srcSet={srcSet("avif")} sizes={sizes} />
       <source type="image/webp" srcSet={srcSet("webp")} sizes={sizes} />
       <img
-        src={`/media/generated/${name}-${widths[widths.length - 1]}.webp`}
+        src={asset(`/media/generated/${name}-${widths[widths.length - 1]}.webp`)}
         alt={alt}
         width={width}
         height={height}

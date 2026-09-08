@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
   // There is an unrelated package-lock.json in the user's home directory.
   // Without this, Turbopack walks up and infers the wrong workspace root.
   turbopack: { root: process.cwd() },
+
+  // Set for GitHub Pages previews, where a project site is served from
+  // /<repo>/ rather than the domain root. Empty for the real deployment.
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || undefined,
 };
 
 export default nextConfig;

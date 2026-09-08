@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "../globals.css";
 import { RootHtml } from "@/components/root-html";
+import { IS_PREVIEW } from "@/config/deploy";
 import { SITE } from "@/config/site";
 
 /**
@@ -16,6 +17,8 @@ export const metadata: Metadata = {
   },
   description:
     "রাজশাহীতে প্রাইভেট কার, মাইক্রোবাস ও অ্যাম্বুলেন্স ভাড়া। ফিক্সড রেট, অভিজ্ঞ ড্রাইভার, ২৪ ঘণ্টা সার্ভিস।",
+  // A public preview must not compete with the real domain in search.
+  robots: IS_PREVIEW ? { index: false, follow: false } : undefined,
   alternates: {
     canonical: "/",
     languages: { bn: "/", en: "/en/", "x-default": "/" },
