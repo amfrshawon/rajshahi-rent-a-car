@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/en/tour-packages/",
     languages: {
-      bn: "/tour-packages/",
+      bn: "/ট্যুর-প্যাকেজ/",
       en: "/en/tour-packages/",
-      "x-default": "/tour-packages/",
+      "x-default": "/ট্যুর-প্যাকেজ/",
     },
   },
 };

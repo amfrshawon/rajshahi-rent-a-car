@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { FOOTER_NAV, NAV } from "@/config/navigation";
+import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
-import { type Locale, localePath, t } from "@/lib/locale";
+import { type Locale, t } from "@/lib/locale";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
   const links = [...NAV, ...FOOTER_NAV];
@@ -30,9 +31,9 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           <nav>
             <ul className="text-muted grid grid-cols-2 gap-x-4 text-sm">
               {links.map((item) => (
-                <li key={item.path}>
+                <li key={item.key}>
                   <Link
-                    href={localePath(locale, item.path)}
+                    href={route(locale, item.key)}
                     className="hover:text-fg block py-1"
                   >
                     {t(locale, item.label)}

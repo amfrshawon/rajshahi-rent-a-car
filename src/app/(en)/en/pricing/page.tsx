@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/en/pricing/",
     languages: {
-      bn: "/pricing/",
+      bn: "/ভাড়ার-তালিকা/",
       en: "/en/pricing/",
-      "x-default": "/pricing/",
+      "x-default": "/ভাড়ার-তালিকা/",
     },
   },
 };

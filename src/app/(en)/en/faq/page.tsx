@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/en/faq/",
     languages: {
-      bn: "/faq/",
+      bn: "/সাধারণ-জিজ্ঞাসা/",
       en: "/en/faq/",
-      "x-default": "/faq/",
+      "x-default": "/সাধারণ-জিজ্ঞাসা/",
     },
   },
 };

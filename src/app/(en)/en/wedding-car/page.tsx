@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/en/wedding-car/",
     languages: {
-      bn: "/wedding-car/",
+      bn: "/বিয়ের-গাড়ি/",
       en: "/en/wedding-car/",
-      "x-default": "/wedding-car/",
+      "x-default": "/বিয়ের-গাড়ি/",
     },
   },
 };

@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "ভাড়ার তালিকা",
   description: "রাজশাহীতে গাড়ি ভাড়ার দৈনিক রেট। ফিক্সড রেট, কোনো লুকানো খরচ নেই।",
   alternates: {
-    canonical: "/pricing/",
+    canonical: "/ভাড়ার-তালিকা/",
     languages: {
-      bn: "/pricing/",
+      bn: "/ভাড়ার-তালিকা/",
       en: "/en/pricing/",
-      "x-default": "/pricing/",
+      "x-default": "/ভাড়ার-তালিকা/",
     },
   },
 };

@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "npm run images && next dev",
-    "build": "npm run images && next build && npm run verify:routes",
+    "build": "npm run images && next build && npm run slugs && npm run verify:routes",
     "start": "next start",
     "lint": "eslint",
     "build:only": "next build",
     "verify:routes": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-legacy-routes.mts",
-    "images": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-images.mts"
+    "images": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-images.mts",
+    "slugs": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/localise-slugs.mts"
   },
   "dependencies": {
     "next": "16.3.4",

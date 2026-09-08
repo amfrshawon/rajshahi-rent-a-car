@@ -108,8 +108,44 @@ the export emit `route/index.html`, which is what static hosting needs.
 Bangla is served at the original path; English at `/en<path>`, paired with
 hreflang and self-referencing canonicals.
 
-New, additive routes: `/fleet/`, `/pricing/`, `/tour-packages/`,
-`/wedding-car/`, `/about/`, `/contact/`, `/faq/`.
+New, additive routes carry **Bangla slugs in the Bangla tree** and English
+slugs under `/en/`:
+
+| Bangla | English |
+| --- | --- |
+| `/গাড়িবহর/` | `/en/fleet/` |
+| `/ভাড়ার-তালিকা/` | `/en/pricing/` |
+| `/ট্যুর-প্যাকেজ/` | `/en/tour-packages/` |
+| `/বিয়ের-গাড়ি/` | `/en/wedding-car/` |
+| `/আমাদের-সম্পর্কে/` | `/en/about/` |
+| `/যোগাযোগ/` | `/en/contact/` |
+| `/সাধারণ-জিজ্ঞাসা/` | `/en/faq/` |
+
+The 27 legacy paths stay English in both locales, so the site's slugs are
+mixed by necessity — `/blog/` and `/ambulance-service/` cannot move.
+
+Next 16 cannot prerender a route whose directory name is non-ASCII; the export
+throws `InvalidCharacterError`. So route directories stay ASCII on disk, the
+built HTML links to the Bangla paths, and `scripts/localise-slugs.mts` renames
+the exported directories afterwards. `route()` returns the ASCII path under
+`next dev`, where no rename happens.
+
+### Typography
+
+The owner asked for Prothom Alo's face. That is **Shurjo**, a bespoke
+typeface by Jacob Thomas, copyright held exclusively by Prothom Alo, with
+"Shurjo" registered as Thomas's trademark. Sites offering it as a free
+download are redistributing it without authorisation. It is not usable here.
+
+**Anek Bangla** (Ek Type, SIL OFL) is the closest freely licensed match and is
+what the site uses — contemporary squarish forms in the same editorial
+register. It costs 199.6 KB of preloaded font per page against 125.3 KB for
+Hind Siliguri; Noto Sans Bengali sits between at 152.7 KB if the bytes matter
+more than the look.
+
+The OG image is the exception: satori renders "শুরু" as "শবু" in Anek Bangla,
+so that image stays on Hind Siliguri, whose output has been checked glyph by
+glyph.
 
 ## 6. Design direction
 

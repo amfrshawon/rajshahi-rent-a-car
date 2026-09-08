@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "আমাদের গাড়িবহর",
   description: "রাজশাহীতে ভাড়ার জন্য প্রিমিও, এক্সিও ও হাইএস — এসি গাড়ি, অভিজ্ঞ ড্রাইভারসহ।",
   alternates: {
-    canonical: "/fleet/",
+    canonical: "/গাড়িবহর/",
     languages: {
-      bn: "/fleet/",
+      bn: "/গাড়িবহর/",
       en: "/en/fleet/",
-      "x-default": "/fleet/",
+      "x-default": "/গাড়িবহর/",
     },
   },
 };

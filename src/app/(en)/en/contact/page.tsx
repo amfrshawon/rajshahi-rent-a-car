@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/en/contact/",
     languages: {
-      bn: "/contact/",
+      bn: "/যোগাযোগ/",
       en: "/en/contact/",
-      "x-default": "/contact/",
+      "x-default": "/যোগাযোগ/",
     },
   },
 };

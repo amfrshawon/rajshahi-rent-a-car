@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NAV } from "@/config/navigation";
+import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, localePath, t } from "@/lib/locale";
 
@@ -34,8 +35,8 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         >
           {NAV.map((item) => (
             <Link
-              key={item.path}
-              href={localePath(locale, item.path)}
+              key={item.key}
+              href={route(locale, item.key)}
               className="text-muted hover:text-fg text-sm font-medium"
             >
               {t(locale, item.label)}
@@ -92,9 +93,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             >
               <ul>
                 {NAV.map((item) => (
-                  <li key={item.path}>
+                  <li key={item.key}>
                     <Link
-                      href={localePath(locale, item.path)}
+                      href={route(locale, item.key)}
                       className="text-fg hover:bg-surface active:bg-surface flex min-h-11 items-center rounded-lg px-3 text-sm"
                     >
                       {t(locale, item.label)}

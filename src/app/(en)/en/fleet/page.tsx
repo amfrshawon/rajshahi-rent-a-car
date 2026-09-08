@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/en/fleet/",
     languages: {
-      bn: "/fleet/",
+      bn: "/গাড়িবহর/",
       en: "/en/fleet/",
-      "x-default": "/fleet/",
+      "x-default": "/গাড়িবহর/",
     },
   },
 };

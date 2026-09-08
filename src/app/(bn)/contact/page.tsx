@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "যোগাযোগ ও বুকিং",
   description: "রাজশাহী রেন্ট এ কার-এর সাথে যোগাযোগ করুন। ২৪ ঘণ্টা খোলা।",
   alternates: {
-    canonical: "/contact/",
+    canonical: "/যোগাযোগ/",
     languages: {
-      bn: "/contact/",
+      bn: "/যোগাযোগ/",
       en: "/en/contact/",
-      "x-default": "/contact/",
+      "x-default": "/যোগাযোগ/",
     },
   },
 };

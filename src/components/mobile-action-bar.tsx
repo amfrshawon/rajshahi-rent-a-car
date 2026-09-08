@@ -1,6 +1,7 @@
 import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
-import { type Locale, localePath, t } from "@/lib/locale";
+import { type Locale, t } from "@/lib/locale";
 
 const COPY = {
   call: { bn: "কল করুন", en: "Call" },
@@ -44,7 +45,7 @@ export function MobileActionBar({ locale }: { locale: Locale }) {
         {t(locale, COPY.whatsapp)}
       </a>
       <a
-        href={localePath(locale, "/contact/#booking")}
+        href={`${route(locale, "contact")}#booking`}
         className="bg-accent text-accent-fg flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-semibold transition active:brightness-90"
       >
         {t(locale, COPY.book)}

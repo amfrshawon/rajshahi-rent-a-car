@@ -2,7 +2,8 @@ import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { formatArticleDate, type Article } from "@/lib/content";
-import { type Locale, localePath, t } from "@/lib/locale";
+import { route } from "@/config/routes";
+import { type Locale, t } from "@/lib/locale";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 
 const COPY = {
@@ -43,7 +44,7 @@ export function ArticlePage({
       <article className="mx-auto w-full max-w-3xl px-4 py-10 md:py-14">
         {showBackToBlog ? (
           <Link
-            href={localePath(locale, "/blog/")}
+            href={route(locale, "blog")}
             className="text-muted hover:text-fg text-sm"
           >
             {t(locale, COPY.backToBlog)}

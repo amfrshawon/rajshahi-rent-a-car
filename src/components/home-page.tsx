@@ -9,8 +9,9 @@ import {
 } from "@/components/icons";
 import { PageShell } from "@/components/page-shell";
 import { Photo } from "@/components/photo";
+import { route } from "@/config/routes";
 import { FLEET, SITE } from "@/config/site";
-import { formatTaka, type Locale, localePath, t } from "@/lib/locale";
+import { formatTaka, type Locale, t } from "@/lib/locale";
 
 const COPY = {
   heroTitle: {
@@ -159,7 +160,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <p className="text-muted mt-2">{t(locale, COPY.fleetLead)}</p>
           </div>
           <Link
-            href={localePath(locale, "/fleet/")}
+            href={route(locale, "fleet")}
             className="text-brand font-semibold hover:underline"
           >
             {t(locale, COPY.seeAll)} →

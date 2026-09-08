@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "বিয়ের জন্য গাড়ি ভাড়া",
   description: "বর-কনের প্রাইভেট কার ও অতিথিদের মাইক্রোবাস — রাজশাহীতে বিয়ের গাড়ি ভাড়া।",
   alternates: {
-    canonical: "/wedding-car/",
+    canonical: "/বিয়ের-গাড়ি/",
     languages: {
-      bn: "/wedding-car/",
+      bn: "/বিয়ের-গাড়ি/",
       en: "/en/wedding-car/",
-      "x-default": "/wedding-car/",
+      "x-default": "/বিয়ের-গাড়ি/",
     },
   },
 };

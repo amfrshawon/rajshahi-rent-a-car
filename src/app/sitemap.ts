@@ -1,56 +1,54 @@
 import type { MetadataRoute } from "next";
-import { getCategoryPathSegments, getTagSlugs } from "@/lib/content";
-import { NAV, FOOTER_NAV } from "@/config/navigation";
+import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
+import { getCategoryPathSegments, getTagSlugs } from "@/lib/content";
 import { getAllPosts } from "@/lib/wp";
 
 /**
  * Every URL, in both locales, with hreflang alternates.
  *
- * The Bangla URL is canonical and is the original WordPress path; English is
- * the /en/ twin. Google needs the alternates to understand that the language
- * at a given URL changed rather than the page disappearing.
+ * New pages have different slugs per locale (Bangla for bn, English for en),
+ * so each entry carries its own pair rather than deriving one from the other.
+ * Article, category and tag URLs are the original WordPress paths and share a
+ * slug across locales, with /en/ as the only difference.
  */
 export const dynamic = "force-static";
+
+type Entry = { bn: string; en: string; lastModified?: string };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getAllPosts();
   const categorySegments = await getCategoryPathSegments();
   const tagSlugs = await getTagSlugs();
 
-  const staticPaths = [
-    "/",
-    "/blog/",
-    ...NAV.map((n) => n.path),
-    ...FOOTER_NAV.map((n) => n.path),
-  ];
-
-  const entries: { path: string; lastModified?: string | Date }[] = [
-    ...new Set(staticPaths),
-  ].map((path) => ({ path }));
+  const entries: Entry[] = Object.values(ROUTES).map((r) => ({ bn: r.bn, en: r.en }));
 
   for (const post of posts) {
-    // WordPress omits the offset on `modified`; the GMT field plus Z is
-    // a valid W3C datetime.
-    entries.push({ path: `/${post.slug}/`, lastModified: `${post.modified_gmt}Z` });
+    entries.push({
+      bn: `/${post.slug}/`,
+      en: `/en/${post.slug}/`,
+      lastModified: `${post.modified_gmt}Z`,
+    });
   }
   for (const segments of categorySegments) {
-    entries.push({ path: `/category/${segments.join("/")}/` });
+    const path = `/category/${segments.join("/")}/`;
+    entries.push({ bn: path, en: `/en${path}` });
   }
   for (const slug of tagSlugs) {
-    entries.push({ path: `/tag/${slug}/` });
+    const path = `/tag/${slug}/`;
+    entries.push({ bn: path, en: `/en${path}` });
   }
 
-  return entries.map(({ path, lastModified }) => {
-    const bn = new URL(path, SITE.url).toString();
-    const en = new URL(path === "/" ? "/en/" : `/en${path}`, SITE.url).toString();
+  return entries.map(({ bn, en, lastModified }) => {
+    const bnUrl = new URL(bn, SITE.url).toString();
+    const enUrl = new URL(en, SITE.url).toString();
 
     return {
-      url: bn,
+      url: bnUrl,
       lastModified,
-      changeFrequency: path === "/" ? ("weekly" as const) : ("monthly" as const),
-      priority: path === "/" ? 1 : 0.7,
-      alternates: { languages: { bn, en, "x-default": bn } },
+      changeFrequency: bn === "/" ? ("weekly" as const) : ("monthly" as const),
+      priority: bn === "/" ? 1 : 0.7,
+      alternates: { languages: { bn: bnUrl, en: enUrl, "x-default": bnUrl } },
     };
   });
 }

@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "আমাদের সম্পর্কে",
   description: "রাজশাহীর কাদিরগঞ্জে অবস্থিত রেন্ট এ কার সার্ভিস — স্থানীয় ও ভ্রমণকারী সবার জন্য।",
   alternates: {
-    canonical: "/about/",
+    canonical: "/আমাদের-সম্পর্কে/",
     languages: {
-      bn: "/about/",
+      bn: "/আমাদের-সম্পর্কে/",
       en: "/en/about/",
-      "x-default": "/about/",
+      "x-default": "/আমাদের-সম্পর্কে/",
     },
   },
 };

@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
-import { type Locale, localePath, t } from "@/lib/locale";
+import { type Locale, t } from "@/lib/locale";
 
 const COPY = {
   title: { bn: "বুক করতে চান?", en: "Ready to book?" },
@@ -27,7 +28,7 @@ export function BookingCta({ locale }: { locale: Locale }) {
             {t(locale, COPY.call)}
           </a>
           <Link
-            href={localePath(locale, "/contact/")}
+            href={route(locale, "contact")}
             className="border-border text-fg hover:bg-surface inline-flex min-h-12 items-center rounded-xl border px-6 font-semibold transition active:scale-[0.97]"
           >
             {t(locale, COPY.book)}

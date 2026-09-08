@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "ট্যুর প্যাকেজ",
   description: "পুঠিয়া, বাঘা, নাটোরসহ রাজশাহীর আশেপাশে একদিনের ভ্রমণ, গাড়ি ও ড্রাইভারসহ।",
   alternates: {
-    canonical: "/tour-packages/",
+    canonical: "/ট্যুর-প্যাকেজ/",
     languages: {
-      bn: "/tour-packages/",
+      bn: "/ট্যুর-প্যাকেজ/",
       en: "/en/tour-packages/",
-      "x-default": "/tour-packages/",
+      "x-default": "/ট্যুর-প্যাকেজ/",
     },
   },
 };
