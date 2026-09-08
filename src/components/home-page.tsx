@@ -39,7 +39,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             {t(locale, COPY.priceFrom)} ৳{formatTaka(locale, cheapest)}
             {t(locale, COPY.perDay)}
           </p>
-          <h1 className="text-fg max-w-2xl text-3xl font-bold md:text-5xl">
+          <h1 className="text-fg max-w-2xl text-3xl font-semibold md:text-5xl">
             {t(locale, COPY.heroTitle)}
           </h1>
           <p className="text-muted mt-4 max-w-xl text-base md:text-lg">
@@ -65,7 +65,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
       {/* Fleet */}
       <section className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
-        <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.fleetTitle)}</h2>
+        <h2 className="text-2xl font-semibold md:text-3xl">{t(locale, COPY.fleetTitle)}</h2>
 
         <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FLEET.map((v) => (
@@ -86,7 +86,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                   {t(locale, v.type)} · {formatTaka(locale, v.seats)}{" "}
                   {t(locale, COPY.seats)} · {t(locale, v.transmission)}
                 </p>
-                <p className="text-brand mt-3 font-bold">
+                <p className="text-brand mt-3 font-semibold">
                   ৳{formatTaka(locale, v.pricePerDay)}
                   <span className="text-muted font-normal">{t(locale, COPY.perDay)}</span>
                 </p>
@@ -99,7 +99,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       {/* Trust */}
       <section className="bg-surface">
         <div className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
-          <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.trustTitle)}</h2>
+          <h2 className="text-2xl font-semibold md:text-3xl">{t(locale, COPY.trustTitle)}</h2>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {TRUST.map((item) => (
               <li

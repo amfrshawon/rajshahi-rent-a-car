@@ -21,7 +21,7 @@ export function ArchivePage({
   return (
     <PageShell locale={locale}>
       <div className="mx-auto w-full max-w-3xl px-4 py-10 md:py-14">
-        <h1 className="text-3xl font-bold md:text-4xl">{title}</h1>
+        <h1 className="text-3xl font-semibold md:text-4xl">{title}</h1>
         {description ? <p className="text-muted mt-3">{description}</p> : null}
 
         {articles.length === 0 ? (

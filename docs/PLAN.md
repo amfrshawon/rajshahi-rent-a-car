@@ -127,13 +127,36 @@ New, additive routes: `/fleet/`, `/pricing/`, `/tour-packages/`,
 
 ## 7. Performance budget
 
-Enforced in CI (Lighthouse mobile, throttled 4G):
+Targets (Lighthouse mobile, throttled 4G):
 
 - LCP < 2.0s · INP < 200ms · CLS < 0.05
-- First-load JS < 100 KB gzipped per route
-- Server Components by default; client JS only for the booking form and nav
+- Server Components by default; client JS only for the booking form
 - `content-visibility: auto` below the fold
 - Long-lived immutable caching on hashed assets; BDIX peering handles latency
+
+### Measured, 2026-09-08
+
+| | Per page | Note |
+| --- | --- | --- |
+| HTML | 5.7–8.5 KB gz | all content is in the HTML |
+| JS | 173 KB gz | Next 16 + React 19 floor |
+| Fonts preloaded | 125 KB | Hind Siliguri 400/600 + Inter |
+
+**The original "< 100 KB first-load JS" target is not reachable on this stack
+and has been dropped.** 173 KB is the App Router baseline — react-dom is 70 KB
+and the Next runtime 82 KB, with application code negligible. The scripts are
+deferred, so they do not block LCP, but they do cost data and hydration time
+on low-end phones. Leaving Next entirely (Astro, or plain HTML) is the only
+way materially below this; not worth it for the gain here.
+
+Fonts were the fixable half and went from 231 KB to 125 KB preloaded:
+
+- dropped Hind Siliguri's Latin subset — Latin runs fall through to Inter
+- dropped the 500 weight (unused) and 700 (headings render at 600 by design;
+  Hind Siliguri's bold is too heavy for Bangla at heading sizes anyway)
+
+Bengali subsets are ~40 KB each, so every extra weight is a real cost on a
+Bangladeshi mobile connection. Add one only with a reason.
 
 ## 8. Fleet and contact facts (from the live site — to be re-confirmed)
 

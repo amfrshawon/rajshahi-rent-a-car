@@ -72,7 +72,9 @@
   --color-accent-fg: var(--accent-fg);
   --color-whatsapp: var(--whatsapp);
 
-  --font-bn: var(--font-bangla), "Noto Sans Bengali", sans-serif;
+  /* Latin runs inside Bangla text fall through to Inter — Hind Siliguri
+     ships no Latin subset here, so this avoids carrying Latin glyphs twice. */
+  --font-bn: var(--font-bangla), var(--font-latin), "Noto Sans Bengali", sans-serif;
   --font-en: var(--font-latin), ui-sans-serif, system-ui, sans-serif;
 }
 

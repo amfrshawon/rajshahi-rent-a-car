@@ -33,7 +33,7 @@ export function ArticlePage({
           </Link>
         ) : null}
 
-        <h1 className="mt-4 text-3xl font-bold md:text-4xl">{article.title}</h1>
+        <h1 className="mt-4 text-3xl font-semibold md:text-4xl">{article.title}</h1>
 
         {showBackToBlog ? (
           <p className="text-muted mt-3 text-sm">
