@@ -47,7 +47,18 @@ type Status =
 
 type Fields = Record<string, string>;
 
-export function BookingForm({ locale }: { locale: Locale }) {
+/**
+ * Quick variant: the hero's inline widget (name / phone / vehicle / date in one
+ * row). Shares the exact submit path, validation and WhatsApp fallback as the
+ * full form — one behaviour, two densities.
+ */
+export function BookingForm({
+  locale,
+  variant = "full",
+}: {
+  locale: Locale;
+  variant?: "full" | "quick";
+}) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [lastValues, setLastValues] = useState<Fields>({});
@@ -104,7 +115,13 @@ export function BookingForm({ locale }: { locale: Locale }) {
 
   if (status.kind === "sent") {
     return (
-      <div className="border-brand bg-brand-soft rounded-xl border p-6">
+      <div
+        className={
+          variant === "quick"
+            ? "border-brand bg-brand-soft text-brand rounded-xl p-4 text-sm"
+            : "border-brand bg-brand-soft rounded-xl border p-6"
+        }
+      >
         <h3 className="text-brand text-lg font-semibold">{t(locale, COPY.successTitle)}</h3>
         <p className="mt-2">{t(locale, COPY.successBody)}</p>
         {status.id ? (
@@ -149,7 +166,61 @@ export function BookingForm({ locale }: { locale: Locale }) {
 
   const field =
     "border-border bg-surface-raised text-fg w-full rounded-lg border px-3 py-2.5 text-base";
+  const quickField =
+    "border-border bg-surface text-fg w-full rounded-lg border px-3 py-2.5 text-base";
   const sending = status.kind === "sending";
+
+  if (variant === "quick") {
+    return (
+      <form onSubmit={handleSubmit} noValidate className="grid gap-3 md:grid-cols-4">
+        <Field label={t(locale, COPY.name)} name="name" error={errors.name}>
+          <input name="name" required autoComplete="name" className={quickField} />
+        </Field>
+        <Field label={t(locale, COPY.phone)} name="phone" error={errors.phone}>
+          <input
+            name="phone"
+            required
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="01XXXXXXXXX"
+            className={quickField}
+          />
+        </Field>
+        <Field label={t(locale, COPY.vehicle)} name="vehicle">
+          <select name="vehicle" defaultValue="" className={quickField}>
+            <option value="">{t(locale, COPY.anyVehicle)}</option>
+            {FLEET.map((v) => (
+              <option key={v.slug} value={v.name}>
+                {v.name} — {t(locale, v.type)}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label={t(locale, COPY.date)} name="date">
+          <input name="date" type="date" className={quickField} />
+        </Field>
+
+        {/* Honeypot. Hidden from people, tempting to bots. */}
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="absolute -left-[9999px] size-0 opacity-0"
+        />
+
+        <button
+          type="submit"
+          disabled={sending}
+          className="press bg-accent text-accent-fg inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 font-semibold disabled:opacity-70 md:col-span-4"
+        >
+          {sending ? t(locale, COPY.sending) : t(locale, COPY.submit)}
+        </button>
+      </form>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
