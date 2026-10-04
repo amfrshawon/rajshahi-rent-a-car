@@ -21,6 +21,9 @@
   --brand-strong: #085730;
   --brand-soft: #e8f3ec;
   --brand-fg: #ffffff;
+  /* Fresher green for small non-text accents — chips, dots, active pills.
+     ~3.3:1 on white: fine for graphics and large type, never body text. */
+  --brand-vivid: #10a35e;
 
   /* Warm amber for primary calls to action, so CTAs never compete with
      the WhatsApp green. */
@@ -48,6 +51,7 @@
 
   --ring: color-mix(in oklab, var(--brand) 45%, transparent);
   --card-shadow: 0 1px 2px rgb(15 22 19 / 0.05), 0 8px 24px -12px rgb(15 22 19 / 0.18);
+  --lift-shadow: 0 2px 4px rgb(15 22 19 / 0.06), 0 18px 44px -16px rgb(15 22 19 / 0.28);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -63,6 +67,7 @@
     --brand-strong: #63c48f;
     --brand-soft: #12291d;
     --brand-fg: #04140b;
+    --brand-vivid: #35c47c;
 
     --accent: #e0952f;
     --accent-soft: #2a1e0c;
@@ -78,6 +83,7 @@
     --whatsapp-ink: #25d366;
 
     --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    --lift-shadow: 0 2px 4px rgb(0 0 0 / 0.5), 0 18px 44px -16px rgb(0 0 0 / 0.7);
   }
 }
 
@@ -92,6 +98,7 @@
   --color-brand-strong: var(--brand-strong);
   --color-brand-soft: var(--brand-soft);
   --color-brand-fg: var(--brand-fg);
+  --color-brand-vivid: var(--brand-vivid);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-accent-fg: var(--accent-fg);
@@ -103,6 +110,7 @@
   --color-whatsapp-ink: var(--whatsapp-ink);
 
   --shadow-card: var(--card-shadow);
+  --shadow-lift: var(--lift-shadow);
 
   /* Latin runs inside Bangla text fall through to Inter — Hind Siliguri
      ships no Latin subset here, so this avoids carrying Latin glyphs twice. */
@@ -321,4 +329,108 @@ html {
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Motion system
+
+   Premium but restrained: every animation runs on the compositor (transform,
+   translate, opacity only) and every effect degrades to "content is simply
+   visible" — never to "content is missing" — when a browser lacks support or
+   the visitor asks for reduced motion.
+
+   The reveal system rides CSS scroll-driven animations (Chromium 115+, Safari
+   26): zero JavaScript, driven by the compositor's scroll position, so it
+   cannot jank on a low-end phone. Browsers without animation-timeline see the
+   element at rest, and the global reduced-motion block further neutralises
+   everything below.
+   --------------------------------------------------------------------------- */
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Enter over the first ~40% of the element's arrival, then rest. */
+    .reveal {
+      animation: reveal-up 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-timeline: view();
+      animation-range: entry 3% entry 40%;
+    }
+
+    /* Sibling stagger by shifting each child's range a little later. */
+    .reveal-stagger > :nth-child(2) { animation-range: entry 6% entry 46%; }
+    .reveal-stagger > :nth-child(3) { animation-range: entry 9% entry 52%; }
+    .reveal-stagger > :nth-child(4) { animation-range: entry 12% entry 58%; }
+    .reveal-stagger > :nth-child(5) { animation-range: entry 15% entry 64%; }
+    .reveal-stagger > :nth-child(6) { animation-range: entry 18% entry 70%; }
+  }
+
+  /* Load-time entrance for above-the-fold hero content. The h1 deliberately
+     rises without an opacity change — fading the likely LCP text element can
+     defer LCP attribution on slow connections. */
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      translate: 0 18px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+  @keyframes rise-in-move {
+    from { translate: 0 18px; }
+    to { translate: 0 0; }
+  }
+
+  .rise {
+    animation: rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .rise-move {
+    animation: rise-in-move 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .rise-1 { animation-delay: 0.06s; }
+  .rise-2 { animation-delay: 0.14s; }
+  .rise-3 { animation-delay: 0.22s; }
+}
+
+/* Physical feedback under a finger or cursor. Press is instant (feedback
+   must precede the click), lift is a slower, larger counterpart for cards —
+   hover-only devices, so a phone never pays for it. */
+@utility press {
+  transition: transform 0.15s ease;
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+@utility lift {
+  transition:
+    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      translate: 0 -4px;
+      box-shadow: var(--lift-shadow);
+    }
+  }
+}
+
+/* Route crossfade (React <ViewTransition>, this Next version's built-in
+   support). Kept quick — this is a brochure site, not a film — and left as
+   pure opacity under reduced motion, which carries no motion-sickness risk. */
+::view-transition-old(root) {
+  animation-duration: 140ms;
+}
+::view-transition-new(root) {
+  animation-duration: 190ms;
 }

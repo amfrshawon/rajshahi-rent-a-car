@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { MotionProvider } from "@/components/motion-provider";
 import { bangla, latin } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
 
@@ -16,7 +17,7 @@ export function RootHtml({ locale, children }: { locale: Locale; children: React
       className={`${bangla.variable} ${latin.variable} h-full antialiased`}
     >
       <body className="bg-bg text-fg flex min-h-full flex-col pb-action-bar md:pb-0">
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

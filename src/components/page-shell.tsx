@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ViewTransition } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { MobileActionBar } from "@/components/mobile-action-bar";
 import { SiteFooter } from "@/components/site-footer";
@@ -16,7 +17,15 @@ export function PageShell({
   return (
     <>
       <SiteHeader locale={locale} />
-      <main className="flex-1">{children}</main>
+      {/*
+        Route crossfade. PageShell renders inside each page (not a layout),
+        so on navigation this region is part of the swapping subtree and the
+        enter/exit pair forms — wrapping a layout would never animate. Timing
+        lives in globals.css; unsupported browsers navigate instantly.
+      */}
+      <main className="flex-1">
+        <ViewTransition>{children}</ViewTransition>
+      </main>
       <SiteFooter locale={locale} />
       <MobileActionBar locale={locale} />
       {/* Every page carries the business node; @id keeps it a single entity. */}
