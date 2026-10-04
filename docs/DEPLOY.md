@@ -59,7 +59,6 @@ masked in logs.
 
 | Variable | Value |
 | --- | --- |
-| `WP_API_URL` | `https://rajshahirentacar.bd/wp-json/wp/v2` (change to `cms.` after the CMS move) |
 | `FTP_CONFIGURED` | `true` — set this last. The deploy job is skipped until it is, so pushes do not fail while the secrets are still missing. |
 
 **Environments** — create `staging` and `production`. On `production`, add
@@ -75,13 +74,14 @@ needs an explicit approval.
 The build fails, and nothing uploads, if any of the 27 legacy URLs is missing
 from the export. That check is `scripts/verify-legacy-routes.mts`.
 
-## 5. Install Polylang on WordPress
+## 5. Content editing
 
-wp-admin → **Plugins → Add New** → search "Polylang" → Install → Activate.
-Set Bangla as the default language and add English as the second.
-
-Until this is done, Bangla titles and excerpts come from the repo overlay in
-`src/content/bn-posts.ts`, and article bodies fall back to English.
+There is no CMS. Posts are Markdown files in `src/content/posts/<slug>/`
+(`index.md` English, `bn.md` Bangla frontmatter and body), with category and
+tag names in `src/content/taxonomy.ts`. Edit, commit, push — the staging
+deploy rebuilds automatically. New posts appear at `/<slug>/` and `/en/<slug>/`
+and must not collide with the legacy URL inventory in
+`src/config/legacy-routes.ts`.
 
 ## 5b. Booking API
 
@@ -126,14 +126,16 @@ Notes:
 
 ## 6. Cutover
 
-1. Move WordPress to `cms.rajshahirentacar.bd`, set it to **noindex**, and
-   restrict access to admins.
-2. Update the `WP_API_URL` variable to the new host.
-3. Point the apex document root at the static build (or set
+WordPress was retired from the build in October 2026 — content now lives in
+the repo — so cutover is a straight replacement:
+
+1. Point the apex document root at the static build (or set
    `FTP_REMOTE_DIR` for the `production` environment to `public_html/`).
-4. Run the production deploy.
-5. Verify all 27 legacy URLs return 200 on the live domain.
-6. Submit the new sitemap in Search Console and watch coverage for two weeks.
+2. Run the production deploy.
+3. Verify all 27 legacy URLs return 200 on the live domain.
+4. Submit the new sitemap in Search Console and watch coverage for two weeks.
+5. The old WordPress install (still on the account until now) can be
+   archived or deleted once the static site is confirmed live.
 
 ## Notes
 
@@ -142,5 +144,4 @@ Notes:
   security headers and an HTTPS redirect.
 - The deploy excludes `wp-admin`, `wp-content` and `wp-includes` so a
   misconfigured remote directory cannot delete a WordPress install.
-- There is no ISR. A newly published post goes live on the next build; wire a
-  WordPress publish webhook to `workflow_dispatch` to automate that.
+- There is no ISR. A content edit goes live on the next push to `main`.

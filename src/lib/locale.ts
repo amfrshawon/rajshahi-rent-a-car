@@ -31,6 +31,5 @@ export function localeDigits(locale: Locale, value: number | string): string {
 
 /** 4500 -> "৪,৫০০" / "4,500" with locale-correct grouping. */
 export function formatTaka(locale: Locale, amount: number): string {
-  const grouped = new Intl.NumberFormat(locale === "bn" ? "bn-BD" : "en-US").format(amount);
-  return locale === "bn" ? grouped : grouped;
+  return new Intl.NumberFormat(locale === "bn" ? "bn-BD" : "en-US").format(amount);
 }

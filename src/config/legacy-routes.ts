@@ -7,7 +7,8 @@
  * version is mirrored under /en<path>. Nothing here may be renamed or
  * redirected away.
  *
- * Verified by the route coverage test in tests/legacy-routes.test.ts.
+ * Verified by the route coverage gate, scripts/verify-legacy-routes.mts,
+ * which runs as part of every `npm run build`.
  */
 
 /** Standalone pages. */

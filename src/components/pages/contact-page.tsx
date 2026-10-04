@@ -37,18 +37,18 @@ export function ContactPage({ locale }: { locale: Locale }) {
 
       <section className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 md:px-6 lg:grid-cols-[1fr_1.3fr] md:py-16">
         <div className="reveal">
-          <dl className="grid gap-4">
+          <div className="grid gap-4">
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
               <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
                 <PhoneIcon className="size-5" />
               </span>
               <div>
-                <dt className="text-muted text-sm">{t(locale, COPY.phone)}</dt>
-                <dd className="mt-0.5 text-lg font-semibold">
+                <p className="text-muted text-sm">{t(locale, COPY.phone)}</p>
+                <p className="mt-0.5 text-lg font-semibold">
                   <a href={`tel:${SITE.phone}`} className="hover:text-brand">
                     {t(locale, SITE.phoneDisplay)}
                   </a>
-                </dd>
+                </p>
               </div>
             </div>
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
@@ -56,8 +56,8 @@ export function ContactPage({ locale }: { locale: Locale }) {
                 <MapPinIcon className="size-5" />
               </span>
               <div>
-                <dt className="text-muted text-sm">{t(locale, COPY.office)}</dt>
-                <dd className="mt-0.5">{t(locale, SITE.address)}</dd>
+                <p className="text-muted text-sm">{t(locale, COPY.office)}</p>
+                <p className="mt-0.5">{t(locale, SITE.address)}</p>
               </div>
             </div>
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
@@ -65,16 +65,24 @@ export function ContactPage({ locale }: { locale: Locale }) {
                 <ClockIcon className="size-5" />
               </span>
               <div>
-                <dt className="text-muted text-sm">{t(locale, COPY.hours)}</dt>
-                <dd className="mt-0.5">{t(locale, SITE.hours)}</dd>
-                <dd className="text-muted mt-1">
+                <p className="text-muted text-sm">{t(locale, COPY.hours)}</p>
+                <p className="mt-0.5">{t(locale, SITE.hours)}</p>
+              </div>
+            </div>
+            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
+              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
+                <WhatsAppIcon className="size-5" />
+              </span>
+              <div>
+                <p className="text-muted text-sm">{t(locale, COPY.email)}</p>
+                <p className="mt-0.5">
                   <a href={`mailto:${SITE.email}`} className="hover:text-brand">
                     {SITE.email}
                   </a>
-                </dd>
+                </p>
               </div>
             </div>
-          </dl>
+          </div>
 
           <a
             href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}

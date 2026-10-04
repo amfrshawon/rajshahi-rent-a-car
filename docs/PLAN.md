@@ -2,6 +2,16 @@
 
 Status: approved 2026-09-07. Live site being replaced: https://rajshahirentacar.bd/
 
+> **Update, 2026-10-04 (redesign branch).** WordPress is fully retired: the
+> 13 posts and the taxonomy now live as Markdown in `src/content/posts/`, and
+> builds read the repo directly (no API, no snapshot). A "light & clean,
+> premium but restrained" visual redesign landed with a CSS-first motion
+> system (scroll-driven reveals, route crossfades, `motion` via LazyMotion —
+> ~5–10 KB) tuned for low-end Android on mobile data. Sections below that
+> still describe WordPress, Polylang or `WP_API_URL` are historical record.
+> The §12 outstanding items (photography, SMTP, confirmed business facts,
+> GA4 access) remain open.
+
 ---
 
 ## 1. Why this is not a translation job

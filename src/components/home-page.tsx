@@ -374,7 +374,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               <h3 className="mt-3 font-semibold">
                 {t(locale, { bn: "অ্যাম্বুলেন্স ২৪ ঘণ্টা", en: "24-hour ambulance" })}
               </h3>
-              <p className="mt-1 text-sm opacity-80">
+              <p className="mt-1 text-sm">
                 {t(locale, {
                   bn: "জরুরি প্রয়োজনে সরাসরি ফোন করুন — রোগী পরিবহন সারা দেশে।",
                   en: "In an emergency, call directly — patient transport nationwide.",
