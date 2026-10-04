@@ -1,4 +1,5 @@
 import { BookingCta } from "@/components/booking-cta";
+import { MapPinIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { DESTINATIONS } from "@/config/services";
@@ -26,14 +27,17 @@ export function TourPackagesPage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-12">
-        <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
+        <ul className="reveal-stagger grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {DESTINATIONS.map((d) => (
             <li
               key={d.slug}
-              className="border-border bg-surface-raised flex flex-col rounded-xl border p-5"
+              className="border-border bg-surface-raised lift shadow-card flex flex-col rounded-2xl border p-6 transition"
             >
-              <h2 className="text-lg font-semibold">{t(locale, d.name)}</h2>
+              <span className="bg-brand-soft text-brand flex size-10 items-center justify-center rounded-xl">
+                <MapPinIcon className="size-5" />
+              </span>
+              <h2 className="mt-4 text-lg font-semibold">{t(locale, d.name)}</h2>
               {d.distanceKm ? (
                 <p className="text-muted mt-1 text-sm">
                   {t(locale, COPY.distance)} {formatTaka(locale, d.distanceKm)}{" "}

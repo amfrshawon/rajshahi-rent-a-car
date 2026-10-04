@@ -230,11 +230,11 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
 
       {/* --------------------------------------------------------- Provide */}
       <section className="content-auto mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <h2 className="text-2xl font-semibold md:text-3xl">{t(locale, COPY.provideTitle)}</h2>
-        <ul className="mt-6 grid gap-5 sm:grid-cols-2">
+        <h2 className="reveal text-2xl font-semibold md:text-3xl">{t(locale, COPY.provideTitle)}</h2>
+        <ul className="reveal-stagger mt-6 grid gap-5 sm:grid-cols-2">
           {PROVIDE.map(({ Icon, title, body }) => (
-            <li key={title.en} className="border-border bg-surface-raised rounded-xl border p-5">
-              <span className="bg-emergency-soft text-emergency-ink flex size-10 items-center justify-center rounded-lg">
+            <li key={title.en} className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-5 transition">
+              <span className="bg-emergency-soft text-emergency-ink flex size-10 items-center justify-center rounded-xl">
                 <Icon className="size-5" />
               </span>
               <h3 className="mt-3 font-semibold">{t(locale, title)}</h3>
@@ -253,11 +253,11 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           </h2>
           <p className="text-muted mt-2">{t(locale, COPY.callReadyLead)}</p>
 
-          <ol className="mt-6 space-y-3">
+          <ol className="reveal-stagger mt-6 space-y-3">
             {CALL_READY.map((item, index) => (
               <li
                 key={item.en}
-                className="border-border bg-surface-raised flex gap-3 rounded-lg border p-4"
+                className="border-border bg-surface-raised shadow-card flex gap-3 rounded-xl border p-4"
               >
                 <span className="bg-emergency text-emergency-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
                   {locale === "bn" ? ["১", "২", "৩", "৪"][index] : index + 1}
@@ -281,7 +281,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           ))}
         </ul>
 
-        <div className="border-border bg-surface-raised mt-8 rounded-xl border p-5">
+        <div className="reveal border-border bg-surface-raised shadow-card mt-8 rounded-2xl border p-5">
           <h3 className="font-semibold">{t(locale, COPY.ratingTitle)}</h3>
           <p className="mt-1 flex items-center gap-2">
             <span aria-hidden="true" className="text-accent">★★★★★</span>
