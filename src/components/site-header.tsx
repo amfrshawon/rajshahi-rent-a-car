@@ -25,13 +25,16 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           href={localePath(locale, "/")}
           className="flex min-w-0 items-center gap-2 sm:gap-2.5"
         >
-          {/* The device only; the brand name sits beside it as real text. */}
+          {/* The device only; the brand name sits beside it as real text.
+              The strokes are dark green, invisible on the dark-mode header —
+              flipped to a white silhouette there (the name text carries the
+              brand colour instead). */}
           <img
             src={asset("/media/generated/logo-device.png")}
             alt=""
             width={236}
             height={64}
-            className="h-6 w-auto shrink-0 sm:h-7"
+            className="dark:brightness-0 dark:invert h-6 w-auto shrink-0 sm:h-7"
           />
           <span className="text-brand truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
             {t(locale, SITE.name)}
