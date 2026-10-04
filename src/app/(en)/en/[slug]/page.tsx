@@ -3,13 +3,13 @@ import { notFound } from "next/navigation";
 import { ArticlePage } from "@/components/article-page";
 import { getArticle } from "@/lib/content";
 import { localePath } from "@/lib/locale";
-import { getAllPosts } from "@/lib/wp";
+import { getAllPosts } from "@/lib/posts";
 
 type Params = { params: Promise<{ slug: string }> };
 
 /**
- * Slugs come from WordPress so new posts appear automatically. The legacy
- * URLs are separately asserted by scripts/verify-legacy-routes.mjs.
+ * Slugs come from the repo's Markdown posts (src/content/posts/). The legacy
+ * URLs are separately asserted by scripts/verify-legacy-routes.mts.
  */
 export async function generateStaticParams() {
   return (await getAllPosts()).map((post) => ({ slug: post.slug }));

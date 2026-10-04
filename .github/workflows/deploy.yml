@@ -37,8 +37,6 @@ jobs:
       # `build` also runs verify:routes, which fails if any of the 27 legacy
       # URLs is missing from the export.
       - run: npm run build
-        env:
-          WP_API_URL: ${{ vars.WP_API_URL }}
 
       - uses: actions/upload-artifact@v4
         with:
