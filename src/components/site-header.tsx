@@ -33,10 +33,10 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               the dark-mode header — flipped to a white silhouette there (the
               name text carries the brand colour instead). */}
           <img
-            src={asset("/media/generated/logo-device.png")}
+            src={asset("/media/generated/logo-device.webp")}
             alt=""
-            width={236}
-            height={97}
+            width={136}
+            height={56}
             className="dark:brightness-0 dark:invert h-6 w-auto shrink-0 sm:h-7"
           />
           <span className="text-brand truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
