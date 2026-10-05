@@ -2,8 +2,13 @@
 
 You are redesigning **rajshahirentacar.bd** so it stops looking like a generic,
 template-built site and becomes a premium, easy-to-book rental brand for
-Rajshahi. This file is your complete brief. Read it to the end before you
-change anything.
+Rajshahi. This file is your complete brief. Read all of it before you change
+anything.
+
+**How this job runs:** you work through every phase in section 4 from start
+to finish without stopping for approval. The owner watches progress on a
+local server you keep running and reviews everything once you are done. Do
+not pause between phases to ask whether to continue.
 
 ## 0. Read these first, in this order
 
@@ -36,19 +41,87 @@ change anything.
 
 ## 2. How to work
 
-- **Branch:** create `redesign/premium` from the latest `origin/dev`. Another
-  agent also commits to `dev` and may share this working directory. Do not
-  switch the shared checkout's branch under it; use a separate
-  `git worktree` for your branch. Rebase on `dev` regularly and open a PR
-  into `dev`. Never push to `main`.
-- **Commits:** small and explained, matching the existing history: say *why*,
-  not only what. Stage explicit paths only; never `git add -A`. Never commit
+### 2.1 Keep going until it is finished
+
+- Work through phases 0 to 6 in order, then hand back. **Do not stop between
+  phases or ask for permission to continue.** The owner reviews once, at the
+  end.
+- When something needs the owner, such as a price, a distance, a photo or
+  credentials, do not wait. Put in a clearly marked placeholder, log it in the
+  progress file (2.4) under *Needs the owner*, and carry on.
+- Stop early only if continuing would break a constraint in section 3, or the
+  build cannot be made to pass. If that happens, record exactly what blocked
+  you in the progress file and in your final message.
+- Make your own design judgement calls inside this brief. Note the important
+  ones in the progress file, with the reasoning, so the owner can review them.
+
+### 2.2 Branch and commits
+
+- Create `redesign/premium` from the latest `origin/dev` in **its own git
+  worktree**, for example:
+
+  ```bash
+  git fetch origin
+  git worktree add ../rent-a-car-redesign -b redesign/premium origin/dev
+  cd ../rent-a-car-redesign
+  npm ci
+  ```
+
+  Another agent may commit to `dev` in the original folder. Never switch that
+  folder's branch.
+- Commit small and often, each commit explaining *why*, as in the existing
+  history. Stage explicit paths only (never `git add -A`). Never commit
   `.commandcode/` or anything you did not create.
-- **Order:** do Phase 1 (fixes) first, as its own commits. They are useful
-  even if the redesign takes weeks.
-- **Check as you go:** `npm run build` (it also runs image generation, slug
-  localisation and the legacy-URL check) and `npm run lint` must pass before
-  every push.
+- **Push `redesign/premium` at the end of every phase**, so nothing is lost and
+  the owner can see the work on GitHub.
+- Before each push, `npm run build` and `npm run lint` must pass. `build` also
+  regenerates images, localises the Bangla slugs and checks every legacy URL.
+- Rebase on `origin/dev` at the start of each phase, so the branch does not
+  drift. Never push to `dev` or `main` directly; the result goes back as a
+  pull request (phase 6).
+
+### 2.3 Local preview the owner can watch
+
+Start the development server **at the beginning of phase 0, from your
+worktree**, and keep it running for the whole job:
+
+```bash
+npm run dev -- -p 3100
+```
+
+- Use port **3100**. Port 3000 belongs to the other agent working on `dev`.
+- Run it as a background process that stays alive between your steps. If
+  your environment has a preview or launch feature, use that.
+- It hot-reloads, so the owner sees each change as you save it.
+- **Tell the owner the address as soon as it is up**, and write both
+  addresses at the top of the progress file:
+  - this computer: `http://localhost:3100`
+  - a phone on the same Wi-Fi: `http://<this computer's LAN IP>:3100` (find
+    the IP with `ipconfig getifaddr en0` on macOS). This lets the owner test on
+    a real Android phone, which the audit could not do. If assets or hot reload
+    fail from the phone, add that origin to `allowedDevOrigins` in
+    `next.config.ts` (see
+    `node_modules/next/dist/docs/02-pages/04-api-reference/04-config/01-next-config-js/allowedDevOrigins.md`)
+    and note it in the progress file.
+- **In development, Bangla pages use their ASCII paths.** `route()` returns
+  `/fleet/`, `/contact/` and so on under `next dev`; the Bangla slugs
+  (`/গাড়িবহর/`) only exist after `npm run build`. List the local URLs for each
+  page in the progress file so the owner is not confused.
+- If the server stops or crashes, restart it straight away and note it.
+- Leave it running when you finish.
+
+### 2.4 Progress file
+
+Create `docs/audit/REDESIGN-PROGRESS.md` in phase 0 and update it at the end
+of every phase. Commit it with that phase's work. It is how the owner follows
+along without asking you. Keep these sections:
+
+- **Preview:** the local and phone addresses, and the local URL of each page.
+- **Status:** current phase, what is done, what is next.
+- **Decisions:** judgement calls you made, with one line of reasoning each.
+- **Needs the owner:** every placeholder, unconfirmed fact, new Bangla
+  string for native review, and blocker.
+- **Measurements:** the baseline from phase 0, then updated numbers.
 
 ## 3. Constraints you must not break
 
@@ -72,14 +145,14 @@ change anything.
 6. **No invented facts.** Never make up prices, distances, travel times,
    ratings, review counts, trip counts, years in business, staff names or
    service claims. Where the design needs a number that is not on record, use
-   a visibly marked placeholder and list it in your PR. On record today:
+   a visibly marked placeholder and log it. On record today:
    - Google rating **5.0 from 2 reviews** (owner's Google Business Profile).
    - **Puthia 32 km** from Rajshahi (the site's own guide).
    - Fleet prices and contact details above.
    - The ambulance's published claims: 24 hours, advanced life support
      equipment, trained staff, nationwide transport, licensed and insured.
    Also check existing copy for unconfirmed claims, for example "সাজানো
-   গাড়ি" (decorated cars) on the home page, and flag them.
+   গাড়ি" (decorated cars) on the home page, and log them.
 7. **No self-serving review markup.** Do not emit `aggregateRating` about the
    business itself.
 8. **Accessibility:** WCAG 2.1 AA. Tap targets at least 44 × 44 px. Spoken
@@ -90,8 +163,25 @@ change anything.
    Bangla copy.
 10. **OG images:** satori misshapes some Bangla; "শুরু" renders as "শবু" in
     Anek Bangla. If you touch `src/lib/og.tsx`, render the PNG and look at it.
+11. **Credentials:** never ask for, enter or store passwords, FTP details or
+    tokens. Deployment beyond pushing your branch is the owner's job.
 
-## 4. Phase 1 — fixes (do these first)
+## 4. Phases
+
+Each phase ends the same way: build and lint pass → commit → update the
+progress file → push `redesign/premium` → the change is visible on
+`localhost:3100`. Then go straight on to the next phase.
+
+### Phase 0 — Set up and measure the starting point
+
+1. Create the worktree and branch, then run `npm ci` (2.2).
+2. Start the dev server on port 3100 and tell the owner the addresses (2.3).
+3. Create `docs/audit/REDESIGN-PROGRESS.md` (2.4).
+4. Record the baseline: Lighthouse for the home and contact pages on
+   dev.rajshahirentacar.bd (command in section 5), and the home page's height
+   at 360 × 780 px. These become the "before" numbers in your final report.
+
+### Phase 1 — Fix what is broken
 
 Line numbers refer to `dev` at `2236e6c`.
 
@@ -101,7 +191,7 @@ Line numbers refer to `dev` at `2236e6c`.
    WhatsApp the form's primary action and label the button to say so. A
    server failure must never be described as the customer's connection.
    Deploying `api/` needs cPanel access; that is the owner's job
-   (`docs/DEPLOY.md` §5b), so do not attempt it.
+   (`docs/DEPLOY.md` §5b), so log it and move on.
 2. **Validate before sending.** Both forms use `noValidate` and post
    immediately. Check name and phone client-side with the same rules as
    `api/src/validation.js` (BD mobile: `^(?:\+?880|0)1[3-9]\d{8}$` after
@@ -114,7 +204,7 @@ Line numbers refer to `dev` at `2236e6c`.
    `WhatsAppIcon` for the `mailto:` row. Add an envelope icon.
 5. **Route chips.** `src/components/home-page.tsx:336` renders shadowed `<li>`
    pills with no link. Make each one open booking with the destination
-   filled in (Phase 2 replaces them with the route board).
+   filled in. Phase 3 replaces them with the route board.
 6. **Logo weight.** `scripts/generate-images.mts` writes `logo-device.png` at
    977 × 402 px (216 KB). Output it at twice display size as WebP or AVIF, or
    trace an SVG. Budget: 10 KB or less. In the header, show the car-and-pin
@@ -123,14 +213,59 @@ Line numbers refer to `dev` at `2236e6c`.
    and security headers, but dev serves none of them, not even
    `X-Content-Type-Options`. Find out why the `<IfModule mod_headers.c>`
    block is skipped (is the deployed file this one? does LiteSpeed honour the
-   wrapper?), fix it, and confirm with `curl -I` after deploy.
-8. **First-screen animation.** Remove `.rise` / `.rise-move` (`src/app/globals.css`
-   around 378–400) from all first-screen content. On the contact page the LCP
-   element is a fading paragraph (LCP 4.1 s).
+   wrapper?) and fix it in the file. You cannot verify it until the branch is
+   deployed, so log *"confirm with `curl -I` after deploy"* under
+   *Needs the owner*.
+8. **First-screen animation.** Remove `.rise` / `.rise-move`
+   (`src/app/globals.css` around 378–400) from all first-screen content. On
+   the contact page the LCP element is a fading paragraph (LCP 4.1 s).
 9. **Tap targets and labels.** The footer `tel:` link is under 44 px. The
    ambulance page fails `label-content-name-mismatch`.
 
-## 5. Phase 2 — the redesign
+### Phase 2 — Design system
+
+Build the foundation before touching page layouts, so every page change after
+this draws on it.
+
+1. **Colour tokens** in `src/app/globals.css` (5.2).
+2. **Typography:** the Anek superfamily and type roles in `src/lib/fonts.ts`
+   and `globals.css` (5.3). Measure the font payload against the budget
+   before moving on.
+3. **Shared pieces:** buttons, the trip-type tile, section and page-header
+   layouts, the site header, the footer and the sticky mobile bar.
+4. **Retire** the patterns in 5.4 at the component level, so they are not
+   reused anywhere.
+
+### Phase 3 — Home page and booking
+
+1. Rebuild the home page to the structure in 5.5.
+2. Build the booking flow in 5.6, prefilled from tiles and route rows.
+3. Check it at 360, 390 and 1440 px on `localhost:3100`, in Bangla and
+   English, in light and dark mode.
+
+### Phase 4 — Inner pages
+
+Apply the system to every remaining page (5.7) in both languages: fleet,
+pricing, tour packages, wedding, airport and station pickup, ambulance, about,
+contact, FAQ, the blog index, articles, category archives and the tag archive.
+Use photographs as described in 5.8 and rewrite stock copy as in 5.9.
+
+### Phase 5 — Verify and polish
+
+Go through every acceptance criterion in section 5. For anything that fails,
+fix it and measure again. Do not hand back with a failing criterion unless it
+is genuinely blocked; in that case log what blocks it and why.
+
+### Phase 6 — Hand back
+
+1. Rebase on `origin/dev`, run the full build and lint once more, and push.
+2. Open a pull request from `redesign/premium` into `dev` (not `main`), with
+   everything in section 6.
+3. Leave the dev server running on port 3100.
+4. Finish with a short message to the owner: the PR link, the local and phone
+   addresses, before and after numbers, and the *Needs the owner* list.
+
+## 5. What to build
 
 ### 5.1 Direction
 
@@ -277,9 +412,10 @@ The only real assets are three fleet photos and the logo.
 - Replace the stock headings: "কেন আমাদের বেছে নেবেন", "আমাদের সার্ভিস",
   and repeated "বিস্তারিত →" links. Each heading should say something only
   this business could say.
-- Every new or changed Bangla string needs a native read. List them in the PR.
+- Every new or changed Bangla string needs a native read. Log them in the
+  progress file.
 
-## 6. Acceptance criteria
+### 5.10 Acceptance criteria
 
 All of these are measured, not judged by eye.
 
@@ -305,43 +441,47 @@ All of these are measured, not judged by eye.
     mentions the internet.
 - Every tappable element is at least 44 × 44 px.
 - Dark mode and light mode both checked.
-- **Headers on dev, checked with `curl -I`:**
-  - JS gets immutable caching for a year.
-  - HTML is revalidated.
-  - Security headers are present.
+- **Headers:** fixed in `public/.htaccess`; confirmation with `curl -I`
+  happens after deploy and is logged for the owner.
 
-Lighthouse command, as used in the audit:
+**Measuring locally.** Lighthouse needs a production build, not `next dev`.
+Build, serve `out/` on another port, and measure that:
 
 ```bash
+npm run build
+npx --yes serve out -l 4100          # leave the dev server on 3100 running
 CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-npx --yes lighthouse@12 https://dev.rajshahirentacar.bd/ \
+npx --yes lighthouse@12 http://localhost:4100/ \
   --form-factor=mobile --throttling-method=simulate \
   --only-categories=performance,accessibility,best-practices \
   --chrome-flags="--headless=new" --output=json --output-path=./lh-home.json
 ```
 
-Headless Chrome cannot render narrower than about 500 px. Measure overflow at
-320–412 px in a real browser or an emulated viewport, not in headless
-screenshots.
+For the phase 0 baseline, point Lighthouse at
+`https://dev.rajshahirentacar.bd/` instead. Headless Chrome cannot render
+narrower than about 500 px, so measure overflow at 320–412 px in a real or
+emulated browser viewport, not in headless screenshots.
 
-## 7. What to hand back
+## 6. What to hand back
 
-A PR into `dev` containing:
+A pull request from `redesign/premium` into `dev` containing:
 
 1. Before and after screenshots at 360 and 1440 px of the home, fleet,
    contact and ambulance pages.
-2. Lighthouse before and after for the home and contact pages.
-3. A list of every placeholder and every unconfirmed fact.
-4. A list of every new Bangla string, for native review.
-5. Anything you could not do, and why.
+2. Lighthouse before (phase 0) and after (phase 5) for the home and contact
+   pages.
+3. The final progress file, including every placeholder, every unconfirmed
+   fact, every new Bangla string for native review, and every decision.
+4. Anything you could not do, and why.
 
-## 8. Out of scope: owner tasks
+## 7. Out of scope: owner tasks
 
-Do not attempt these. List them in the PR if they block anything.
+Do not attempt these. Log them under *Needs the owner* and keep working.
 
 - Deploying the booking API (cPanel credentials).
 - The photo shoot.
 - Collecting Google reviews.
 - Confirming distances, travel times and route prices.
 - Native review of Bangla copy.
-- Production cutover to `main`.
+- Confirming the server headers on the deployed site.
+- Merging to `dev` and the production cutover to `main`.
