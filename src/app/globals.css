@@ -373,34 +373,6 @@ html {
     .reveal-stagger > :nth-child(5) { animation-range: entry 15% entry 64%; }
     .reveal-stagger > :nth-child(6) { animation-range: entry 18% entry 70%; }
   }
-
-  /* Load-time entrance for above-the-fold hero content. The h1 deliberately
-     rises without an opacity change — fading the likely LCP text element can
-     defer LCP attribution on slow connections. */
-  @keyframes rise-in {
-    from {
-      opacity: 0;
-      translate: 0 18px;
-    }
-    to {
-      opacity: 1;
-      translate: 0 0;
-    }
-  }
-  @keyframes rise-in-move {
-    from { translate: 0 18px; }
-    to { translate: 0 0; }
-  }
-
-  .rise {
-    animation: rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .rise-move {
-    animation: rise-in-move 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .rise-1 { animation-delay: 0.06s; }
-  .rise-2 { animation-delay: 0.14s; }
-  .rise-3 { animation-delay: 0.22s; }
 }
 
 /* Physical feedback under a finger or cursor. Press is instant (feedback

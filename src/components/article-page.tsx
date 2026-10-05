@@ -51,12 +51,12 @@ export function ArticlePage({
           </Link>
         ) : null}
 
-        <h1 className="rise-move mt-6 text-3xl font-semibold md:text-4xl">
+        <h1 className="mt-6 text-3xl font-semibold md:text-4xl">
           {article.title}
         </h1>
 
         {showBackToBlog ? (
-          <p className="text-muted rise mt-3 text-sm">
+          <p className="text-muted mt-3 text-sm">
             <time dateTime={article.date}>
               {formatArticleDate(locale, article.date)}
             </time>
@@ -74,7 +74,7 @@ export function ArticlePage({
           fetched or executed in the browser.
         */}
         <div
-          className="prose rise mt-8"
+          className="prose mt-8"
           lang={article.untranslated && locale === "bn" ? "en" : undefined}
           dangerouslySetInnerHTML={{ __html: article.contentHtml }}
         />
