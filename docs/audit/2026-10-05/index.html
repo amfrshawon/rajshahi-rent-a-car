@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rajshahi Rent A Car Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wdth,wght@75..125,100..800&family=Anek+Latin:wdth,wght@75..125,100..800&display=swap">
+<style>
+/* Layout: one reading column with wide evidence rows; the report itself is
+   set in the proposed identity (Anek superfamily, Padma green, logo red pin). */
+:root {
+  --bg: #f4f7f5;
+  --surface: #ffffff;
+  --ink: #0f1713;
+  --muted: #56635c;
+  --line: #dce4df;
+  --padma: #0b3d2c;
+  --on-padma: #eef6f1;
+  --leaf: #1d7a4e;
+  --pin: #d7263d;
+  --broken: #b42318;
+  --wrong: #9a5a06;
+  --slow: #33599c;
+  --polish: #56635c;
+
+  /* Fixed palette for the mocked-up site: it depicts the light-mode website,
+     so it stays the same whatever theme the viewer uses. */
+  --site-bg: #ffffff;
+  --site-ink: #0f1713;
+  --site-muted: #5a6760;
+  --site-padma: #0b3d2c;
+  --site-leaf: #1d7a4e;
+  --site-pin: #d7263d;
+  --site-mist: #f2f5f3;
+  --site-line: #e2e8e4;
+  --frame: #1b211e;
+
+  --f-text: "Anek Latin", "Anek Bangla", ui-sans-serif, system-ui, sans-serif;
+  --f-bn: "Anek Bangla", "Anek Latin", ui-sans-serif, system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a120e; --surface: #111c17; --ink: #e6eee9; --muted: #9aaaa2; --line: #24342c;
+    --padma: #0e4632; --on-padma: #eaf4ee; --leaf: #52c58e; --pin: #ff5c6c;
+    --broken: #ff7b6e; --wrong: #f0b252; --slow: #93b2f2; --polish: #9aaaa2;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a120e; --surface: #111c17; --ink: #e6eee9; --muted: #9aaaa2; --line: #24342c;
+  --padma: #0e4632; --on-padma: #eaf4ee; --leaf: #52c58e; --pin: #ff5c6c;
+  --broken: #ff7b6e; --wrong: #f0b252; --slow: #93b2f2; --polish: #9aaaa2;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-text);
+  font-size: 17px;
+  line-height: 1.6;
+  padding-inline: 20px;
+  padding-block: 0 64px;
+}
+.wrap { max-width: 1120px; margin-inline: auto; }
+.read { max-width: 68ch; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; text-wrap: pretty; }
+a { color: var(--leaf); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--leaf); outline-offset: 3px; }
+[lang="bn"] { font-family: var(--f-bn); line-height: 1.7; }
+img { max-width: 100%; display: block; }
+
+/* ---------- masthead ---------- */
+.mast {
+  background: var(--padma);
+  color: var(--on-padma);
+  margin-inline: -20px;
+  padding-inline: 20px;
+  padding-block: 44px 52px;
+}
+.mast .eyebrow { font-stretch: 80%; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 13px; opacity: 0.8; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.pin { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--pin); }
+.mast h1 { font-stretch: 122%; font-weight: 760; font-size: clamp(34px, 6vw, 64px); line-height: 1.04; letter-spacing: -0.01em; margin-top: 18px; max-width: 18ch; }
+.mast .lede { margin-top: 22px; font-size: 19px; max-width: 60ch; opacity: 0.92; }
+
+/* ---------- scorecard ---------- */
+.scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: -28px; position: relative; }
+.score { background: var(--surface); padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.score .k { font-stretch: 80%; font-weight: 600; font-size: 13px; color: var(--muted); letter-spacing: 0.02em; }
+.score .v { font-stretch: 112%; font-weight: 720; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.score .v small { font-size: 16px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+.score .n { font-size: 14px; color: var(--muted); line-height: 1.45; }
+.score.bad .v { color: var(--broken); }
+.score.good .v { color: var(--leaf); }
+
+/* ---------- sections ---------- */
+section.block { margin-top: 72px; }
+.sec-head { display: grid; gap: 10px; margin-bottom: 26px; }
+.sec-head .label { font-stretch: 80%; font-weight: 600; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--leaf); }
+.sec-head h2 { font-stretch: 118%; font-weight: 720; font-size: clamp(26px, 3.6vw, 38px); line-height: 1.12; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+
+/* ---------- fix list ---------- */
+.fixes { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.fix { display: grid; grid-template-columns: 92px minmax(0, 1fr) minmax(0, 0.9fr); gap: 8px 28px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.sev { font-stretch: 80%; font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; align-self: start; padding: 3px 8px; border: 1px solid currentColor; justify-self: start; border-radius: 3px; }
+.sev.broken { color: var(--broken); } .sev.wrong { color: var(--wrong); } .sev.slow { color: var(--slow); } .sev.polish { color: var(--polish); }
+.fix h3 { font-size: 18px; font-weight: 650; line-height: 1.35; }
+.fix .what { color: var(--muted); font-size: 15.5px; margin-top: 4px; }
+.fix .do { font-size: 15.5px; }
+.fix .do b { font-stretch: 80%; font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--leaf); display: block; margin-bottom: 2px; }
+@media (max-width: 760px) {
+  .fix { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- evidence ---------- */
+.evidence { display: grid; gap: 40px; }
+.ev { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 32px; align-items: start; }
+.ev.wide { grid-template-columns: minmax(0, 1fr); }
+.ev figure { margin: 0; display: grid; gap: 10px; }
+.ev .shots { display: flex; gap: 12px; flex-wrap: wrap; }
+.ev .shots img { border: 1px solid var(--line); background: var(--surface); }
+.ev .shots.two img { width: calc(50% - 6px); }
+.ev figcaption { font-size: 13px; color: var(--muted); }
+.ev h3 { font-stretch: 112%; font-weight: 700; font-size: 22px; line-height: 1.2; }
+.ev p { margin-top: 10px; color: var(--ink); }
+.ev .text { min-width: 0; }
+@media (max-width: 760px) { .ev { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- direction ---------- */
+.principles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 40px; }
+.principles li { padding-block: 16px; border-top: 1px solid var(--line); min-width: 0; }
+.principles h3 { font-size: 17px; font-weight: 700; }
+.principles p { color: var(--muted); font-size: 15.5px; margin-top: 4px; }
+
+.tokens { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 40px; margin-top: 44px; }
+@media (max-width: 860px) { .tokens { grid-template-columns: minmax(0, 1fr); } }
+.swatches { display: grid; gap: 8px; }
+.sw { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; align-items: center; }
+.sw i { display: block; height: 44px; border: 1px solid var(--line); }
+.sw b { font-weight: 650; font-size: 15px; display: block; }
+.sw span { font-size: 13.5px; color: var(--muted); }
+.sw code { font-family: var(--f-text); font-stretch: 80%; font-size: 13px; color: var(--muted); }
+.spec { display: grid; gap: 18px; }
+.spec .row { display: grid; gap: 4px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.spec .tag { font-stretch: 80%; font-weight: 600; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.spec .d { font-family: var(--f-bn); font-stretch: 125%; font-weight: 760; font-size: clamp(30px, 4.4vw, 44px); line-height: 1.25; }
+.spec .b { font-family: var(--f-bn); font-weight: 420; font-size: 19px; line-height: 1.7; }
+.spec .n { font-family: var(--f-bn); font-stretch: 75%; font-weight: 620; font-size: 24px; color: var(--leaf); }
+
+/* ---------- device mocks ---------- */
+.compare { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; margin-top: 48px; }
+.device { display: grid; gap: 12px; justify-items: start; }
+.device .cap { font-stretch: 80%; font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.device .cap.new { color: var(--leaf); }
+.phone { width: 320px; max-width: 100%; padding: 9px; background: var(--frame); border-radius: 36px; }
+.screen { border-radius: 28px; overflow: hidden; height: 660px; background: var(--site-bg); position: relative; }
+.screen > img.full { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+/* the proposed site, inside the phone */
+.site { font-family: var(--f-bn); color: var(--site-ink); line-height: 1.55; display: flex; flex-direction: column; height: 100%; }
+.s-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; background: var(--site-bg); border-bottom: 1px solid var(--site-line); }
+.s-head img { height: 16px; width: auto; flex: none; }
+.s-head .nm { font-weight: 640; font-size: 14px; color: var(--site-padma); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.s-ico { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.s-ico.call { background: var(--site-padma); color: #fff; }
+.s-ico.menu { border: 1px solid var(--site-line); color: var(--site-ink); }
+.s-ico svg { width: 15px; height: 15px; }
+.s-hero { background: var(--site-padma); color: #f1f7f3; padding: 18px 16px 0; position: relative; }
+.s-eyebrow { font-stretch: 80%; font-weight: 600; font-size: 12px; opacity: 0.85; display: flex; align-items: center; gap: 6px; }
+.s-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--site-pin); }
+.s-h1 { font-stretch: 125%; font-weight: 780; font-size: 31px; line-height: 1.18; margin-top: 8px; }
+.s-sub { font-size: 13.5px; opacity: 0.88; margin-top: 8px; max-width: 30ch; }
+.s-car { height: auto; max-width: none; width: calc(100% + 32px); margin-inline: -16px; margin-top: 14px; aspect-ratio: 16 / 8.2; object-fit: cover; object-position: 50% 62%; }
+.s-proof { position: absolute; left: 16px; bottom: 10px; background: rgba(255,255,255,0.94); color: var(--site-ink); font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 4px; }
+.s-proof .st { color: #c98a00; }
+.s-where { padding: 14px 14px 0; display: grid; gap: 10px; }
+.s-q { font-stretch: 112%; font-weight: 720; font-size: 18px; }
+.s-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.s-tile { border: 1px solid var(--site-line); background: var(--site-bg); padding: 10px 10px 11px; display: grid; gap: 2px; border-radius: 6px; }
+.s-tile b { font-weight: 650; font-size: 14px; line-height: 1.3; }
+.s-tile span { font-stretch: 80%; font-size: 11.5px; color: var(--site-muted); }
+.s-tile.on { border-color: var(--site-padma); box-shadow: inset 0 0 0 1px var(--site-padma); }
+.s-amb { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid var(--site-pin); color: var(--site-pin); padding: 9px 12px; border-radius: 6px; font-weight: 650; font-size: 13.5px; }
+.s-amb span { font-stretch: 80%; font-weight: 600; font-size: 11.5px; }
+.s-bar { margin-top: auto; display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--site-line); background: var(--site-bg); }
+.s-bar .c { border: 1px solid var(--site-line); border-radius: 6px; display: grid; place-items: center; color: var(--site-padma); }
+.s-bar .c svg { width: 18px; height: 18px; }
+.s-bar .go { background: var(--site-padma); color: #fff; border-radius: 6px; text-align: center; font-weight: 650; font-size: 15px; padding: 10px; }
+
+/* route board */
+.routes-mock { width: 320px; max-width: 100%; padding: 9px; background: var(--frame); border-radius: 36px; }
+.routes-mock .screen { height: 660px; }
+.r-top { background: var(--site-mist); padding: 18px 16px 14px; }
+.r-top .k { font-stretch: 80%; font-weight: 600; font-size: 12px; color: var(--site-muted); }
+.r-top h4 { font-stretch: 125%; font-weight: 780; font-size: 28px; line-height: 1.15; margin: 4px 0 0; }
+.r-list { list-style: none; margin: 0; padding: 0 16px; }
+.r-list li { display: grid; grid-template-columns: 12px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--site-line); }
+.r-list .p { width: 10px; height: 10px; border-radius: 50%; background: var(--site-pin); box-shadow: 0 0 0 3px #fbe1e4; }
+.r-list b { font-stretch: 112%; font-weight: 700; font-size: 18px; display: block; line-height: 1.25; }
+.r-list span { font-stretch: 80%; font-size: 12px; color: var(--site-muted); }
+.r-list .km { text-align: right; font-stretch: 75%; font-weight: 650; font-size: 17px; color: var(--site-padma); font-variant-numeric: tabular-nums; }
+.r-list .km small { display: block; font-weight: 500; font-size: 11.5px; color: var(--site-muted); }
+.r-note { font-size: 11.5px; color: var(--site-muted); padding: 10px 16px 0; }
+
+/* desktop concept */
+.desk { margin-top: 48px; border: 9px solid var(--frame); border-radius: 14px; overflow: hidden; background: var(--site-bg); }
+.d-head { display: flex; align-items: center; gap: 28px; padding: 14px 28px; border-bottom: 1px solid var(--site-line); font-family: var(--f-bn); }
+.d-head img { height: 26px; width: auto; }
+.d-head .nm { font-weight: 650; color: var(--site-padma); font-size: 17px; }
+.d-head nav { display: flex; gap: 20px; font-size: 14px; color: var(--site-muted); flex: 1; flex-wrap: wrap; }
+.d-head .tel { font-stretch: 80%; font-weight: 650; color: var(--site-padma); font-size: 15px; white-space: nowrap; }
+.d-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); font-family: var(--f-bn); }
+.d-left { background: var(--site-padma); color: #f1f7f3; padding: 40px 36px 36px; display: grid; gap: 16px; align-content: start; }
+.d-left .s-eyebrow { font-size: 13px; }
+.d-left h4 { font-stretch: 125%; font-weight: 780; font-size: 46px; line-height: 1.12; margin: 0; }
+.d-left p { font-size: 16px; opacity: 0.88; max-width: 34ch; }
+.d-left .s-tiles { grid-template-columns: repeat(2, 1fr); margin-top: 6px; }
+.d-left .s-tile { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.18); color: #f1f7f3; }
+.d-left .s-tile span { color: rgba(241,247,243,0.72); }
+.d-left .s-tile.on { background: #fff; color: var(--site-ink); box-shadow: none; border-color: #fff; }
+.d-left .s-tile.on span { color: var(--site-muted); }
+.d-right { position: relative; min-height: 420px; }
+.d-right img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 40% 60%; }
+.d-right .s-proof { left: 20px; bottom: 20px; font-size: 13px; padding: 6px 12px; }
+@media (max-width: 760px) {
+  .d-head nav { display: none; }
+  .d-hero { grid-template-columns: minmax(0, 1fr); }
+  .d-left h4 { font-size: 34px; }
+  .d-right { min-height: 220px; }
+}
+.concept-note { margin-top: 14px; font-size: 14px; color: var(--muted); max-width: 70ch; }
+
+/* shoot list */
+.shoot { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 32px; }
+.shoot li { border-top: 1px solid var(--line); padding-block: 12px; font-size: 15.5px; min-width: 0; }
+.shoot li b { display: block; font-weight: 650; }
+.shoot li span { color: var(--muted); }
+
+/* ---------- speed charts ---------- */
+.chart { display: grid; gap: 10px; margin-top: 8px; }
+.chart .title { font-weight: 650; font-size: 16px; }
+.bar { display: flex; height: 40px; border: 1px solid var(--line); background: var(--surface); }
+.bar span { display: flex; align-items: center; padding-inline: 8px; font-stretch: 80%; font-weight: 650; font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; min-width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 14px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: 0; }
+.c1 { background: #7a8a82; } .c2 { background: #33599c; } .c3 { background: #b42318; } .c4 { background: #1d7a4e; } .c5 { background: #9a5a06; } .c6 { background: #4e5b55; }
+.charts { display: grid; gap: 36px; }
+.pages { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.pages th, .pages td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.pages th { font-stretch: 80%; font-weight: 650; font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.pages td.bad { color: var(--broken); font-weight: 650; }
+.scroll-x { overflow-x: auto; }
+
+/* ---------- plan ---------- */
+.plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 28px; }
+.phase { background: var(--surface); border: 1px solid var(--line); padding: 20px 22px 22px; min-width: 0; }
+.phase .when { font-stretch: 80%; font-weight: 700; font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--leaf); }
+.phase h3 { font-stretch: 112%; font-weight: 720; font-size: 21px; margin-top: 4px; }
+.phase ol { margin: 14px 0 0; padding-left: 20px; display: grid; gap: 8px; font-size: 15.5px; }
+
+.method { font-size: 15px; color: var(--muted); display: grid; gap: 10px; }
+.method b { color: var(--ink); font-weight: 650; }
+footer.end { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow"><span class="pin" aria-hidden="true"></span> Design audit · dev.rajshahirentacar.bd · 5 October 2026</p>
+    <h1>Built well. Looks like everyone else. Booking is broken.</h1>
+    <p class="lede">The engineering underneath is sound: no layout breaks at 360&nbsp;px, zero layout shift, accessibility at 96, Brotli compression on. The problems sit in the layer customers actually see. The site is assembled from one card pattern repeated about twenty times, nothing in it says Rajshahi, and on dev every booking fails while telling the customer their internet is down.</p>
+  </div>
+</header>
+
+<div class="scores" role="list">
+  <div class="score bad" role="listitem"><span class="k">Main content visible</span><span class="v">4.5<small>s</small></span><span class="n">Target under 2.5&nbsp;s. 60% of it is the hero waiting to paint.</span></div>
+  <div class="score bad" role="listitem"><span class="k">Home page weight</span><span class="v">695<small>KB</small></span><span class="n">211&nbsp;KB of it is the header logo.</span></div>
+  <div class="score bad" role="listitem"><span class="k">Bookings that go through</span><span class="v">0</span><span class="n">/api/booking returns 404 on dev.</span></div>
+  <div class="score" role="listitem"><span class="k">Home length on a phone</span><span class="v">7<small>screens</small></span><span class="n">At 360&nbsp;px. A blog post runs to 13.</span></div>
+  <div class="score bad" role="listitem"><span class="k">Server headers applied</span><span class="v">None</span><span class="n">Cache and security rules in .htaccess are skipped.</span></div>
+  <div class="score good" role="listitem"><span class="k">Overflow at 320–1440&nbsp;px</span><span class="v">None</span><span class="n">Checked on 9 pages. This part is solid.</span></div>
+</div>
+
+<!-- ============================================================ FIX FIRST -->
+<section class="block" id="fix">
+  <div class="sec-head">
+    <span class="label">Fix these first</span>
+    <h2>What is broken, wrong, or slow today</h2>
+    <p>Ordered by what costs you bookings. Each was checked on the live dev site, then traced to the code. Resolved during the audit: all 13 blog posts were translated into Bangla (commit 75da6d9) and are live on dev.</p>
+  </div>
+  <ol class="fixes">
+    <li class="fix">
+      <span class="sev broken">Broken</span>
+      <div><h3>Every booking fails, and the message blames the customer</h3>
+        <p class="what">/api/booking returns 404, so the form always ends on <span lang="bn">“পাঠানো যায়নি — ইন্টারনেটে সমস্যা হয়েছে”</span>. Someone with perfect signal is told their internet is the problem. Production will behave the same unless the <code>api/</code> service is deployed.</p></div>
+      <p class="do"><b>Do</b>Deploy the booking service. Until then, send the form straight to WhatsApp and say so on the button. A server failure must never be described as the customer’s connection.</p>
+    </li>
+    <li class="fix">
+      <span class="sev wrong">Wrong</span>
+      <div><h3>None of the server header rules are applied</h3>
+        <p class="what"><code>public/.htaccess</code> sets one-year immutable caching for JS and CSS plus security headers, but the dev server sends none of them. JavaScript arrives with no <code>Cache-Control</code>, images get a 7-day server default, and <code>X-Content-Type-Options</code> and <code>Referrer-Policy</code> are missing.</p></div>
+      <p class="do"><b>Do</b>Find out why the <code>mod_headers</code> block is skipped (the deployed file, or the <code>&lt;IfModule&gt;</code> wrapper on LiteSpeed), then confirm each header with <code>curl -I</code>.</p>
+    </li>
+    <li class="fix">
+      <span class="sev wrong">Wrong</span>
+      <div><h3>The ambulance card’s link says <span lang="bn">“পিকআপ-ড্রপ”</span></h3>
+        <p class="what">Home page, “why choose us” grid. It goes to the ambulance page, but the tile prints <code>COPY.services[2].label</code>, and index 2 is the pickup service. In an emergency, a mislabelled link costs seconds.</p></div>
+      <p class="do"><b>Do</b>Label it <span lang="bn">“এখনই কল করুন”</span> and make it a direct call link.</p>
+    </li>
+    <li class="fix">
+      <span class="sev wrong">Wrong</span>
+      <div><h3>The email row shows a WhatsApp icon</h3>
+        <p class="what">Contact page. The row links to <code>mailto:</code> but draws the WhatsApp glyph, so people expect a chat to open.</p></div>
+      <p class="do"><b>Do</b>Use an envelope icon for email.</p>
+    </li>
+    <li class="fix">
+      <span class="sev wrong">Wrong</span>
+      <div><h3>Route chips look like buttons and do nothing</h3>
+        <p class="what"><span lang="bn">রাজশাহী → ঢাকা, নাটোর, পুঠিয়া…</span> are shadowed pills with no link. People will tap them and assume the site is broken.</p></div>
+      <p class="do"><b>Do</b>Make each one open booking with the destination already filled in.</p>
+    </li>
+    <li class="fix">
+      <span class="sev slow">Slow</span>
+      <div><h3>The header logo is 977 × 402 px and 212 KB</h3>
+        <p class="what">Shown at about 90 px wide on every page, it is five times heavier than the hero photo and competes with it for bandwidth.</p></div>
+      <p class="do"><b>Do</b>Export at twice display size (about 180 px) as WebP, or redraw as SVG. Aim for under 10&nbsp;KB.</p>
+    </li>
+    <li class="fix">
+      <span class="sev slow">Slow</span>
+      <div><h3>Entrance animations hold back the main content</h3>
+        <p class="what">Hero copy fades in with <code>rise-in</code>. On the contact page the largest element is a fading paragraph and it takes 4.1&nbsp;s to count as shown.</p></div>
+      <p class="do"><b>Do</b>Nothing in the first screen animates. Keep motion for below the fold, and sparingly.</p>
+    </li>
+    <li class="fix">
+      <span class="sev polish">Polish</span>
+      <div><h3>Nothing is checked before the form is sent</h3>
+        <p class="what">Both booking forms send whatever is typed, empty or not, straight to the server. A missing name or a five-digit number costs a network round trip, and while the server is missing it ends on the internet-problem message.</p></div>
+      <p class="do"><b>Do</b>Check name and phone on the phone first, with Bangla messages under each field: <span lang="bn">“নাম লিখুন”</span>, <span lang="bn">“সঠিক মোবাইল নম্বর দিন”</span>.</p>
+    </li>
+    <li class="fix">
+      <span class="sev polish">Polish</span>
+      <div><h3>The footer phone link is too small to tap</h3>
+        <p class="what">Fails Lighthouse’s tap-target check on every page tested. The ambulance page also has a call button whose spoken label differs from its visible text.</p></div>
+      <p class="do"><b>Do</b>Give every tappable item at least a 44 × 44&nbsp;px area, and start the spoken label with the visible words.</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ============================================================ GENERIC -->
+<section class="block" id="generic">
+  <div class="sec-head">
+    <span class="label">Why it reads as AI-made</span>
+    <h2>Every decision is the default one</h2>
+    <p>Nothing here is badly made. The issue is that each choice is the safe, common one, so the result looks like every other site assembled from the same parts. These are the six signals that do the most damage.</p>
+  </div>
+
+  <div class="evidence">
+    <div class="ev">
+      <figure>
+        <div class="shots"><img src="img/m-iconlist.jpg" alt="Three rows of icon in a pale square, bold title and grey sentence" width="412" height="300" loading="lazy"></div>
+        <figcaption>Home, trust list. The same unit returns in the services list, the grid, the contact page and the ambulance page.</figcaption>
+      </figure>
+      <div class="text">
+        <h3>One card, about twenty times</h3>
+        <p>An icon in a pale tinted square, a bold line, a grey sentence. It is the trust list, the “why choose us” grid, the services, the contact rows and the ambulance features. When one component carries everything, nothing stands out and the page has no hierarchy.</p>
+        <p>This is the strongest single signal of a generated site. Replace most of these with plain lists, large numbers, or photographs.</p>
+      </div>
+    </div>
+
+    <div class="ev">
+      <figure>
+        <div class="shots"><img src="img/m-hero.jpg" alt="Current mobile hero: darkened car photo, price pill, headline, two buttons" width="412" height="823" loading="lazy"></div>
+        <figcaption>Home, first screen on a phone.</figcaption>
+      </figure>
+      <div class="text">
+        <h3>The stock car-rental hero</h3>
+        <p>Darkened photo, price pill, headline, two buttons, a booking bar overlapping the bottom edge. It is the layout of most car-rental themes. It functions, and it says nothing a competitor’s site does not.</p>
+        <p>The car is also darkened until it stops being the subject. If the photo is worth showing, show it in full colour.</p>
+      </div>
+    </div>
+
+    <div class="ev wide">
+      <figure>
+        <img src="img/d-fleet.jpg" alt="Fleet page on desktop: grey header band with green bar, three car cards with differently styled photos" width="1400" height="875" loading="lazy">
+        <figcaption>Fleet page, 1440&nbsp;px.</figcaption>
+      </figure>
+      <div class="text read">
+        <h3>Nothing says Rajshahi</h3>
+        <p>No Padma, no silk, no mango orchard, no local street. The three car photos come from three different places: one outdoors with a yellow number plate, one on a city street with a Bangla plate, one in a showroom with studio lights in the frame. Customers notice borrowed photos, and they notice inconsistency even when they can’t name it.</p>
+        <p>The grey band with a short green bar above every page title is another stock device. It appears on all inner pages.</p>
+      </div>
+    </div>
+
+    <div class="ev">
+      <figure>
+        <div class="shots"><img src="img/m-bento.jpg" alt="Why-choose-us grid on mobile with a pink ambulance card" width="412" height="1030" loading="lazy"></div>
+        <figcaption>Home, “why choose us”. Pickup and ambulance appear here and again in the services list below.</figcaption>
+      </figure>
+      <div class="text">
+        <h3>Everything at the same volume</h3>
+        <p>Seven screens on a phone, and no section is allowed to be bigger than the others. Pickup and ambulance each appear twice within two scrolls. The ambulance card switches to a pink palette that exists nowhere else on the site.</p>
+        <p>Premium sites edit. Fewer things, each given room, with one clear path to booking.</p>
+      </div>
+    </div>
+
+    <div class="ev">
+      <figure>
+        <div class="shots"><img src="img/m-routes.jpg" alt="Route chips styled as shadowed pills" width="412" height="470" loading="lazy"></div>
+        <figcaption>Home, outstation routes.</figcaption>
+      </figure>
+      <div class="text">
+        <h3>Decoration standing in for information</h3>
+        <p>The route section has the most valuable content on the page, and it is reduced to five pills with no distance, no time and no price. Pills on every fleet card, a pulsing ring on the phone button and parallax drift on photos are the same kind of stock flourish.</p>
+        <p>Real numbers make better decoration than effects: <span lang="bn">পুঠিয়া ৩২ কিমি</span> tells a customer more than a pin icon.</p>
+      </div>
+    </div>
+
+    <div class="ev">
+      <figure>
+        <div class="shots"><img src="img/d-logo.jpg" alt="Header logo containing the word RAJSHAHI next to the Bangla name" width="520" height="120" loading="lazy"></div>
+        <figcaption>Header, desktop.</figcaption>
+      </figure>
+      <div class="text">
+        <h3>The logo says the name twice</h3>
+        <p>The logo image has RAJSHAHI set inside it, and the Bangla name sits right beside it. At header size the English lettering is too small to read. Use the car-and-pin mark alone in the header, with the Bangla name as live text.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DIRECTION -->
+<section class="block" id="direction">
+  <div class="sec-head">
+    <span class="label">The premium direction</span>
+    <h2>Grow up the brand you already have</h2>
+    <p>Premium here doesn’t mean gold on black. It means confident, calm and specific: fewer elements, larger type, real photographs, and a booking flow that feels like a product. Build it from what is already yours: the deep green and red pin of your logo, your Bangla name, and Rajshahi itself.</p>
+  </div>
+
+  <ul class="principles">
+    <li><h3>Lead with the job, not a banner</h3><p>The first screen asks <span lang="bn">“কোথায় যাবেন?”</span> and offers four trip types as large tiles. A 60-year-old and a 22-year-old both understand a tile.</p></li>
+    <li><h3>One type family, used with range</h3><p>Anek Bangla and Anek Latin share a design and both have a width axis: wide and heavy for headlines, normal for reading, narrow for prices and distances. That retires Inter and one font file.</p></li>
+    <li><h3>Colour taken from the logo</h3><p>Deep green for surfaces and the main button. The logo’s red is reserved for the pin: destinations, live status, emergency. No mint tints, amber buttons or pink cards.</p></li>
+    <li><h3>Real numbers are the decoration</h3><p>Distances, travel times and per-day prices set large. A route board from Rajshahi says more than any icon grid.</p></li>
+    <li><h3>Photograph the service, not the parking lot</h3><p>One shoot with one look: drivers, doors opening, the station, the Padma at dusk. Every car from the same angle in the same light.</p></li>
+    <li><h3>Motion only where it means something</h3><p>Nothing moves in the first screen. One meaningful moment, such as a route line drawing in, instead of fades everywhere.</p></li>
+  </ul>
+
+  <div class="tokens">
+    <div class="swatches" aria-label="Proposed palette">
+      <div class="sw"><i style="background:#0b3d2c"></i><div><b>Padma green</b><span>Hero and booking surfaces, main button</span> <code>#0B3D2C</code></div></div>
+      <div class="sw"><i style="background:#1d7a4e"></i><div><b>Leaf</b><span>Links and selected states. The logo’s green.</span> <code>#1D7A4E</code></div></div>
+      <div class="sw"><i style="background:#d7263d"></i><div><b>Pin red</b><span>Destinations, live status, emergency. Nothing else.</span> <code>#D7263D</code></div></div>
+      <div class="sw"><i style="background:#f2f5f3"></i><div><b>Mist</b><span>Section ground. Faintly green, never cream.</span> <code>#F2F5F3</code></div></div>
+      <div class="sw"><i style="background:#0f1713"></i><div><b>Ink</b><span>Text</span> <code>#0F1713</code></div></div>
+    </div>
+    <div class="spec">
+      <div class="row"><span class="tag">Headline · Anek Bangla, width 125, weight 760</span><span class="d" lang="bn">এক কলে গাড়ি দরজায়।</span></div>
+      <div class="row"><span class="tag">Reading · width 100, weight 420</span><span class="b" lang="bn">শহরে, বিমানবন্দরে কিংবা ঢাকায় — ভাড়া আগেই জানিয়ে দিই।</span></div>
+      <div class="row"><span class="tag">Prices and distances · width 75, weight 620</span><span class="n" lang="bn">পুঠিয়া ৩২ কিমি · ৳৪,০০০ / দিন</span></div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="device">
+      <span class="cap">Now</span>
+      <div class="phone"><div class="screen"><img class="full" src="img/m-hero.jpg" alt="Current first screen" width="412" height="823" loading="lazy"></div></div>
+    </div>
+
+    <div class="device">
+      <span class="cap new">Direction</span>
+      <div class="phone"><div class="screen">
+        <div class="site" lang="bn">
+          <div class="s-head">
+            <img src="img/c-mark.png" alt="" width="477" height="120">
+            <span class="nm">রাজশাহী রেন্ট এ কার</span>
+            <span class="s-ico call" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg></span>
+            <span class="s-ico menu" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
+          </div>
+          <div class="s-hero">
+            <p class="s-eyebrow"><span class="dot"></span>রাজশাহী · ২৪ ঘণ্টা · ড্রাইভারসহ</p>
+            <p class="s-h1">এক কলে<br>গাড়ি দরজায়।</p>
+            <p class="s-sub">শহরে, বিমানবন্দরে কিংবা ঢাকায় — ভাড়া আগেই জানিয়ে দিই।</p>
+            <img class="s-car" src="img/c-premio.jpg" alt="" width="1200" height="749" loading="lazy">
+            <span class="s-proof"><span class="st">★</span> গুগলে ৫.০ · ২টি রিভিউ</span>
+          </div>
+          <div class="s-where">
+            <p class="s-q">কোথায় যাবেন?</p>
+            <div class="s-tiles">
+              <div class="s-tile on"><b>শহরের ভেতরে</b><span>৳৪,০০০ থেকে / দিন</span></div>
+              <div class="s-tile"><b>শহরের বাইরে</b><span>নাটোর, পুঠিয়া, ঢাকা</span></div>
+              <div class="s-tile"><b>বিমানবন্দর ও স্টেশন</b><span>সময়মতো পিকআপ</span></div>
+              <div class="s-tile"><b>বিয়ের গাড়ি</b><span>আগে থেকে বুকিং</span></div>
+            </div>
+            <div class="s-amb">জরুরি অ্যাম্বুলেন্স <span>২৪ ঘণ্টা · সরাসরি কল</span></div>
+          </div>
+          <div class="s-bar">
+            <span class="c" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg></span>
+            <span class="go">বুক করুন</span>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="device">
+      <span class="cap new">Route board</span>
+      <div class="routes-mock"><div class="screen">
+        <div class="site" lang="bn">
+          <div class="r-top"><span class="k">ড্রাইভারসহ, ভাড়া আগেই জানা</span><h4>রাজশাহী থেকে</h4></div>
+          <ul class="r-list">
+            <li><span class="p"></span><div><b>পুঠিয়া</b><span>মন্দির চত্বর · একদিনের ট্রিপ</span></div><span class="km">৩২ কিমি<small>প্রায় ৫০ মিনিট</small></span></li>
+            <li><span class="p"></span><div><b>বাঘা</b><span>বাঘা মসজিদ</span></div><span class="km">~৪০ কিমি<small>যাচাই করুন</small></span></li>
+            <li><span class="p"></span><div><b>নাটোর</b><span>রাজবাড়ি · উত্তরা গণভবন</span></div><span class="km">~৪৫ কিমি<small>যাচাই করুন</small></span></li>
+            <li><span class="p"></span><div><b>চাঁপাইনবাবগঞ্জ</b><span>সোনা মসজিদ · আমবাগান</span></div><span class="km">~৫০ কিমি<small>যাচাই করুন</small></span></li>
+            <li><span class="p"></span><div><b>ঢাকা</b><span>বিমানবন্দর বা যেকোনো ঠিকানা</span></div><span class="km">~২৫০ কিমি<small>যাচাই করুন</small></span></li>
+          </ul>
+          <p class="r-note">গন্তব্যে চাপ দিলে বুকিং খুলবে, গন্তব্য আগেই বসানো থাকবে।</p>
+          <div class="s-bar" style="margin-top:auto">
+            <span class="c" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg></span>
+            <span class="go">বুক করুন</span>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="desk" aria-label="Desktop concept">
+    <div class="d-head" lang="bn">
+      <img src="img/c-mark.png" alt="" width="477" height="120">
+      <span class="nm">রাজশাহী রেন্ট এ কার</span>
+      <nav><span>গাড়িবহর</span><span>রুট ও ভাড়া</span><span>বিমানবন্দর</span><span>বিয়ের গাড়ি</span><span>অ্যাম্বুলেন্স</span></nav>
+      <span class="tel">০১৭১৪-৪২৪২৪১</span>
+    </div>
+    <div class="d-hero">
+      <div class="d-left" lang="bn">
+        <p class="s-eyebrow"><span class="dot"></span>রাজশাহী · ২৪ ঘণ্টা · ড্রাইভারসহ</p>
+        <h4>এক কলে<br>গাড়ি দরজায়।</h4>
+        <p>শহরে, বিমানবন্দরে কিংবা ঢাকায় — ভাড়া আগেই জানিয়ে দিই।</p>
+        <div class="s-tiles">
+          <div class="s-tile on"><b>শহরের ভেতরে</b><span>৳৪,০০০ থেকে / দিন</span></div>
+          <div class="s-tile"><b>শহরের বাইরে</b><span>নাটোর, পুঠিয়া, ঢাকা</span></div>
+          <div class="s-tile"><b>বিমানবন্দর ও স্টেশন</b><span>সময়মতো পিকআপ</span></div>
+          <div class="s-tile"><b>বিয়ের গাড়ি</b><span>আগে থেকে বুকিং</span></div>
+        </div>
+      </div>
+      <div class="d-right">
+        <img src="img/c-premio.jpg" alt="" width="1200" height="749" loading="lazy">
+        <span class="s-proof" lang="bn"><span class="st">★</span> গুগলে ৫.০ · ২টি রিভিউ</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="concept-note">A direction, not final copy. The Bangla headlines need a native read. Only Puthia’s distance comes from your own guide (32&nbsp;km); the others are marked as placeholders to verify. The Google rating is real but rests on two reviews, so collecting more is part of the job. The photo is your existing Premio shot shown in full colour, which is already an improvement on darkening it.</p>
+
+  <div class="sec-head" style="margin-top:56px">
+    <span class="label">One shoot fixes the biggest gap</span>
+    <h2>Shot list</h2>
+    <p>Half a day with a photographer, one consistent look: late-afternoon light, warm but true colour, local plates visible.</p>
+  </div>
+  <ul class="shoot">
+    <li><b>Each car, same spot, same angle</b><span>Three-quarter front, same street, same hour. Fixes the three-worlds fleet page.</span></li>
+    <li><b>A driver opening the rear door</b><span>Real staff in a simple uniform. Trust comes from people.</span></li>
+    <li><b>Arrival at Shah Makhdum airport</b><span>For the airport and station page.</span></li>
+    <li><b>Family with luggage at Rajshahi railway station</b><span>The most common real use.</span></li>
+    <li><b>The Padma at dusk with the car in frame</b><span>The one image that says Rajshahi on sight.</span></li>
+    <li><b>Interiors</b><span>Clean rear seat, AC vents, the Hiace with all seats visible.</span></li>
+    <li><b>The Hiace with a group at Puthia</b><span>For tours and the route board.</span></li>
+    <li><b>A decorated wedding car</b><span>Only if you offer decoration.</span></li>
+  </ul>
+</section>
+
+<!-- ============================================================ SPEED -->
+<section class="block" id="speed">
+  <div class="sec-head">
+    <span class="label">Speed</span>
+    <h2>Where the 4.5 seconds go</h2>
+    <p>Lighthouse 12, mobile, simulated slow 4G on a mid-range phone. Time to first byte was measured from outside Bangladesh, so local visitors on BDIX will see a faster start. The other two parts won’t change.</p>
+  </div>
+  <div class="charts">
+    <div class="chart">
+      <span class="title">Largest content shown: 4,461 ms on the home page</span>
+      <div class="bar" role="img" aria-label="Server response 743 milliseconds, image download 1057 milliseconds, waiting to paint 2661 milliseconds">
+        <span class="c1" style="width:16.7%">743</span><span class="c2" style="width:23.7%">1,057</span><span class="c3" style="width:59.6%">2,661 ms waiting to paint</span>
+      </div>
+      <div class="legend"><span><i class="c1"></i>Server response</span><span><i class="c2"></i>Hero image download</span><span><i class="c3"></i>Image downloaded, not yet painted</span></div>
+    </div>
+    <div class="chart">
+      <span class="title">695 KB on the home page</span>
+      <div class="bar" role="img" aria-label="Logo 211 kilobytes, photos 75, fonts 242, scripts 132, other 35">
+        <span class="c3" style="width:30.4%">Logo 211</span><span class="c4" style="width:10.8%">Photos 75</span><span class="c5" style="width:34.8%">Fonts 242</span><span class="c2" style="width:19%">Scripts 132</span><span class="c6" style="width:5%"></span>
+      </div>
+      <div class="legend"><span><i class="c3"></i>Header logo</span><span><i class="c4"></i>Car photos</span><span><i class="c5"></i>Three font files</span><span><i class="c2"></i>JavaScript</span><span><i class="c6"></i>HTML, CSS, other (35)</span></div>
+    </div>
+    <div class="scroll-x">
+      <table class="pages">
+        <thead><tr><th>Page</th><th>Performance</th><th>Main content</th><th>Weight</th><th>Main element</th></tr></thead>
+        <tbody>
+          <tr><td>Home</td><td>84</td><td class="bad">4.5 s</td><td>695 KB</td><td>Hero photo</td></tr>
+          <tr><td>Contact</td><td>87</td><td class="bad">4.1 s</td><td>615 KB</td><td>Fading intro paragraph</td></tr>
+          <tr><td>Fleet</td><td>94</td><td class="bad">3.1 s</td><td>705 KB</td><td>Premio photo</td></tr>
+          <tr><td>English home</td><td>97</td><td>2.5 s</td><td>652 KB</td><td>Hero photo</td></tr>
+          <tr><td>Ambulance</td><td>99</td><td>2.2 s</td><td>621 KB</td><td>Intro paragraph</td></tr>
+          <tr><td>Reviews post</td><td>99</td><td>2.1 s</td><td>630 KB</td><td>First paragraph</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="read">The pattern across pages: about 450&nbsp;KB of logo and fonts loads on every page before anything else, and the slowest pages are the ones whose main element animates in. Text-only pages still weigh over 600&nbsp;KB.</p>
+  </div>
+</section>
+
+<!-- ============================================================ PLAN -->
+<section class="block" id="plan">
+  <div class="sec-head">
+    <span class="label">Hand-off</span>
+    <h2>What the dev agent should do, in order</h2>
+    <p>Phase one is all fixes and can ship this week. Phase two is the identity work. Phase three needs you rather than code.</p>
+  </div>
+  <div class="plan">
+    <div class="phase">
+      <span class="when">This week</span>
+      <h3>Make it work</h3>
+      <ol>
+        <li>Deploy <code>api/</code>, or route the form to WhatsApp, and fix the failure message.</li>
+        <li>Check name and phone in the browser before sending, with Bangla messages.</li>
+        <li>Ambulance card label; email icon on contact.</li>
+        <li>Route chips open booking with the destination filled in.</li>
+        <li>Logo to SVG or a 180&nbsp;px WebP under 10&nbsp;KB.</li>
+        <li>Remove animation from everything in the first screen.</li>
+        <li>Find out why the .htaccess header rules are skipped; confirm with <code>curl -I</code>.</li>
+        <li>44&nbsp;px tap areas in the footer.</li>
+      </ol>
+    </div>
+    <div class="phase">
+      <span class="when">Next two to three weeks</span>
+      <h3>Give it an identity</h3>
+      <ol>
+        <li>New tokens: Padma green, leaf, pin red, mist, ink.</li>
+        <li>Anek Bangla and Anek Latin with the width axis; drop Inter.</li>
+        <li>Trip-type tiles as the hero and the booking entry point.</li>
+        <li>Route board with distance, time and price.</li>
+        <li>Retire the icon-card pattern from most sections.</li>
+        <li>Cut the home page to about four screens; remove duplicated services.</li>
+        <li>Logo mark only in the header, Bangla name as text.</li>
+      </ol>
+    </div>
+    <div class="phase">
+      <span class="when">Needs you</span>
+      <h3>Content only you can supply</h3>
+      <ol>
+        <li>The photo shoot above.</li>
+        <li>Native review of translated posts and new headlines.</li>
+        <li>Ask recent customers for Google reviews.</li>
+        <li>Real distances, times and prices for each route.</li>
+        <li>Driver names and photos, if you are comfortable showing them.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ METHOD -->
+<section class="block" id="method">
+  <div class="sec-head">
+    <span class="label">How this was checked</span>
+    <h2>Method and limits</h2>
+  </div>
+  <div class="method read">
+    <p><b>Speed and accessibility:</b> Lighthouse 12 in mobile mode on six pages, simulated slow 4G on a 412&nbsp;px mid-range phone.</p>
+    <p><b>Layout:</b> horizontal overflow measured in a live browser at eleven widths from 320 to 1440&nbsp;px, nine pages.</p>
+    <p><b>Behaviour:</b> navigation, cards, links, the contact page and the booking form were checked by reading the live page, not the code. Response headers were read directly from the server.</p>
+    <p><b>Screenshots:</b> Lighthouse’s full-page capture at 412&nbsp;px and headless Chrome at 1440&nbsp;px.</p>
+    <p><b>One thing I should have asked first:</b> I submitted the quick-booking form once with test data (name <span lang="bn">রহিম</span>, phone 12345). The booking service returned 404, so nothing was stored or sent.</p>
+    <p><b>Corrections:</b> an earlier version of this report said an empty form showed an English browser message. Both forms set <code>noValidate</code>, so they send instead, which is the finding above. The blog finding was resolved by commit 75da6d9 while the audit was running.</p>
+    <p><b>Not covered:</b> a real Android phone on a Bangladeshi network, and dark mode on the site.</p>
+  </div>
+</section>
+
+<footer class="end">Audit of the dev site as deployed on 5 October 2026. Findings refer to that build and will drift as the dev branch changes.</footer>
+
+</div>
+
+</body>
+</html>
