@@ -1,4 +1,4 @@
-import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { PhoneIcon } from "@/components/icons";
 import { href } from "@/config/deploy";
 import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
@@ -6,7 +6,6 @@ import { type Locale, t } from "@/lib/locale";
 
 const COPY = {
   call: { bn: "কল করুন", en: "Call" },
-  whatsapp: { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" },
   book: { bn: "বুক করুন", en: "Book now" },
   label: { bn: "দ্রুত যোগাযোগ", en: "Quick contact" },
 } as const;
@@ -14,40 +13,27 @@ const COPY = {
 /**
  * Sticky bottom bar, phones only.
  *
- * Most bookings in Bangladesh start with a call or a WhatsApp message rather
- * than a form, so the two cheapest actions stay permanently within thumb reach.
+ * Two actions, not three: a call icon and one filled "বুক করুন" in Padma
+ * green. Most bookings here start with a call, and the rest with the form —
+ * WhatsApp already has its own buttons in the page body.
  */
 export function MobileActionBar({ locale }: { locale: Locale }) {
-  const waText = encodeURIComponent(
-    t(locale, {
-      bn: "আসসালামু আলাইকুম, আমি গাড়ি ভাড়া নিতে চাই।",
-      en: "Hello, I would like to rent a car.",
-    }),
-  );
-
   return (
     <nav
       aria-label={t(locale, COPY.label)}
-      className="border-border bg-surface-raised/95 fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 gap-px border-t backdrop-blur md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="border-border bg-surface-raised/95 fixed inset-x-0 bottom-0 z-50 grid grid-cols-[3rem_1fr] gap-2 border-t p-2 backdrop-blur md:hidden"
+      style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }}
     >
       <a
         href={`tel:${SITE.phone}`}
-        className="text-fg active:bg-surface flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium transition-colors"
+        aria-label={t(locale, COPY.call)}
+        className="border-border text-brand flex items-center justify-center rounded-lg border transition active:bg-surface"
       >
         <PhoneIcon className="size-5" />
-        {t(locale, COPY.call)}
-      </a>
-      <a
-        href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-        className="text-whatsapp-ink active:bg-surface flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-medium transition-colors"
-      >
-        <WhatsAppIcon className="size-5" />
-        {t(locale, COPY.whatsapp)}
       </a>
       <a
         href={href(`${route(locale, "contact")}#booking`)}
-        className="bg-accent text-accent-fg flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-semibold transition active:brightness-90"
+        className="btn-primary"
       >
         {t(locale, COPY.book)}
       </a>

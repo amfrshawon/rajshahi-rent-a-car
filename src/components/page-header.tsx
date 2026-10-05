@@ -1,18 +1,24 @@
 /**
- * Shared page header band for the inner pages. A thin brand kicker rule over
- * a big editorial title — quiet, light, and it rises in on load without
- * fading (translate only, so LCP text attribution is not deferred).
+ * Page header for the inner pages.
+ *
+ * No band, no short green rule above the title — that grey strip with a green
+ * bar was a stock device repeated on every page. The title now sits directly
+ * on the page ground with room around it, and nothing here animates.
  */
-export function PageHeader({ title, lead }: { title: string; lead?: string }) {
+export function PageHeader({
+  title,
+  lead,
+  eyebrow,
+}: {
+  title: string;
+  lead?: string;
+  eyebrow?: string;
+}) {
   return (
-    <div className="bg-surface border-border border-b">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
-        <p aria-hidden="true" className="bg-brand-vivid mb-4 h-1 w-10 rounded-full" />
-        <h1 className="text-fg text-3xl font-semibold md:text-5xl">{title}</h1>
-        {lead ? (
-          <p className="text-muted mt-4 max-w-2xl md:text-lg">{lead}</p>
-        ) : null}
-      </div>
-    </div>
+    <header className="mx-auto w-full max-w-6xl px-4 pt-10 pb-6 md:px-6 md:pt-14 md:pb-8">
+      {eyebrow ? <p className="eyebrow mb-3">{eyebrow}</p> : null}
+      <h1 className="text-fg text-3xl font-bold md:text-5xl">{title}</h1>
+      {lead ? <p className="text-muted mt-3 max-w-2xl text-lg">{lead}</p> : null}
+    </header>
   );
 }

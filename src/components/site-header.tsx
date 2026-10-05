@@ -60,8 +60,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          {/* Shown from md up; below that the sticky bottom bar carries Call. */}
-          <CallButton locale={locale} className="hidden text-sm md:inline-flex" />
+          {/* Round call button, shown at every size — the number is the most
+              valuable action on the site. */}
+          <CallButton locale={locale} />
 
           <LanguageSwitch locale={locale} />
 
