@@ -45,7 +45,7 @@ export function ArticlePage({
         {showBackToBlog ? (
           <Link
             href={route(locale, "blog")}
-            className="border-border text-muted hover:bg-surface hover:text-fg inline-flex min-h-9 items-center gap-1.5 rounded-full border px-4 text-sm transition"
+            className="border-border text-muted hover:bg-surface hover:text-fg inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm transition"
           >
             {t(locale, COPY.backToBlog)}
           </Link>

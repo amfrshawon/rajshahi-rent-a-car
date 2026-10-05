@@ -21,7 +21,7 @@ export function CallButton({ locale, className = "" }: { locale: Locale; classNa
     <a
       href={`tel:${SITE.phone}`}
       aria-label={`${t(locale, COPY.callAria)} ${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.available)}`}
-      className={`bg-brand text-brand-fg flex size-10 items-center justify-center rounded-full transition active:scale-95 ${className}`}
+      className={`bg-brand text-brand-fg flex size-11 items-center justify-center rounded-full transition active:scale-95 ${className}`}
     >
       <PhoneIcon className="size-5" />
     </a>

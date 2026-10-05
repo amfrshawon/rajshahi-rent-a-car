@@ -204,7 +204,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.fleetTitle)}</h2>
               <p className="text-muted mt-1">{t(locale, COPY.fleetLead)}</p>
             </div>
-            <Link href={route(locale, "fleet")} className="text-leaf inline-flex items-center gap-1.5 font-semibold">
+            <Link href={route(locale, "fleet")} className="text-leaf inline-flex min-h-11 items-center gap-1.5 font-semibold">
               {t(locale, COPY.seeAll)}
               <ArrowRightIcon className="size-4" />
             </Link>
@@ -294,7 +294,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6">
           <Link
             href={route(locale, "blog")}
-            className="text-leaf inline-flex items-center gap-1.5 font-semibold"
+            className="text-leaf inline-flex min-h-11 items-center gap-1.5 font-semibold"
           >
             {t(locale, COPY.guides)}
             <ArrowRightIcon className="size-4" />

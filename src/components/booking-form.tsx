@@ -190,7 +190,7 @@ export function BookingForm({ locale }: { locale: Locale }) {
           {t(locale, COPY.submit)}
         </button>
         <p className="text-muted mt-2 text-sm">{t(locale, COPY.submitHint)}</p>
-        <a href={`tel:${SITE.phone}`} className="text-leaf mt-1 inline-block text-sm font-semibold">
+        <a href={`tel:${SITE.phone}`} className="text-leaf mt-1 inline-flex min-h-11 items-center text-sm font-semibold">
           {t(locale, COPY.callInstead)}
         </a>
       </div>
