@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
+import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { formatArticleDate, type ArticleSummary } from "@/lib/content";
 import { type Locale, localePath, t } from "@/lib/locale";
@@ -32,28 +33,20 @@ export function ArchivePage({
           ...(crumbs ?? []),
         ])}
       />
-      <div className="mx-auto w-full max-w-3xl px-4 py-10 md:py-16">
-        <p aria-hidden="true" className="bg-brand-vivid mb-4 h-1 w-10 rounded-full" />
-        <h1 className="text-3xl font-semibold md:text-4xl">{title}</h1>
-        {description ? <p className="text-muted mt-3">{description}</p> : null}
-
+      <PageHeader title={title} lead={description} />
+      <div className="wrap pb-20 md:pb-28">
         {articles.length === 0 ? (
-          <p className="text-muted mt-8">{t(locale, COPY.empty)}</p>
+          <p className="text-ink-soft">{t(locale, COPY.empty)}</p>
         ) : (
-          <ul className="reveal-stagger mt-8 space-y-4">
+          <ul className="border-line max-w-4xl border-t">
             {articles.map((a) => (
-              <li key={a.slug} className="content-auto">
-                <Link
-                  href={localePath(locale, `/${a.slug}/`)}
-                  className="border-border bg-surface-raised lift shadow-card group block rounded-2xl border p-6 transition"
-                >
-                  <p className="text-muted text-sm">
+              <li key={a.slug} className="border-line border-b">
+                <Link href={localePath(locale, `/${a.slug}/`)} className="group block py-6 md:py-8">
+                  <p className="text-ink-soft text-sm">
                     <time dateTime={a.date}>{formatArticleDate(locale, a.date)}</time>
                   </p>
-                  <h2 className="mt-2 text-xl font-semibold group-hover:text-brand">
-                    {a.title}
-                  </h2>
-                  <p className="text-muted mt-2">{a.excerpt}</p>
+                  <h2 className="group-hover:text-leaf mt-2 text-xl transition-colors md:text-2xl">{a.title}</h2>
+                  <p className="text-ink-soft mt-2 max-w-3xl">{a.excerpt}</p>
                 </Link>
               </li>
             ))}

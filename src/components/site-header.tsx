@@ -47,9 +47,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         */}
         <Link
           href={localePath(locale, "/")}
-          className="flex min-w-0 shrink-0 items-center gap-2.5"
+          className="flex min-h-11 min-w-0 shrink-0 items-center gap-2 min-[360px]:gap-2.5"
         >
-          <BrandMark className="h-7 w-auto shrink-0 sm:h-8" />
+          <BrandMark className="h-6 w-auto shrink-0 min-[360px]:h-7 sm:h-8" />
           <span className="type-display text-ink flex flex-col text-[0.8125rem] leading-[1.15] sm:text-[0.9375rem]">
             <span>{t(locale, COPY.lockup1)}</span>
             <span>{t(locale, COPY.lockup2)}</span>
@@ -73,7 +73,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           </ul>
         </nav>
 
-        <div className="ms-auto flex shrink-0 items-center gap-1.5 lg:ms-3 lg:gap-2">
+        <div className="ms-auto flex shrink-0 items-center gap-1 min-[360px]:gap-1.5 lg:ms-3 lg:gap-2">
           <LanguageSwitch locale={locale} />
 
           <a

@@ -1,10 +1,13 @@
-import { BoltIcon, PhoneIcon, SteeringIcon, WhatsAppIcon } from "@/components/icons";
+import Link from "next/link";
+import { ArrowRightIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
+import { PhotoSlot } from "@/components/placeholder";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
-import { type Locale, t } from "@/lib/locale";
+import { bookingHref } from "@/config/trips";
+import { type Locale, localeDigits, t } from "@/lib/locale";
 import { breadcrumbSchema } from "@/lib/schema";
 
 /*
@@ -15,41 +18,46 @@ import { breadcrumbSchema } from "@/lib/schema";
  */
 
 const COPY = {
-  title: { bn: "এয়ারপোর্ট ও স্টেশন পিকআপ-ড্রপ", en: "Airport & Station Pickup–Drop" },
+  title: { bn: "এয়ারপোর্ট ও স্টেশন পিকআপ-ড্রপ", en: "Airport & station pickup" },
   lead: {
-    bn: "ফ্লাইট বা ট্রেনের সময় আগেই জানিয়ে দিন — নির্ধারিত সময়ে ড্রাইভার গেটে পৌঁছে থাকবে। দিন হোক বা রাত, সার্ভিস ২৪ ঘণ্টা।",
-    en: "Share your flight or train time in advance — a driver is at the gate at the agreed hour. Day or night, the service runs 24 hours.",
+    bn: "ফ্লাইট বা ট্রেনের সময় আগেই জানিয়ে দিন, ঠিক সময়ে ড্রাইভার গেটে থাকবেন। দিন হোক বা রাত, সার্ভিস ২৪ ঘণ্টা।",
+    en: "Tell us your flight or train time and a driver is at the gate at that hour. Day or night, the service runs 24 hours.",
   },
+  book: { bn: "পিকআপ বুক করুন", en: "Book a pickup" },
   airportTitle: { bn: "শাহ মখদুম বিমানবন্দর", en: "Shah Makhdum Airport" },
   airportBody: {
-    bn: "ফ্লাইটের নাম ও অবতরণের সময় জানিয়ে রাখুন — ড্রাইভার সেই অনুযায়ী অপেক্ষায় থাকে। লাগেজ বুঝে নেওয়া থেকে গন্তব্যে পৌঁছানো — সব একই ভাড়ায়। শহরে ফেরা বা বিমানবন্দরে যাওয়া — দুটোই হয়।",
-    en: "Tell us the flight and its landing time — the driver waits accordingly. From luggage to your destination, it is one fare. Airport runs into the city or out to the terminal, both ways.",
+    bn: "ফ্লাইটের নাম ও নামার সময় জানিয়ে রাখুন, ড্রাইভার সেই অনুযায়ী অপেক্ষায় থাকেন। লাগেজ তোলা থেকে গন্তব্যে পৌঁছানো, সব একই ভাড়ায়। শহরে আসা বা বিমানবন্দরে যাওয়া, দুটোই হয়।",
+    en: "Tell us the flight and its landing time and the driver waits for it. From the luggage to your door is one fare. Into the city or out to the terminal, both ways.",
   },
-  stationTitle: { bn: "রাজশাহী রেলওয়ে স্টেশন", en: "Rajshahi Railway Station" },
+  stationTitle: { bn: "রাজশাহী রেলস্টেশন", en: "Rajshahi railway station" },
   stationBody: {
-    bn: "ট্রেনের সময়সূচি অনুযায়ী ড্রাইভাভাড়া প্ল্যাটফর্মের সামনে হাজির। সকালের প্রথম ট্রেন হোক বা গভীর রাতের শেষ ট্রেন — সময় বললেই গাড়ি ঠিক থাকে।",
-    en: "A driver meets you in front of the platform per the train schedule. The first morning train or the last one deep in the night — give the time and the car is set.",
+    bn: "ট্রেনের সময় অনুযায়ী ড্রাইভার প্ল্যাটফর্মের সামনে থাকেন। সকালের প্রথম ট্রেন হোক বা রাতের শেষ ট্রেন, সময় বললেই গাড়ি ঠিক থাকে।",
+    en: "A driver meets you outside the platform at your train's time. The first train of the morning or the last one at night: give the time and the car is set.",
   },
-  stepsTitle: { bn: "কীভাবে কাজ করে", en: "How it works" },
+  stepsTitle: { bn: "যেভাবে হয়", en: "How it works" },
   steps: [
     {
-      bn: "কল বা হোয়াটসঅ্যাপে ফ্লাইট/ট্রেনের সময় ও গন্তব্য জানান।",
-      en: "Call or message with your flight/train time and destination.",
+      bn: "কল বা হোয়াটসঅ্যাপে ফ্লাইট বা ট্রেনের সময় আর গন্তব্য জানান।",
+      en: "Call or message with your flight or train time and where you are going.",
     },
     {
-      bn: "ভাড়া ও গাড়ি কথা বলে নিশ্চিত করুন — কোনো লুকানো খরচ নেই।",
-      en: "Agree the fare and the car on the call — no hidden costs.",
+      bn: "ভাড়া ও গাড়ি কথা বলে ঠিক করুন। কোনো লুকানো খরচ নেই।",
+      en: "Agree the fare and the car on the call. There are no hidden costs.",
     },
     {
-      bn: "নির্ধারিত সময়ে ড্রাইভার বিমানবন্দর/স্টেশনে হাজির — লাগেজসহ যাত্রা।",
-      en: "The driver is at the airport or station at the agreed time — luggage handled, journey done.",
+      bn: "ঠিক সময়ে ড্রাইভার বিমানবন্দর বা স্টেশনে থাকবেন, লাগেজসহ গাড়িতে তুলে নেবেন।",
+      en: "The driver is at the airport or station on time and helps with the luggage.",
     },
-  ] as const,
+  ],
   fareTitle: { bn: "ভাড়া কত?", en: "What does it cost?" },
   fareBody: {
-    bn: "পিকআপ-ড্রপের ভাড়া সময় ও গন্তব্য অনুযায়ী নির্ধারিত হয় — কল করে আপনার কাস্টম ফেয়ার জেনে নিন।",
-    en: "Pickup–drop fares depend on the time and destination — call to get your custom quote.",
+    bn: "পিকআপ-ড্রপের ভাড়া সময় ও গন্তব্য অনুযায়ী। কল করে জেনে নিন।",
+    en: "Pickup fares depend on the time and the destination. Call and ask.",
   },
+  callAria: { bn: "কল করুন", en: "Call" },
+  whatsapp: { bn: "হোয়াটসঅ্যাপে লিখুন", en: "Message on WhatsApp" },
+  shotAirport: { bn: "শাহ মখদুম বিমানবন্দরে যাত্রীকে নিতে আসা গাড়ি", en: "A car arriving at Shah Makhdum Airport" },
+  shotStation: { bn: "রাজশাহী রেলস্টেশনে লাগেজসহ একটি পরিবার", en: "A family with luggage at Rajshahi railway station" },
   home: { bn: "হোম", en: "Home" },
 } as const;
 
@@ -73,71 +81,60 @@ export function PickupPage({ locale }: { locale: Locale }) {
         ])}
       />
 
-      <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
+      <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)}>
+        <Link href={bookingHref(locale, { trip: "pickup" })} className="btn btn-primary">
+          {t(locale, COPY.book)}
+          <ArrowRightIcon className="size-4" />
+        </Link>
+      </PageHeader>
 
-      {/* ------------------------------------------------------ The two hubs */}
-      <section className="mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <div className="reveal-stagger grid gap-5 sm:grid-cols-2">
+      <div className="wrap pb-20 md:pb-28">
+        <div className="grid gap-12 md:grid-cols-2 md:gap-10">
           {[
-            { Icon: BoltIcon, title: COPY.airportTitle, body: COPY.airportBody },
-            { Icon: SteeringIcon, title: COPY.stationTitle, body: COPY.stationBody },
-          ].map(({ Icon, title, body }) => (
-            <div
-              key={title.en}
-              className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-6 transition"
-            >
-              <span className="bg-brand-soft text-brand flex size-11 items-center justify-center rounded-xl">
-                <Icon className="size-6" />
-              </span>
-              <h2 className="mt-4 text-lg font-semibold">{t(locale, title)}</h2>
-              <p className="text-muted mt-2 text-sm leading-relaxed">
-                {t(locale, body)}
-              </p>
-            </div>
+            { title: COPY.airportTitle, body: COPY.airportBody, shot: COPY.shotAirport },
+            { title: COPY.stationTitle, body: COPY.stationBody, shot: COPY.shotStation },
+          ].map(({ title, body, shot }) => (
+            <section key={title.en} aria-label={t(locale, title)} className="border-line border-t pt-6">
+              <h2 className="text-2xl md:text-3xl">{t(locale, title)}</h2>
+              <p className="text-ink-soft mt-3">{t(locale, body)}</p>
+              <PhotoSlot shot={t(locale, shot)} className="mt-6" />
+            </section>
           ))}
         </div>
 
-        {/* ------------------------------------------------------- How it works */}
-        <h2 className="reveal mt-14 text-2xl font-semibold md:text-3xl">
-          {t(locale, COPY.stepsTitle)}
-        </h2>
-        <ol className="reveal-stagger mt-6 space-y-3">
-          {COPY.steps.map((step, index) => (
-            <li
-              key={step.en}
-              className="border-border bg-surface-raised shadow-card flex gap-3 rounded-xl border p-4"
-            >
-              <span className="bg-brand text-brand-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-                {locale === "bn" ? ["১", "২", "৩"][index] : index + 1}
-              </span>
-              {t(locale, step)}
-            </li>
-          ))}
-        </ol>
+        <section aria-labelledby="pickup-steps" className="mt-16 max-w-3xl md:mt-24">
+          <h2 id="pickup-steps" className="text-section">{t(locale, COPY.stepsTitle)}</h2>
+          <ol className="mt-6">
+            {COPY.steps.map((step, i) => (
+              <li key={step.en} className="border-line flex gap-4 border-b py-4">
+                <span aria-hidden="true" className="figures text-leaf w-6 shrink-0 text-xl">
+                  {localeDigits(locale, i + 1)}
+                </span>
+                {t(locale, step)}
+              </li>
+            ))}
+          </ol>
+        </section>
 
-        {/* -------------------------------------------------------- Fare + CTA */}
-        <div className="reveal border-accent bg-accent-soft mt-8 rounded-2xl border p-6">
-          <h2 className="text-lg font-semibold">{t(locale, COPY.fareTitle)}</h2>
-          <p className="text-muted mt-1.5">{t(locale, COPY.fareBody)}</p>
-          <div className="mt-5 flex flex-wrap gap-3">
+        <section aria-labelledby="pickup-fare" className="mt-16 max-w-3xl md:mt-24">
+          <h2 id="pickup-fare" className="text-section">{t(locale, COPY.fareTitle)}</h2>
+          <p className="text-ink-soft mt-3">{t(locale, COPY.fareBody)}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
             <a
               href={`tel:${SITE.phone}`}
-              className="press bg-accent text-accent-fg inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold transition hover:brightness-110"
+              aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
+              className="btn btn-primary"
             >
               <PhoneIcon className="size-5" />
               {t(locale, SITE.phoneDisplay)}
             </a>
-            <a
-              href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-              className="press bg-whatsapp inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold text-black transition hover:brightness-95"
-            >
-              <WhatsAppIcon className="size-5" />
-              {t(locale, { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" })}
+            <a href={`https://wa.me/${SITE.whatsapp}?text=${waText}`} className="btn btn-quiet">
+              <WhatsAppIcon className="text-whatsapp-ink size-5" />
+              {t(locale, COPY.whatsapp)}
             </a>
           </div>
-        </div>
-      </section>
-
+        </section>
+      </div>
     </PageShell>
   );
 }

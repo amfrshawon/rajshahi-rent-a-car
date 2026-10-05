@@ -9,6 +9,7 @@ const COPY = {
   callAria: { bn: "কল করুন", en: "Call" },
   book: { bn: "বুক করুন", en: "Book a car" },
   label: { bn: "দ্রুত যোগাযোগ", en: "Quick contact" },
+  ambulance: { bn: "অ্যাম্বুলেন্সের জন্য কল করুন", en: "Call for an ambulance" },
 } as const;
 
 /**
@@ -16,7 +17,28 @@ const COPY = {
  * with a call, so it stays under the thumb; booking takes the wider part
  * because it is the action the site exists for.
  */
-export function MobileActionBar({ locale }: { locale: Locale }) {
+export function MobileActionBar({ locale, emergency = false }: { locale: Locale; emergency?: boolean }) {
+  if (emergency) {
+    return (
+      <nav
+        aria-label={t(locale, COPY.label)}
+        className="border-line bg-ground fixed inset-x-0 bottom-0 z-50 border-t md:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        <div className="p-2">
+          <a
+            href={`tel:${SITE.phone}`}
+            aria-label={`${t(locale, COPY.ambulance)} ${t(locale, SITE.phoneDisplay)}`}
+            className="btn press bg-pin text-on-pin w-full gap-2"
+          >
+            <PhoneIcon className="size-5" />
+            {t(locale, COPY.ambulance)}
+          </a>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav
       aria-label={t(locale, COPY.label)}

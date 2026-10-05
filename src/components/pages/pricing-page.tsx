@@ -1,8 +1,9 @@
-import { ChecklistIcon } from "@/components/icons";
+import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { FLEET } from "@/config/site";
-import { formatTaka, type Locale, t } from "@/lib/locale";
+import { bookingHref } from "@/config/trips";
+import { type Locale, formatTaka, localeDigits, t } from "@/lib/locale";
 
 /*
  * Only the published daily rates appear here. Fuel policy, driver allowance,
@@ -15,25 +16,27 @@ import { formatTaka, type Locale, t } from "@/lib/locale";
 const COPY = {
   title: { bn: "ভাড়ার তালিকা", en: "Pricing" },
   lead: {
-    bn: "রাজশাহী শহরের ভেতরে দিনভিত্তিক ভাড়া। শহরের বাইরে বা লম্বা ট্রিপের ভাড়া দূরত্ব অনুযায়ী নির্ধারিত হয়।",
-    en: "Day rates within Rajshahi city. Outstation and long trips are quoted by distance.",
+    bn: "রাজশাহী শহরের ভেতরে দিনভিত্তিক ভাড়া। শহরের বাইরে বা লম্বা ট্রিপের ভাড়া দূরত্ব অনুযায়ী, ফোনে জানানো হয়।",
+    en: "Day rates within Rajshahi city. Out-of-town and long trips are quoted by distance, on the phone.",
   },
-  vehicle: { bn: "গাড়ি", en: "Vehicle" },
+  caption: { bn: "শহরের ভেতরে দিনপ্রতি ভাড়া, ড্রাইভারসহ", en: "Day rates within the city, with a driver" },
+  vehicle: { bn: "গাড়ি", en: "Car" },
   type: { bn: "ধরন", en: "Type" },
   seats: { bn: "আসন", en: "Seats" },
-  perDay: { bn: "দৈনিক ভাড়া", en: "Day rate" },
-  askTitle: { bn: "যা কলে জেনে নেবেন", en: "Confirmed when you call" },
+  perDay: { bn: "দিনপ্রতি", en: "Per day" },
+  book: { bn: "বুক করুন", en: "Book" },
+  askTitle: { bn: "যা ফোনে ঠিক হয়", en: "Settled on the phone" },
   askLead: {
-    bn: "ট্রিপ অনুযায়ী নিচের বিষয়গুলো আগেই পরিষ্কার করে জানিয়ে দেওয়া হয় — কোনো লুকানো খরচ নেই।",
-    en: "These are agreed up front for your specific trip — there are no hidden costs.",
+    bn: "এগুলো ট্রিপ অনুযায়ী আলাদা, তাই বুকিংয়ের আগেই পরিষ্কার করে বলে দেওয়া হয় — পরে কোনো লুকানো খরচ নেই।",
+    en: "These vary by trip, so they are agreed before you book. There are no hidden costs afterwards.",
   },
 } as const;
 
 const ASK = [
-  { bn: "জ্বালানি খরচ কার — ভাড়ার সাথে না আলাদা", en: "Whether fuel is included or billed separately" },
-  { bn: "শহরের বাইরে গেলে ভাড়া কীভাবে হিসাব হবে", en: "How outstation trips are calculated" },
+  { bn: "জ্বালানি খরচ ভাড়ার সাথে, না আলাদা", en: "Whether fuel is included or billed separately" },
+  { bn: "শহরের বাইরে গেলে ভাড়া কীভাবে হিসাব হবে", en: "How out-of-town trips are calculated" },
   { bn: "ড্রাইভারের খাওয়া ও থাকার খরচ", en: "Driver meals and overnight allowance" },
-  { bn: "নির্ধারিত সময়ের বেশি হলে অতিরিক্ত চার্জ", en: "Overtime beyond the agreed hours" },
+  { bn: "ঠিক করা সময়ের বেশি হলে অতিরিক্ত চার্জ", en: "Overtime beyond the agreed hours" },
 ] as const;
 
 export function PricingPage({ locale }: { locale: Locale }) {
@@ -41,51 +44,55 @@ export function PricingPage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <div className="reveal border-border bg-surface-raised shadow-card overflow-x-auto rounded-2xl border">
-          <table className="w-full border-collapse text-left">
-            <thead className="bg-surface border-border border-b">
-              <tr>
-                <th scope="col" className="px-5 py-3.5 font-semibold">{t(locale, COPY.vehicle)}</th>
-                <th scope="col" className="px-5 py-3.5 font-semibold">{t(locale, COPY.type)}</th>
-                <th scope="col" className="px-5 py-3.5 font-semibold">{t(locale, COPY.seats)}</th>
-                <th scope="col" className="px-5 py-3.5 text-right font-semibold">{t(locale, COPY.perDay)}</th>
+      <div className="wrap pb-20 md:pb-28">
+        <table className="w-full max-w-4xl border-collapse text-start">
+          <caption className="text-ink-soft mb-3 text-start text-sm">{t(locale, COPY.caption)}</caption>
+          <thead>
+            <tr className="border-ink border-b-2 text-sm">
+              <th scope="col" className="py-3 pe-4 text-start">{t(locale, COPY.vehicle)}</th>
+              <th scope="col" className="hidden py-3 pe-4 text-start sm:table-cell">{t(locale, COPY.type)}</th>
+              <th scope="col" className="hidden py-3 pe-4 text-start sm:table-cell">{t(locale, COPY.seats)}</th>
+              <th scope="col" className="py-3 text-end">{t(locale, COPY.perDay)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {FLEET.map((v) => (
+              <tr key={v.slug} className="border-line border-b">
+                <th scope="row" className="py-5 pe-4 text-start align-middle">
+                  <span className="type-display block text-lg md:text-xl">{v.name}</span>
+                  <span className="text-ink-soft type-text block text-sm sm:hidden">
+                    {t(locale, v.type)} · {localeDigits(locale, v.seats)} {t(locale, COPY.seats)}
+                  </span>
+                  <Link
+                    href={bookingHref(locale, { vehicle: v.slug })}
+                    className="text-leaf type-text inline-flex min-h-11 min-w-11 items-center text-sm underline-offset-4 hover:underline"
+                  >
+                    {t(locale, COPY.book)}
+                  </Link>
+                </th>
+                <td className="text-ink-soft hidden py-5 pe-4 align-middle sm:table-cell">{t(locale, v.type)}</td>
+                <td className="text-ink-soft hidden py-5 pe-4 align-middle sm:table-cell">{localeDigits(locale, v.seats)}</td>
+                <td className="figures py-5 text-end align-middle text-2xl whitespace-nowrap md:text-3xl">
+                  ৳{formatTaka(locale, v.pricePerDay)}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {FLEET.map((v) => (
-                <tr key={v.slug} className="border-border border-t last:border-0">
-                  <th scope="row" className="px-5 py-4 font-semibold">{v.name}</th>
-                  <td className="text-muted px-5 py-4">{t(locale, v.type)}</td>
-                  <td className="text-muted px-5 py-4">{formatTaka(locale, v.seats)}</td>
-                  <td className="text-brand px-5 py-4 text-right text-lg font-bold whitespace-nowrap">
-                    ৳{formatTaka(locale, v.pricePerDay)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
 
-        <div className="reveal mt-14">
-          <h2 className="text-2xl font-semibold md:text-3xl">{t(locale, COPY.askTitle)}</h2>
-          <p className="text-muted mt-2">{t(locale, COPY.askLead)}</p>
-        </div>
-        <ul className="reveal-stagger mt-6 grid gap-3 sm:grid-cols-2">
-          {ASK.map((item) => (
-            <li
-              key={item.en}
-              className="border-border bg-surface-raised flex items-start gap-3 rounded-xl border p-4"
-            >
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                <ChecklistIcon className="size-4.5" />
-              </span>
-              {t(locale, item)}
-            </li>
-          ))}
-        </ul>
-      </section>
-
+        <section aria-labelledby="ask" className="mt-16 max-w-3xl md:mt-24">
+          <h2 id="ask" className="text-section">{t(locale, COPY.askTitle)}</h2>
+          <p className="text-ink-soft mt-3">{t(locale, COPY.askLead)}</p>
+          <ul className="mt-6">
+            {ASK.map((item) => (
+              <li key={item.en} className="border-line flex gap-3 border-b py-4">
+                <span aria-hidden="true" className="bg-leaf mt-3 size-1.5 shrink-0 rounded-full" />
+                {t(locale, item)}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </PageShell>
   );
 }

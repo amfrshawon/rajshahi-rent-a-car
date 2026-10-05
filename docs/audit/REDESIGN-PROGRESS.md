@@ -53,7 +53,11 @@ exist in the built export.
   ambulance call line; a route board from Rajshahi; the fleet; booking in
   three steps. Booking is one form in five steps, prefilled from any tile,
   route row or car, checked in Bangla, sent through WhatsApp.
-- [ ] Phase 4 — inner pages
+- [x] **Phase 4 — inner pages.** Fleet, pricing, day trips, wedding cars,
+  airport and station, ambulance, about, contact, FAQ, blog, articles,
+  category and tag archives, in both languages, all on the new system. No
+  icon cards, no card chrome: hairline lists, large figures, real photos,
+  and labelled slots where the owner's photo shoot will go.
 - [ ] Phase 5 — verify
 - [ ] Phase 6 — hand back
 
@@ -157,6 +161,21 @@ placeholders hidden as they are in production. No horizontal overflow at
   `notes` field, because its schema has no fields for them.
 - **Errors use the pin red.** The brief keeps the red for pins, live status
   and emergencies; a field error is the one other place it appears.
+- **The ambulance page leads with the number.** A pin-red panel; the
+  number is the first thing under the header and the largest type on the
+  page, as a full-width white call button on a phone. On that page the
+  sticky phone bar becomes one red "অ্যাম্বুলেন্সের জন্য কল করুন" button,
+  because "book a car" means nothing there. Facts (২৪/৭, ১৫ মিনিট, সারা দেশে)
+  are set as figures, not icon cards. The 5.0 Google rating stays here,
+  credited and linked, with no review markup.
+- **Photo-shoot slots.** Day trips, wedding cars, airport and station, and
+  about have a dashed frame naming the planned shot (from the audit's shot
+  list). Like the placeholders, they show on dev and preview builds only;
+  production shows nothing there and no stock photo stands in.
+- **The FAQ is a hairline accordion** in `<details>`, still zero JavaScript,
+  first answer open.
+- **Fixed an existing typo** on the airport page: "ড্রাইভাভাড়া" was meant to
+  be "ড্রাইভার".
 - **Retired on the home page:** the trust strip, the bento grid, the
   duplicated services list, the blog cards (a "travel guides" link stays in
   the footer) and the quick-booking bar over the hero.
@@ -188,6 +207,12 @@ placeholders hidden as they are in production. No horizontal overflow at
   Nagad, Rocket, Upay) or bank transfer, and no cards, as `docs/PLAN.md`
   records. Please confirm before launch.
 - **Read the new Bangla copy** (list below).
+- **Check the blog posts' prices and offers.** Several legacy posts quote
+  figures that contradict the current fleet and rate card, for example the
+  Puthia guide's "Toyota Allion সেডান (৳২,৫০০/দিন)" (no Allion in the fleet;
+  sedans are ৳৪,০০০–৪,৫০০) and discount offers in the two April posts and
+  "how to choose" ("10% from day 2"). They came over from WordPress; this
+  redesign did not touch article text. Customers will quote them.
 - **Photo shoot** (shot list in the audit). The fleet uses the three
   existing photos at one crop; they still come from three different places.
 

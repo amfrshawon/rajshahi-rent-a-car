@@ -1,6 +1,6 @@
-import { AmbulanceIcon, MapPinIcon, SteeringIcon, TagIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
+import { PhotoSlot } from "@/components/placeholder";
 import { SITE } from "@/config/site";
 import { type Locale, t } from "@/lib/locale";
 
@@ -12,13 +12,21 @@ import { type Locale, t } from "@/lib/locale";
  */
 
 const COPY = {
-  title: { bn: "আমাদের সম্পর্কে", en: "About Us" },
+  title: { bn: "আমাদের সম্পর্কে", en: "About us" },
   lead: {
-    bn: "রাজশাহী শহরের কাদিরগঞ্জে আমাদের অফিস। স্থানীয় পরিবার থেকে শুরু করে দেশ-বিদেশের ভ্রমণকারী — সবার জন্য গাড়ি ভাড়ার সেবা।",
-    en: "Our office is in Kadirgonj, Rajshahi. We rent to local families and to visitors from across the country and abroad.",
+    bn: "রাজশাহী শহরের কাদিরগঞ্জে আমাদের অফিস। স্থানীয় পরিবার থেকে দেশ-বিদেশের ভ্রমণকারী, সবার জন্য ড্রাইভারসহ গাড়ি ভাড়া।",
+    en: "Our office is in Kadirgonj, Rajshahi. We rent cars with drivers to local families and to visitors from across the country and abroad.",
   },
   whatTitle: { bn: "আমরা যা করি", en: "What we do" },
   whereTitle: { bn: "কোথায় পাবেন", en: "Where to find us" },
+  address: { bn: "ঠিকানা", en: "Address" },
+  phone: { bn: "ফোন", en: "Phone" },
+  hours: { bn: "সময়", en: "Hours" },
+  callAria: { bn: "কল করুন", en: "Call" },
+  shot: {
+    bn: "আমাদের একজন ড্রাইভার যাত্রীর জন্য পেছনের দরজা খুলে দিচ্ছেন",
+    en: "One of our drivers opening the rear door for a passenger",
+  },
 } as const;
 
 const WHAT = [
@@ -40,46 +48,53 @@ const WHAT = [
   },
 ] as const;
 
-const WHAT_ICONS = [SteeringIcon, MapPinIcon, TagIcon, AmbulanceIcon] as const;
-
 export function AboutPage({ locale }: { locale: Locale }) {
   return (
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-3xl px-4 py-12 md:py-16">
-        <h2 className="reveal text-2xl font-semibold md:text-3xl">{t(locale, COPY.whatTitle)}</h2>
-        <ul className="reveal-stagger mt-6 space-y-3">
-          {WHAT.map((item, i) => {
-            const Icon = WHAT_ICONS[i % WHAT_ICONS.length];
-            return (
-              <li
-                key={item.en}
-                className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5"
-              >
-                <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                  <Icon className="size-5.5" />
-                </span>
-                {t(locale, item)}
-              </li>
-            );
-          })}
-        </ul>
+      <div className="wrap grid gap-12 pb-20 md:pb-28 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
+        <div>
+          <section aria-labelledby="what">
+            <h2 id="what" className="text-section">{t(locale, COPY.whatTitle)}</h2>
+            <ul className="mt-6">
+              {WHAT.map((item) => (
+                <li key={item.en} className="border-line flex gap-3 border-b py-4 md:text-lg">
+                  <span aria-hidden="true" className="bg-leaf mt-3 size-1.5 shrink-0 rounded-full" />
+                  {t(locale, item)}
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <h2 className="reveal mt-14 text-2xl font-semibold md:text-3xl">
-          {t(locale, COPY.whereTitle)}
-        </h2>
-        <address className="border-border bg-surface-raised shadow-card text-muted mt-6 rounded-2xl border p-5 not-italic">
-          {t(locale, SITE.address)}
-          <br />
-          <a href={`tel:${SITE.phone}`} className="hover:text-fg">
-            {t(locale, SITE.phoneDisplay)}
-          </a>
-          <br />
-          {t(locale, SITE.hours)}
-        </address>
-      </section>
-
+          <section aria-labelledby="where" className="mt-16">
+            <h2 id="where" className="text-section">{t(locale, COPY.whereTitle)}</h2>
+            <dl className="mt-6 grid gap-x-8 sm:grid-cols-3">
+              <div className="border-line border-b py-4">
+                <dt className="text-ink-soft text-sm">{t(locale, COPY.address)}</dt>
+                <dd className="mt-1">{t(locale, SITE.address)}</dd>
+              </div>
+              <div className="border-line border-b py-4">
+                <dt className="text-ink-soft text-sm">{t(locale, COPY.phone)}</dt>
+                <dd>
+                  <a
+                    href={`tel:${SITE.phone}`}
+                    aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
+                    className="type-display inline-flex min-h-11 items-center hover:underline"
+                  >
+                    {t(locale, SITE.phoneDisplay)}
+                  </a>
+                </dd>
+              </div>
+              <div className="border-line border-b py-4">
+                <dt className="text-ink-soft text-sm">{t(locale, COPY.hours)}</dt>
+                <dd className="mt-1">{t(locale, SITE.hours)}</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+        <PhotoSlot shot={t(locale, COPY.shot)} className="lg:sticky lg:top-28 lg:self-start" />
+      </div>
     </PageShell>
   );
 }

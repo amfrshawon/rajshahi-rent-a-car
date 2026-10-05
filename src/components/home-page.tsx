@@ -11,7 +11,7 @@ import { type Locale, formatTaka, localeDigits, t } from "@/lib/locale";
 
 const COPY = {
   kicker: { bn: "রাজশাহী · ২৪ ঘণ্টা · ড্রাইভারসহ", en: "Rajshahi · 24 hours · with a driver" },
-  title: { bn: "এক কলে গাড়ি দরজায়।", en: "One call, and the car is at your door." },
+  title: { bn: "এক কলে গাড়ি দরজায়।", en: "One call. Car at your door." },
   lead: {
     bn: "প্রাইভেট কার আর মাইক্রোবাস, অভিজ্ঞ ড্রাইভারসহ। ভাড়া আগেই ঠিক হয়, পরে কোনো লুকানো খরচ নেই।",
     en: "Sedans and a microbus, with experienced drivers. The fare is agreed first, with no hidden costs.",
@@ -55,7 +55,7 @@ const COPY = {
   fleetTitle: { bn: "চালকসহ তিনটি গাড়ি", en: "Three cars, with drivers" },
   fleetLead: {
     bn: "সব গাড়ি এসি ও নিয়মিত সার্ভিসিং করা। ভাড়া শহরের ভেতরে, দিনপ্রতি।",
-    en: "Every car is air-conditioned and regularly serviced. Day rates within the city.",
+    en: "All air-conditioned and regularly serviced. Day rates in the city.",
   },
   fleetMore: { bn: "আসন, জ্বালানি ও গিয়ার দেখুন", en: "Seats, fuel and gearbox" },
   seats: { bn: "আসন", en: "seats" },
@@ -67,21 +67,21 @@ const COPY = {
       title: { bn: "কল বা মেসেজ করুন", en: "Call or message" },
       body: {
         bn: "ফোন, হোয়াটসঅ্যাপ বা বুকিং ফর্ম, যেটা সুবিধা।",
-        en: "Phone, WhatsApp or the booking form, whichever suits you.",
+        en: "Phone, WhatsApp or the form, whichever suits you.",
       },
     },
     {
       title: { bn: "ভাড়া নিশ্চিত করি", en: "We confirm the fare" },
       body: {
         bn: "রুট আর সময় শুনে ভাড়া বলি। রাজি হলে বুকিং পাকা।",
-        en: "Tell us the route and time; we quote. Agree, and it is booked.",
+        en: "Tell us the route and time and we quote. Agree, and it is booked.",
       },
     },
     {
       title: { bn: "ড্রাইভার পৌঁছে যান", en: "The driver arrives" },
       body: {
         bn: "ঠিক করা সময়ে, আপনার দেওয়া ঠিকানায়।",
-        en: "At the time you set, at the address you gave.",
+        en: "On time, at the address you gave.",
       },
     },
   ],

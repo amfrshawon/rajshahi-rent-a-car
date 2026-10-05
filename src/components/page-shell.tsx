@@ -9,9 +9,12 @@ import { businessSchema } from "@/lib/schema";
 
 export function PageShell({
   locale,
+  emergency = false,
   children,
 }: {
   locale: Locale;
+  /** The ambulance page: the phone bar becomes a single emergency call. */
+  emergency?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -27,7 +30,7 @@ export function PageShell({
         <ViewTransition>{children}</ViewTransition>
       </main>
       <SiteFooter locale={locale} />
-      <MobileActionBar locale={locale} />
+      <MobileActionBar locale={locale} emergency={emergency} />
       {/* Every page carries the business node; @id keeps it a single entity. */}
       <JsonLd data={businessSchema(locale)} />
     </>

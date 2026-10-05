@@ -1,17 +1,8 @@
-import {
-  AmbulanceIcon,
-  BoltIcon,
-  ChecklistIcon,
-  ClockIcon,
-  MapPinIcon,
-  PhoneIcon,
-  ShieldIcon,
-  WhatsAppIcon,
-} from "@/components/icons";
+import { PhoneIcon, StarIcon, WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { SITE } from "@/config/site";
-import { type Locale, t } from "@/lib/locale";
+import { type Locale, localeDigits, t } from "@/lib/locale";
 
 /*
  * Facts here come from the owner's Google Business Profile ("Rajshahi
@@ -32,20 +23,21 @@ const COPY = {
   eyebrow: { bn: "২৪ ঘণ্টা জরুরি সেবা", en: "24-hour emergency service" },
   title: { bn: "রাজশাহী অ্যাম্বুলেন্স সার্ভিস", en: "Rajshahi Ambulance Service" },
   lead: {
-    bn: "জরুরি মুহূর্তে দ্রুত ও নির্ভরযোগ্য অ্যাম্বুলেন্স। রাজশাহী মেডিকেল এলাকায় অবস্থান — রাজশাহী শহর থেকে সারা দেশে রোগী পরিবহন।",
+    bn: "জরুরি মুহূর্তে দ্রুত ও নির্ভরযোগ্য অ্যাম্বুলেন্স। রাজশাহী মেডিকেল এলাকায় অবস্থান, রাজশাহী শহর থেকে সারা দেশে রোগী পরিবহন।",
     en: "Fast, dependable emergency transport. Based at Rajshahi Medical, serving Rajshahi city and the whole country.",
   },
-  callNow: { bn: "এখনই কল করুন", en: "Call now" },
   callAria: {
     bn: "জরুরি অ্যাম্বুলেন্সের জন্য কল করুন",
     en: "Call for an emergency ambulance",
   },
-  whatsapp: { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" },
+  tapToCall: { bn: "চাপ দিলেই কল হবে", en: "Tap to call" },
+  whatsapp: { bn: "হোয়াটসঅ্যাপে লিখুন", en: "Message on WhatsApp" },
+  factsLabel: { bn: "এক নজরে", en: "At a glance" },
   alwaysOpen: { bn: "সবসময় খোলা", en: "Always open" },
-  responseTime: { bn: "১৫ মিনিটের মধ্যে", en: "Under 15 minutes" },
-  responseLabel: { bn: "সাড়া দেওয়ার সময়", en: "Response time" },
+  responseTime: { bn: "১৫ মিনিট", en: "15 min" },
+  responseLabel: { bn: "এর মধ্যে সাড়া", en: "or less to respond" },
   nationwide: { bn: "সারা দেশে", en: "Nationwide" },
-  nationwideLabel: { bn: "রোগী পরিবহন", en: "Patient transport" },
+  nationwideLabel: { bn: "রোগী পরিবহন", en: "patient transport" },
   provideTitle: { bn: "আমরা যা দিই", en: "What we provide" },
   callReadyTitle: { bn: "কল করার সময় যা বলবেন", en: "What to tell us when you call" },
   callReadyLead: {
@@ -53,26 +45,16 @@ const COPY = {
     en: "Having these ready gets an ambulance moving in the shortest time.",
   },
   coverageTitle: { bn: "কোথায় কোথায় সেবা", en: "Where we serve" },
-  ratingTitle: { bn: "গ্রাহকদের রেটিং", en: "Customer rating" },
-  ratingBody: {
-    bn: "গুগল বিজনেস প্রোফাইলে ৫.০ রেটিং, ২টি রিভিউ।",
-    en: "Rated 5.0 on our Google Business Profile, from 2 reviews.",
-  },
-  viewOnGoogle: { bn: "গুগলে দেখুন", en: "View on Google" },
+  rating: { bn: "গুগলে ৫.০ · ২টি রিভিউ", en: "5.0 on Google · 2 reviews" },
+  viewOnGoogle: { bn: "গুগলে রিভিউ দেখুন", en: "See the reviews on Google" },
   licensed: {
-    bn: "লাইসেন্সপ্রাপ্ত ও ইনস্যুরেন্স করা — রাজশাহী ও তার বাইরে সেবা",
-    en: "Licensed and insured — serving Rajshahi and beyond",
-  },
-  bottomTitle: { bn: "জরুরি প্রয়োজন?", en: "Need one now?" },
-  bottomLead: {
-    bn: "দিন হোক বা রাত, সরাসরি কল করুন। লাইন সবসময় খোলা।",
-    en: "Day or night, call directly. The line is always open.",
+    bn: "লাইসেন্সপ্রাপ্ত ও ইনস্যুরেন্স করা।",
+    en: "Licensed and insured.",
   },
 } as const;
 
 const PROVIDE = [
   {
-    Icon: AmbulanceIcon,
     title: { bn: "অ্যাডভান্সড লাইফ সাপোর্ট", en: "Advanced life support" },
     body: {
       bn: "জরুরি চিকিৎসার সরঞ্জামসহ সজ্জিত অ্যাম্বুলেন্স।",
@@ -80,7 +62,6 @@ const PROVIDE = [
     },
   },
   {
-    Icon: ShieldIcon,
     title: { bn: "প্রশিক্ষিত মেডিকেল স্টাফ", en: "Trained medical staff" },
     body: {
       bn: "রোগী পরিবহনে অভিজ্ঞ ও প্রশিক্ষিত কর্মী সঙ্গে থাকেন।",
@@ -88,7 +69,6 @@ const PROVIDE = [
     },
   },
   {
-    Icon: BoltIcon,
     title: { bn: "দ্রুত সাড়া", en: "Quick response" },
     body: {
       bn: "কল পাওয়ার পর দ্রুততম সময়ে অ্যাম্বুলেন্স রওনা দেয়।",
@@ -96,7 +76,6 @@ const PROVIDE = [
     },
   },
   {
-    Icon: MapPinIcon,
     title: { bn: "রাজশাহী ও সারা দেশ", en: "Rajshahi and nationwide" },
     body: {
       bn: "শহরের ভেতরে, বিভাগজুড়ে এবং ঢাকাসহ যেকোনো জেলায়।",
@@ -107,16 +86,16 @@ const PROVIDE = [
 
 const CALL_READY = [
   {
-    bn: "রোগী এখন কোথায় আছেন — বাসা, হাসপাতাল বা নিকটবর্তী পরিচিত জায়গার নাম",
-    en: "Where the patient is now — home, hospital, or a nearby landmark",
+    bn: "রোগী এখন কোথায় আছেন: বাসা, হাসপাতাল বা কাছের পরিচিত জায়গার নাম",
+    en: "Where the patient is now: home, hospital, or a nearby landmark",
   },
   {
-    bn: "রোগীর অবস্থা সংক্ষেপে — কী হয়েছে, বয়স, হাঁটতে পারছেন কি না",
-    en: "The patient's condition in brief — what happened, age, whether they can walk",
+    bn: "রোগীর অবস্থা সংক্ষেপে: কী হয়েছে, বয়স, হাঁটতে পারছেন কি না",
+    en: "The patient's condition in brief: what happened, age, whether they can walk",
   },
   {
-    bn: "কোথায় নিয়ে যেতে হবে — হাসপাতালের নাম বা ঠিকানা",
-    en: "Where they need to go — hospital name or address",
+    bn: "কোথায় নিয়ে যেতে হবে: হাসপাতালের নাম বা ঠিকানা",
+    en: "Where they need to go: hospital name or address",
   },
   {
     bn: "আপনার যোগাযোগের নম্বর, যাতে ড্রাইভার সরাসরি কথা বলতে পারেন",
@@ -126,7 +105,7 @@ const CALL_READY = [
 
 const COVERAGE = [
   { bn: "রাজশাহী শহর ও রাজশাহী মেডিকেল এলাকা", en: "Rajshahi city and the Rajshahi Medical area" },
-  { bn: "রাজশাহী বিভাগের জেলাগুলো — নাটোর, চাঁপাইনবাবগঞ্জ, নওগাঁ", en: "Districts across Rajshahi division — Natore, Chapainawabganj, Naogaon" },
+  { bn: "রাজশাহী বিভাগের জেলাগুলো: নাটোর, চাঁপাইনবাবগঞ্জ, নওগাঁ", en: "Districts across Rajshahi division: Natore, Chapainawabganj, Naogaon" },
   { bn: "ঢাকাসহ দেশের যেকোনো জেলায় দূরপাল্লার পরিবহন", en: "Long-distance transfers to Dhaka and any district in the country" },
 ] as const;
 
@@ -167,156 +146,127 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
   };
 
   return (
-    <PageShell locale={locale}>
+    <PageShell locale={locale} emergency>
       <JsonLd data={schema} />
 
-      {/* ------------------------------------------------- Emergency hero */}
-      <section className="bg-emergency text-emergency-fg">
-        <div className="mx-auto w-full max-w-4xl px-4 py-10 md:py-14">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">
-            <span aria-hidden="true" className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-white/70" />
-              <span className="relative inline-flex size-2 rounded-full bg-white" />
-            </span>
+      {/* ----------------------------------------------------- Emergency
+          On this page the phone number is the page: the first thing under
+          the header and the largest type on it, hit without aiming. */}
+      <section className="surface-pin">
+        <div className="wrap pt-8 pb-10 md:pt-14 md:pb-16">
+          <p className="flex items-center gap-2 text-sm md:text-base">
+            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-current" />
             {t(locale, COPY.eyebrow)}
           </p>
-
-          <h1 className="mt-4 text-3xl font-semibold md:text-5xl">{t(locale, COPY.title)}</h1>
-          <p className="mt-3 max-w-2xl text-white/90 md:text-lg">{t(locale, COPY.lead)}</p>
-
-          {/*
-            On an emergency page the phone number is the page. It is the first
-            interactive element, sized to be hit without aiming.
-          */}
           <a
             href={`tel:${SITE.phone}`}
             aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
-            className="text-emergency-ink mt-7 flex min-h-16 w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 text-2xl font-bold shadow-lg transition active:scale-[0.98] md:text-3xl"
+            className="btn-primary press mt-5 flex min-h-20 w-full items-center justify-center gap-3 rounded-lg px-4 md:inline-flex md:w-auto md:gap-5 md:px-8"
           >
-            <PhoneIcon className="size-7 shrink-0" />
-            {t(locale, SITE.phoneDisplay)}
-          </a>
-
-          <div className="mt-3 flex flex-wrap gap-3">
-            <a
-              href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-              className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-white/15 px-5 font-semibold ring-1 ring-white/30 transition active:scale-[0.98] sm:flex-none"
+            <PhoneIcon className="size-7 shrink-0 md:size-10" />
+            <span
+              className={`figures whitespace-nowrap ${
+                locale === "bn"
+                  ? "text-[clamp(1.75rem,0.6rem+6vw,5rem)]"
+                  : "text-[clamp(1.3rem,0.3rem+5.2vw,4.25rem)]"
+              }`}
             >
-              <WhatsAppIcon className="size-5" />
-              {t(locale, COPY.whatsapp)}
-            </a>
-          </div>
+              {t(locale, SITE.phoneDisplay)}
+            </span>
+          </a>
+          <p className="mt-2 text-sm md:text-base">{t(locale, COPY.tapToCall)}</p>
+          <h1 className="mt-8 text-3xl md:mt-12 md:text-5xl">{t(locale, COPY.title)}</h1>
+          <p className="mt-3 max-w-2xl md:text-lg">{t(locale, COPY.lead)}</p>
+          <a href={`https://wa.me/${SITE.whatsapp}?text=${waText}`} className="btn btn-quiet mt-6">
+            <WhatsAppIcon className="size-5" />
+            {t(locale, COPY.whatsapp)}
+          </a>
         </div>
       </section>
 
-      {/* ------------------------------------------------------ Stats strip */}
-      <section className="border-border bg-surface border-b">
-        <div className="mx-auto grid w-full max-w-4xl grid-cols-3 divide-x divide-[color:var(--border)] px-4">
+      {/* ------------------------------------------------------- Facts */}
+      <section aria-label={t(locale, COPY.factsLabel)} className="border-line border-b">
+        {/* Rows on a phone (a third of 320 px is too narrow for "Nationwide"),
+            three columns from 640 px. */}
+        <dl className="wrap grid sm:grid-cols-3">
           {[
-            { Icon: ClockIcon, value: "২৪/৭", valueEn: "24/7", label: COPY.alwaysOpen },
-            { Icon: BoltIcon, value: COPY.responseTime.bn, valueEn: COPY.responseTime.en, label: COPY.responseLabel },
-            { Icon: MapPinIcon, value: COPY.nationwide.bn, valueEn: COPY.nationwide.en, label: COPY.nationwideLabel },
-          ].map(({ Icon, value, valueEn, label }) => (
-            <div key={valueEn} className="flex flex-col items-center gap-1 px-2 py-5 text-center">
-              <Icon className="text-emergency-ink size-5" />
-              <span className="text-sm font-semibold sm:text-base">
-                {locale === "bn" ? value : valueEn}
-              </span>
-              <span className="text-muted text-xs">{t(locale, label)}</span>
+            { value: locale === "bn" ? "২৪/৭" : "24/7", label: COPY.alwaysOpen },
+            { value: t(locale, COPY.responseTime), label: COPY.responseLabel },
+            { value: t(locale, COPY.nationwide), label: COPY.nationwideLabel },
+          ].map(({ value, label }, i) => (
+            <div
+              key={label.en}
+              className={`border-line flex flex-row-reverse items-baseline justify-end gap-4 py-4 sm:flex-col-reverse sm:items-start sm:gap-2 sm:py-10 ${
+                i > 0 ? "border-t sm:border-t-0 sm:border-s sm:ps-8" : "sm:pe-8"
+              }`}
+            >
+              {/* The figure leads visually; the label stays first for a list reader. */}
+              <dt className="text-ink-soft text-sm md:text-base">{t(locale, label)}</dt>
+              <dd className="figures text-pin-ink text-2xl lg:text-4xl xl:text-5xl">{value}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       </section>
 
-      {/* --------------------------------------------------------- Provide */}
-      <section className="content-auto mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <h2 className="reveal text-2xl font-semibold md:text-3xl">{t(locale, COPY.provideTitle)}</h2>
-        <ul className="reveal-stagger mt-6 grid gap-5 sm:grid-cols-2">
-          {PROVIDE.map(({ Icon, title, body }) => (
-            <li key={title.en} className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-5 transition">
-              <span className="bg-emergency-soft text-emergency-ink flex size-10 items-center justify-center rounded-xl">
-                <Icon className="size-5" />
-              </span>
-              <h3 className="mt-3 font-semibold">{t(locale, title)}</h3>
-              <p className="text-muted mt-1 text-sm">{t(locale, body)}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <div className="wrap grid gap-16 py-16 md:py-24 lg:grid-cols-2 lg:gap-20">
+        <section aria-labelledby="provide">
+          <h2 id="provide" className="text-section">{t(locale, COPY.provideTitle)}</h2>
+          <ul className="mt-6">
+            {PROVIDE.map(({ title, body }) => (
+              <li key={title.en} className="border-line border-b py-5">
+                <h3 className="text-lg md:text-xl">{t(locale, title)}</h3>
+                <p className="text-ink-soft mt-1">{t(locale, body)}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-      {/* ------------------------------------------------------ Call ready */}
-      <section className="content-auto bg-surface border-border border-y">
-        <div className="mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-          <h2 className="flex items-center gap-3 text-2xl font-semibold md:text-3xl">
-            <ChecklistIcon className="text-emergency-ink size-7 shrink-0" />
-            {t(locale, COPY.callReadyTitle)}
-          </h2>
-          <p className="text-muted mt-2">{t(locale, COPY.callReadyLead)}</p>
-
-          <ol className="reveal-stagger mt-6 space-y-3">
-            {CALL_READY.map((item, index) => (
-              <li
-                key={item.en}
-                className="border-border bg-surface-raised shadow-card flex gap-3 rounded-xl border p-4"
-              >
-                <span className="bg-emergency text-emergency-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-                  {locale === "bn" ? ["১", "২", "৩", "৪"][index] : index + 1}
+        <section aria-labelledby="call-ready">
+          <h2 id="call-ready" className="text-section">{t(locale, COPY.callReadyTitle)}</h2>
+          <p className="text-ink-soft mt-3">{t(locale, COPY.callReadyLead)}</p>
+          <ol className="mt-6">
+            {CALL_READY.map((item, i) => (
+              <li key={item.en} className="border-line flex gap-4 border-b py-4">
+                <span aria-hidden="true" className="figures text-pin-ink w-6 shrink-0 text-xl">
+                  {localeDigits(locale, i + 1)}
                 </span>
-                <span>{t(locale, item)}</span>
+                {t(locale, item)}
               </li>
             ))}
           </ol>
-        </div>
-      </section>
+        </section>
 
-      {/* -------------------------------------------------------- Coverage */}
-      <section className="content-auto mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <h2 className="text-2xl font-semibold md:text-3xl">{t(locale, COPY.coverageTitle)}</h2>
-        <ul className="mt-6 space-y-3">
-          {COVERAGE.map((c) => (
-            <li key={c.en} className="flex items-start gap-3">
-              <MapPinIcon className="text-emergency-ink mt-0.5 size-5 shrink-0" />
-              <span>{t(locale, c)}</span>
-            </li>
-          ))}
-        </ul>
+        <section aria-labelledby="coverage">
+          <h2 id="coverage" className="text-section">{t(locale, COPY.coverageTitle)}</h2>
+          <ul className="mt-6">
+            {COVERAGE.map((c) => (
+              <li key={c.en} className="border-line flex gap-3 border-b py-4">
+                <span aria-hidden="true" className="bg-pin mt-2.5 size-2 shrink-0 rounded-full" />
+                {t(locale, c)}
+              </li>
+            ))}
+          </ul>
+          <p className="text-ink-soft mt-4">{t(locale, COPY.licensed)}</p>
+        </section>
 
-        <div className="reveal border-border bg-surface-raised shadow-card mt-8 rounded-2xl border p-5">
-          <h3 className="font-semibold">{t(locale, COPY.ratingTitle)}</h3>
-          <p className="mt-1 flex items-center gap-2">
-            <span aria-hidden="true" className="text-accent">★★★★★</span>
-            <span className="text-muted text-sm">{t(locale, COPY.ratingBody)}</span>
+        <section aria-label={t(locale, COPY.rating)} className="lg:self-end">
+          <p className="flex items-center gap-3">
+            <span className="text-ink flex" aria-hidden="true">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <StarIcon key={i} className="size-5" />
+              ))}
+            </span>
+            <span className="type-display text-lg">{t(locale, COPY.rating)}</span>
           </p>
           <a
             href={GBP_URL}
             rel="noopener"
-            className="text-brand mt-3 inline-block font-semibold hover:underline"
+            className="text-leaf mt-2 inline-flex min-h-11 items-center underline-offset-4 hover:underline"
           >
-            {t(locale, COPY.viewOnGoogle)} →
+            {t(locale, COPY.viewOnGoogle)}
           </a>
-        </div>
-
-        <p className="text-muted mt-6 flex items-center gap-2 text-sm">
-          <ShieldIcon className="size-4 shrink-0" />
-          {t(locale, COPY.licensed)}
-        </p>
-      </section>
-
-      {/* -------------------------------------------------------- Last CTA */}
-      <section className="bg-emergency text-emergency-fg">
-        <div className="mx-auto w-full max-w-4xl px-4 py-12 text-center">
-          <h2 className="text-2xl font-semibold md:text-3xl">{t(locale, COPY.bottomTitle)}</h2>
-          <p className="mt-2 text-white/90">{t(locale, COPY.bottomLead)}</p>
-          <a
-            href={`tel:${SITE.phone}`}
-            aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
-            className="text-emergency-ink mt-6 inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-xl font-bold shadow-lg transition active:scale-[0.98]"
-          >
-            <PhoneIcon className="size-6" />
-            {t(locale, SITE.phoneDisplay)}
-          </a>
-        </div>
-      </section>
+        </section>
+      </div>
     </PageShell>
   );
 }

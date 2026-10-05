@@ -41,22 +41,20 @@ export function ArticlePage({
     <PageShell locale={locale}>
       {showBackToBlog ? <JsonLd data={articleSchema(locale, article)} /> : null}
       <JsonLd data={breadcrumbSchema(locale, crumbs)} />
-      <article className="mx-auto w-full max-w-3xl px-4 py-10 md:py-16">
+      <article className="wrap pt-8 pb-20 md:pt-16 md:pb-28">
         {showBackToBlog ? (
           <Link
             href={route(locale, "blog")}
-            className="border-border text-muted hover:bg-surface hover:text-fg inline-flex min-h-9 items-center gap-1.5 rounded-full border px-4 text-sm transition"
+            className="text-leaf inline-flex min-h-11 items-center underline-offset-4 hover:underline"
           >
             {t(locale, COPY.backToBlog)}
           </Link>
         ) : null}
 
-        <h1 className="mt-6 text-3xl font-semibold md:text-4xl">
-          {article.title}
-        </h1>
+        <h1 className="text-title mt-4 max-w-4xl">{article.title}</h1>
 
         {showBackToBlog ? (
-          <p className="text-muted mt-3 text-sm">
+          <p className="text-ink-soft mt-4">
             <time dateTime={article.date}>
               {formatArticleDate(locale, article.date)}
             </time>
@@ -64,7 +62,7 @@ export function ArticlePage({
         ) : null}
 
         {article.untranslated && locale === "bn" ? (
-          <p className="border-accent bg-accent-soft text-fg mt-6 rounded-lg border-l-4 p-4 text-sm">
+          <p className="border-leaf bg-mist mt-6 max-w-[40rem] border-s-2 p-4 text-sm">
             {t(locale, COPY.untranslated)}
           </p>
         ) : null}
@@ -74,7 +72,7 @@ export function ArticlePage({
           fetched or executed in the browser.
         */}
         <div
-          className="prose mt-8"
+          className="prose border-line mt-8 border-t pt-8 md:mt-12 md:pt-12"
           lang={article.untranslated && locale === "bn" ? "en" : undefined}
           dangerouslySetInnerHTML={{ __html: article.contentHtml }}
         />

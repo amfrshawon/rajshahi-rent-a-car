@@ -8,7 +8,7 @@ import { type Locale, localeDigits, t } from "@/lib/locale";
 const COPY = {
   closing: {
     bn: "দিন হোক বা গভীর রাত, ফোন ধরা হয়।",
-    en: "Day or the middle of the night, someone answers.",
+    en: "Day or night, someone answers.",
   },
   callAria: { bn: "কল করুন", en: "Call" },
   whatsapp: { bn: "হোয়াটসঅ্যাপে লিখুন", en: "Message on WhatsApp" },
@@ -101,7 +101,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
               <li key={key}>
                 <Link
                   href={route(locale, key)}
-                  className="hover:text-ink text-ink-soft flex min-h-11 items-center underline-offset-4 hover:underline"
+                  className="hover:text-ink text-ink-soft flex min-h-11 min-w-11 items-center underline-offset-4 hover:underline"
                 >
                   {t(locale, COPY[key])}
                 </Link>

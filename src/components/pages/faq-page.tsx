@@ -11,7 +11,7 @@ import { formatTaka, type Locale, t } from "@/lib/locale";
  */
 
 const COPY = {
-  title: { bn: "সাধারণ জিজ্ঞাসা", en: "Frequently Asked Questions" },
+  title: { bn: "সাধারণ জিজ্ঞাসা", en: "Questions people ask" },
   lead: {
     bn: "যেসব প্রশ্ন সবচেয়ে বেশি করা হয়। উত্তর না পেলে সরাসরি কল করুন।",
     en: "The questions we are asked most. If yours is not here, just call.",
@@ -41,7 +41,7 @@ function buildFaqs(locale: Locale) {
     {
       q: { bn: "ভাড়া কত?", en: "What are the rates?" },
       a: {
-        bn: `শহরের ভেতরে দৈনিক ভাড়া — ${rates}। শহরের বাইরের ট্রিপের ভাড়া দূরত্ব অনুযায়ী নির্ধারিত হয়।`,
+        bn: `শহরের ভেতরে দৈনিক ভাড়া: ${rates}। শহরের বাইরের ট্রিপের ভাড়া দূরত্ব অনুযায়ী, ফোনে জানানো হয়।`,
         en: `Day rates within the city are ${rates}. Outstation trips are quoted by distance.`,
       },
     },
@@ -86,35 +86,30 @@ export function FaqPage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-3xl px-4 py-12 md:py-16">
-        {/*
-          <details> keeps the accordion at zero client JavaScript — one less
-          thing to hydrate on a low-end phone. The indicator rotates via CSS
-          when open; the reduced-motion block keeps that transition honest.
-        */}
-        <div className="reveal-stagger space-y-3">
+      {/*
+        <details> keeps the answers at zero client JavaScript. The first
+        one starts open so the page never looks empty.
+      */}
+      <div className="wrap pb-20 md:pb-28">
+        <div className="border-line max-w-3xl border-t">
           {faqs.map((f, i) => (
-            <details
-              key={f.q.en}
-              className="border-border bg-surface-raised shadow-card group rounded-2xl border"
-              open={i === 0}
-            >
-              <summary className="marker:content-none flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 p-5 [&::-webkit-details-marker]:hidden">
-                <h2 className="text-lg font-semibold">{t(locale, f.q)}</h2>
+            <details key={f.q.en} className="border-line group border-b" open={i === 0}>
+              <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-4 marker:content-none [&::-webkit-details-marker]:hidden">
+                <h2 className="text-lg md:text-xl">{t(locale, f.q)}</h2>
                 <span
                   aria-hidden="true"
-                  className="border-border text-muted grid size-8 shrink-0 place-items-center rounded-full border transition-transform duration-300 group-open:rotate-45"
+                  className="border-field text-ink grid size-9 shrink-0 place-items-center rounded-full border transition-transform duration-200 group-open:rotate-45"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="size-4">
                     <path d="M12 5v14M5 12h14" />
                   </svg>
                 </span>
               </summary>
-              <p className="text-muted px-5 pb-5">{t(locale, f.a)}</p>
+              <p className="text-ink-soft max-w-2xl pb-6 md:text-lg">{t(locale, f.a)}</p>
             </details>
           ))}
         </div>
-      </section>
+      </div>
 
       <JsonLd data={schema} />
     </PageShell>

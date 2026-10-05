@@ -132,6 +132,21 @@
 }
 .surface-padma { background-color: var(--padma); }
 .surface-deep { background-color: var(--padma-deep); }
+
+/* The emergency panel. White text on the pin red is 5.0:1, so everything
+   on it is full white; nothing is set in a softer tint. */
+.surface-pin {
+  background-color: var(--pin);
+  color: var(--on-pin);
+  --ink: var(--on-pin);
+  --ink-soft: var(--on-pin);
+  --line: rgb(255 255 255 / 0.4);
+  --field: var(--on-pin);
+  --primary: #ffffff;
+  --primary-hover: #ffe9eb;
+  --on-primary: #b91c30; /* 6.0:1 on white */
+  --focus: #ffffff;
+}
 }
 
 @theme inline {
@@ -157,30 +172,6 @@
   --color-tile: var(--tile);
   --color-tile-hover: var(--tile-hover);
 
-  /*
-    LEGACY ALIASES. The inner pages still use the old names until Phase 4
-    rebuilds them; mapping them here keeps those pages readable meanwhile.
-    Delete this block once nothing references them.
-  */
-  --color-bg: var(--ground);
-  --color-surface: var(--mist);
-  --color-surface-raised: var(--raised);
-  --color-fg: var(--ink);
-  --color-muted: var(--ink-soft);
-  --color-border: var(--line);
-  --color-brand: var(--leaf);
-  --color-brand-strong: var(--padma);
-  --color-brand-soft: var(--mist);
-  --color-brand-fg: var(--on-primary);
-  --color-brand-vivid: var(--leaf);
-  --color-accent: var(--primary);
-  --color-accent-soft: var(--mist);
-  --color-accent-fg: var(--on-primary);
-  --color-emergency: var(--pin);
-  --color-emergency-ink: var(--pin-ink);
-  --color-emergency-soft: var(--mist);
-  --color-emergency-fg: var(--on-pin);
-  --color-whatsapp: #25d366;
 
   /*
     Type. Anek, cut locally into static files (scripts/build-fonts.py),
@@ -349,12 +340,6 @@ p { text-wrap: pretty; }
 /* Room for the sticky mobile action bar, including the home indicator. */
 @utility pb-action-bar {
   padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
-}
-
-/* Skip layout and paint for sections that are still off screen. */
-@utility content-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 640px;
 }
 
 @utility no-scrollbar {

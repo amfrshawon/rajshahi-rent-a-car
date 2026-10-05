@@ -22,3 +22,24 @@ export function Placeholder({ children, note }: { children: ReactNode; note: str
     </span>
   );
 }
+
+/**
+ * Where a photograph from the owner's planned shoot will go (shot list in
+ * docs/audit/2026-10-05-design-audit.md). Dev and preview builds show a
+ * labelled frame at the photo's ratio; production shows nothing, and no
+ * stock photo stands in.
+ */
+export function PhotoSlot({ shot, className = "" }: { shot: string; className?: string }) {
+  if (!SHOW) return null;
+  return (
+    <div
+      data-placeholder=""
+      className={`border-field text-ink-soft grid aspect-[3/2] place-items-center rounded-lg border border-dashed p-6 text-center text-sm ${className}`}
+    >
+      <span>
+        <span className="type-display block">Photo shoot</span>
+        {shot}
+      </span>
+    </div>
+  );
+}
