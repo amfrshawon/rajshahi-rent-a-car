@@ -44,7 +44,11 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
 - **Phase 3 — done.** Home rebuilt (hero with trip tiles, route board, fleet,
   three booking steps, closing strip); booking flow reworked to the one-flow
   field set. Home is now **3,185 px / 4.08 screens** (was 7.01).
-- **Next:** Phase 4 — apply the system to the inner pages.
+- **Phase 4 — done.** Every inner page — fleet, pricing, tours, wedding,
+  airport/station, ambulance, about, contact, FAQ, blog index, articles,
+  archives — now draws on the system. Build + lint pass.
+- **Next:** Phase 5 — run the acceptance measurements and fix anything that
+  fails.
 
 ### Phase 1 — the nine defects
 
@@ -124,6 +128,18 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
 - **Only on-record numbers are shown.** Puthia's 32 km / 50 min (the site's own
   guide) is the only route fact displayed; every other distance shows
   *"যাচাই করুন"* and route prices are absent entirely.
+- **The icon-in-a-square card is gone from every page.** Trust strip, services,
+  bento grid, contact rows and ambulance features are now plain lists, tables,
+  or large numerals. Card chrome is only used where an element must genuinely
+  stand apart; tiles sit at 8px radius.
+- **No stock photography and no empty photo boxes.** Only the three real fleet
+  photos and the logo are used. Rather than ship grey "photo coming" panels on
+  a premium page, the owner's shot list stays a logged task (below); the design
+  does not depend on images it does not have.
+- **Contact is a plain method list** (phone, email, office, hours) with the
+  WhatsApp button beneath, not four icon cards. The ambulance page keeps the
+  phone number as the first and largest element, and its features and
+  call-checklist are plain lists.
 
 ## Needs the owner
 
@@ -189,3 +205,11 @@ Audit reference (measured from outside BD, same build): Home 84 / LCP 4.5 s /
 - **Booking:** empty submit and a bad phone both block in the browser; a tile
   link prefills trip type and a route link prefills destination (verified:
   `?trip=outside&destination=ঢাকা` → `outside` / `ঢাকা`).
+
+### Phase 4
+
+- **Horizontal overflow: none** across 15 page types (home bn/en, fleet,
+  pricing, tours, wedding, airport/station, about, contact, FAQ, blog, an
+  article, a category archive, a tag archive, ambulance) at 320, 360, 375, 390,
+  412, 768, 1024 and 1440 px.
+- **Before/after home length at 360:** 6,314 px → 3,185 px.
