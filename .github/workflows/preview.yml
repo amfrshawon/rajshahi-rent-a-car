@@ -1,12 +1,12 @@
 name: Preview on GitHub Pages
 
-# A review copy of the site. This is NOT production — production is ExonHost,
-# deployed by deploy.yml. The preview is marked noindex and its robots.txt
-# disallows everything, so a public copy cannot compete with the real domain
-# in search results.
+# A review copy of the DEV branch. This is NOT production — production is
+# ExonHost, deployed by deploy.yml. The preview is marked noindex and its
+# robots.txt disallows everything, so a public copy cannot compete with the
+# real domain in search results.
 on:
   push:
-    branches: [main]
+    branches: [dev]
   workflow_dispatch:
 
 permissions:

@@ -1,19 +1,21 @@
 name: Build and deploy
 
-# Staging deploys on every push to main. Production is manual only — the
-# apex still serves the live WordPress site until cutover, and an accidental
-# overwrite there would take the business offline.
+# Branch model:
+#   dev  → builds and deploys to dev.rajshahirentacar.bd (environment `dev`)
+#   main → builds only. Production deploys are a deliberate, manual act
+#          (workflow_dispatch → production) until cutover is done; after
+#          cutover, auto-deploying main is a one-line change.
 on:
   push:
-    branches: [main]
+    branches: [dev, main]
   workflow_dispatch:
     inputs:
       target:
         description: Where to deploy
         required: true
-        default: staging
+        default: dev
         type: choice
-        options: [staging, production]
+        options: [dev, production]
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -49,8 +51,13 @@ jobs:
     runs-on: ubuntu-latest
     # Nothing to deploy to until the FTP secrets are configured
     # (docs/DEPLOY.md §3). Skip rather than fail every push until then.
-    if: ${{ vars.FTP_CONFIGURED == 'true' }}
-    environment: ${{ inputs.target || 'staging' }}
+    #
+    # push → dev deploys; push → main does not deploy (manual dispatch only).
+    if: >-
+      vars.FTP_CONFIGURED == 'true' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' && github.ref == 'refs/heads/dev'))
+    environment: ${{ inputs.target || 'dev' }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -66,8 +73,11 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./out/
+          # Environment-scoped: the `dev` environment carries the dev-site
+          # document root, `production` the live one. A same-named secret at
+          # environment level wins over the repo level.
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}
-          # Never touch the WordPress install sharing this account.
+          # Never touch a WordPress install sharing this account.
           exclude: |
             **/.git*
             **/.git*/**
