@@ -41,7 +41,10 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
 - **Phase 2 — done.** Palette tokens, Anek typography, shared buttons/tiles,
   restyled header/page-header/sticky bar. Preloaded fonts **111 KB** (was
   242 KB).
-- **Next:** Phase 3 — rebuild the home page and the booking flow.
+- **Phase 3 — done.** Home rebuilt (hero with trip tiles, route board, fleet,
+  three booking steps, closing strip); booking flow reworked to the one-flow
+  field set. Home is now **3,185 px / 4.08 screens** (was 7.01).
+- **Next:** Phase 4 — apply the system to the inner pages.
 
 ### Phase 1 — the nine defects
 
@@ -106,6 +109,21 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
   tells; only elements that must stand apart get a shadow now.
 - **The sticky bar is two actions, not three** (call icon + filled "বুক করুন"),
   per 5.6; WhatsApp keeps its buttons in the page body.
+- **The booking flow lives on the contact page, not inline on the home page.**
+  Tiles and route rows link to it with `?trip=` / `?destination=`. An inline
+  nine-field form would have pushed the home back over the length target; the
+  home instead leads with the tiles and the route board, which is the point of
+  the redesign.
+- **Green text uses the Leaf token, not the Padma surface token.** `--brand` is
+  a dark surface in dark mode, so `text-brand` would be unreadable there; all
+  green text and icons now use `--leaf`, which lifts in dark mode. Brand
+  *surfaces* still use `--brand` with `--brand-fg`.
+- **The ambulance row sits on a white ground inside the green hero.** Pin red
+  is 4.96:1 on white but fails on Padma green, so the row gets its own ground
+  to keep the emergency text legible.
+- **Only on-record numbers are shown.** Puthia's 32 km / 50 min (the site's own
+  guide) is the only route fact displayed; every other distance shows
+  *"যাচাই করুন"* and route prices are absent entirely.
 
 ## Needs the owner
 
@@ -158,3 +176,16 @@ Audit reference (measured from outside BD, same build): Home 84 / LCP 4.5 s /
 - **Contrast (computed, not eyeballed):** Leaf `#1D7A4E` on white 5.32:1, on
   Mist 4.85:1; Pin red `#D7263D` on white 4.96:1, on Mist 4.52:1; white on
   Padma 12.22:1; Ink on white 18.22:1. All ≥ 4.5:1.
+
+### Phase 3
+
+- **Home length: 3,185 px = 4.08 screens** at 360 × 780 (was 5,467 px /
+  7.01). Target ≤ 3,500 px met. At 390 px it is 3.98 screens; at 1440 px,
+  3.41.
+- **Horizontal overflow:** none at 360, 390 or 1440 px on the home, Bangla or
+  English.
+- **Dark mode:** `data-theme="dark"` resolves `--bg` to `#0a0f0c`; system
+  preference and both overrides all switch (three-state intact).
+- **Booking:** empty submit and a bad phone both block in the browser; a tile
+  link prefills trip type and a route link prefills destination (verified:
+  `?trip=outside&destination=ঢাকা` → `outside` / `ঢাকা`).
