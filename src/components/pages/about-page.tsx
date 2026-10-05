@@ -1,5 +1,4 @@
 import { BookingCta } from "@/components/booking-cta";
-import { AmbulanceIcon, MapPinIcon, SteeringIcon, TagIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { SITE } from "@/config/site";
@@ -41,39 +40,30 @@ const WHAT = [
   },
 ] as const;
 
-const WHAT_ICONS = [SteeringIcon, MapPinIcon, TagIcon, AmbulanceIcon] as const;
-
 export function AboutPage({ locale }: { locale: Locale }) {
   return (
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-3xl px-4 py-12 md:py-16">
-        <h2 className="reveal text-2xl font-semibold md:text-3xl">{t(locale, COPY.whatTitle)}</h2>
-        <ul className="reveal-stagger mt-6 space-y-3">
-          {WHAT.map((item, i) => {
-            const Icon = WHAT_ICONS[i % WHAT_ICONS.length];
-            return (
-              <li
-                key={item.en}
-                className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5"
-              >
-                <span className="bg-brand-soft text-leaf mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                  <Icon className="size-5.5" />
-                </span>
-                {t(locale, item)}
-              </li>
-            );
-          })}
+      {/* Plain list, not four icon cards. */}
+      <section className="mx-auto w-full max-w-3xl px-4 py-8 md:py-12">
+        <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.whatTitle)}</h2>
+        <ul className="border-border mt-5 border-t">
+          {WHAT.map((item) => (
+            <li key={item.en} className="border-border border-b py-3.5">
+              {t(locale, item)}
+            </li>
+          ))}
         </ul>
 
-        <h2 className="reveal mt-14 text-2xl font-semibold md:text-3xl">
-          {t(locale, COPY.whereTitle)}
-        </h2>
-        <address className="border-border bg-surface-raised shadow-card text-muted mt-6 rounded-2xl border p-5 not-italic">
+        <h2 className="mt-12 text-2xl font-bold md:text-3xl">{t(locale, COPY.whereTitle)}</h2>
+        <address className="text-muted mt-4 leading-relaxed not-italic">
           {t(locale, SITE.address)}
           <br />
-          <a href={`tel:${SITE.phone}`} className="hover:text-fg">
+          <a
+            href={`tel:${SITE.phone}`}
+            className="text-leaf inline-flex min-h-11 items-center font-semibold"
+          >
             {t(locale, SITE.phoneDisplay)}
           </a>
           <br />

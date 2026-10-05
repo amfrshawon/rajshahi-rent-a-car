@@ -11,7 +11,7 @@ import {
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { SITE } from "@/config/site";
-import { type Locale, t } from "@/lib/locale";
+import { type Locale, localeDigits, t } from "@/lib/locale";
 
 /*
  * Facts here come from the owner's Google Business Profile ("Rajshahi
@@ -174,10 +174,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
       <section className="bg-emergency text-emergency-fg">
         <div className="mx-auto w-full max-w-4xl px-4 py-10 md:py-14">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">
-            <span aria-hidden="true" className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-white/70" />
-              <span className="relative inline-flex size-2 rounded-full bg-white" />
-            </span>
+            <span aria-hidden="true" className="bg-white size-2 rounded-full" />
             {t(locale, COPY.eyebrow)}
           </p>
 
@@ -191,7 +188,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           <a
             href={`tel:${SITE.phone}`}
             aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
-            className="text-emergency-ink mt-7 flex min-h-16 w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 text-2xl font-bold shadow-lg transition active:scale-[0.98] md:text-3xl"
+            className="text-emergency-ink mt-7 flex min-h-16 w-full items-center justify-center gap-3 rounded-lg bg-white px-6 text-2xl font-bold transition active:scale-[0.98] md:text-3xl"
           >
             <PhoneIcon className="size-7 shrink-0" />
             {t(locale, SITE.phoneDisplay)}
@@ -230,14 +227,11 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
 
       {/* --------------------------------------------------------- Provide */}
       <section className="content-auto mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <h2 className="reveal text-2xl font-semibold md:text-3xl">{t(locale, COPY.provideTitle)}</h2>
-        <ul className="reveal-stagger mt-6 grid gap-5 sm:grid-cols-2">
-          {PROVIDE.map(({ Icon, title, body }) => (
-            <li key={title.en} className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-5 transition">
-              <span className="bg-emergency-soft text-emergency-ink flex size-10 items-center justify-center rounded-xl">
-                <Icon className="size-5" />
-              </span>
-              <h3 className="mt-3 font-semibold">{t(locale, title)}</h3>
+        <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.provideTitle)}</h2>
+        <ul className="border-border mt-6 border-t">
+          {PROVIDE.map(({ title, body }) => (
+            <li key={title.en} className="border-border border-b py-4">
+              <h3 className="font-bold">{t(locale, title)}</h3>
               <p className="text-muted mt-1 text-sm">{t(locale, body)}</p>
             </li>
           ))}
@@ -253,16 +247,16 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           </h2>
           <p className="text-muted mt-2">{t(locale, COPY.callReadyLead)}</p>
 
-          <ol className="reveal-stagger mt-6 space-y-3">
+          <ol className="border-border mt-6 border-t">
             {CALL_READY.map((item, index) => (
               <li
                 key={item.en}
-                className="border-border bg-surface-raised shadow-card flex gap-3 rounded-xl border p-4"
+                className="border-border flex items-start gap-3 border-b py-3"
               >
                 <span className="bg-emergency text-emergency-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-                  {locale === "bn" ? ["১", "২", "৩", "৪"][index] : index + 1}
+                  {localeDigits(locale, index + 1)}
                 </span>
-                <span>{t(locale, item)}</span>
+                <span className="pt-0.5">{t(locale, item)}</span>
               </li>
             ))}
           </ol>
@@ -281,16 +275,16 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           ))}
         </ul>
 
-        <div className="reveal border-border bg-surface-raised shadow-card mt-8 rounded-2xl border p-5">
-          <h3 className="font-semibold">{t(locale, COPY.ratingTitle)}</h3>
+        <div className="border-border mt-8 border-t pt-4">
+          <h3 className="font-bold">{t(locale, COPY.ratingTitle)}</h3>
           <p className="mt-1 flex items-center gap-2">
-            <span aria-hidden="true" className="text-accent">★★★★★</span>
+            <span aria-hidden="true" className="text-leaf">★★★★★</span>
             <span className="text-muted text-sm">{t(locale, COPY.ratingBody)}</span>
           </p>
           <a
             href={GBP_URL}
             rel="noopener"
-            className="text-leaf mt-3 inline-block font-semibold hover:underline"
+            className="text-leaf mt-2 inline-flex min-h-11 items-center font-semibold hover:underline"
           >
             {t(locale, COPY.viewOnGoogle)} →
           </a>
@@ -310,7 +304,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           <a
             href={`tel:${SITE.phone}`}
             aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
-            className="text-emergency-ink mt-6 inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-xl font-bold shadow-lg transition active:scale-[0.98]"
+            className="text-emergency-ink mt-6 inline-flex min-h-14 items-center justify-center gap-3 rounded-lg bg-white px-8 text-xl font-bold transition active:scale-[0.98]"
           >
             <PhoneIcon className="size-6" />
             {t(locale, SITE.phoneDisplay)}

@@ -51,7 +51,7 @@ export function ArticlePage({
           </Link>
         ) : null}
 
-        <h1 className="mt-6 text-3xl font-semibold md:text-4xl">
+        <h1 className="mt-6 text-3xl font-bold md:text-4xl">
           {article.title}
         </h1>
 
@@ -64,7 +64,7 @@ export function ArticlePage({
         ) : null}
 
         {article.untranslated && locale === "bn" ? (
-          <p className="border-accent bg-accent-soft text-fg mt-6 rounded-lg border-l-4 p-4 text-sm">
+          <p className="border-leaf bg-surface text-fg mt-6 rounded-lg border-l-4 p-4 text-sm">
             {t(locale, COPY.untranslated)}
           </p>
         ) : null}

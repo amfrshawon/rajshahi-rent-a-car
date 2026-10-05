@@ -92,15 +92,15 @@ export function FaqPage({ locale }: { locale: Locale }) {
           thing to hydrate on a low-end phone. The indicator rotates via CSS
           when open; the reduced-motion block keeps that transition honest.
         */}
-        <div className="reveal-stagger space-y-3">
+        <div className="border-border border-t">
           {faqs.map((f, i) => (
             <details
               key={f.q.en}
-              className="border-border bg-surface-raised shadow-card group rounded-2xl border"
+              className="border-border group border-b"
               open={i === 0}
             >
-              <summary className="marker:content-none flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 p-5 [&::-webkit-details-marker]:hidden">
-                <h2 className="text-lg font-semibold">{t(locale, f.q)}</h2>
+              <summary className="marker:content-none flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-2 [&::-webkit-details-marker]:hidden">
+                <h2 className="text-lg font-bold">{t(locale, f.q)}</h2>
                 <span
                   aria-hidden="true"
                   className="border-border text-muted grid size-8 shrink-0 place-items-center rounded-full border transition-transform duration-300 group-open:rotate-45"
@@ -110,7 +110,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
                   </svg>
                 </span>
               </summary>
-              <p className="text-muted px-5 pb-5">{t(locale, f.a)}</p>
+              <p className="text-muted pb-5">{t(locale, f.a)}</p>
             </details>
           ))}
         </div>

@@ -1,11 +1,11 @@
 import { BookingCta } from "@/components/booking-cta";
-import { BoltIcon, PhoneIcon, SteeringIcon, WhatsAppIcon } from "@/components/icons";
+import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
-import { type Locale, t } from "@/lib/locale";
+import { type Locale, localeDigits, t } from "@/lib/locale";
 import { breadcrumbSchema } from "@/lib/schema";
 
 /*
@@ -28,7 +28,7 @@ const COPY = {
   },
   stationTitle: { bn: "রাজশাহী রেলওয়ে স্টেশন", en: "Rajshahi Railway Station" },
   stationBody: {
-    bn: "ট্রেনের সময়সূচি অনুযায়ী ড্রাইভাভাড়া প্ল্যাটফর্মের সামনে হাজির। সকালের প্রথম ট্রেন হোক বা গভীর রাতের শেষ ট্রেন — সময় বললেই গাড়ি ঠিক থাকে।",
+    bn: "ট্রেনের সময়সূচি অনুযায়ী ড্রাইভার প্ল্যাটফর্মের সামনে হাজির। সকালের প্রথম ট্রেন হোক বা গভীর রাতের শেষ ট্রেন — সময় বললেই গাড়ি ঠিক থাকে।",
     en: "A driver meets you in front of the platform per the train schedule. The first morning train or the last one deep in the night — give the time and the car is set.",
   },
   stepsTitle: { bn: "কীভাবে কাজ করে", en: "How it works" },
@@ -51,6 +51,7 @@ const COPY = {
     bn: "পিকআপ-ড্রপের ভাড়া সময় ও গন্তব্য অনুযায়ী নির্ধারিত হয় — কল করে আপনার কাস্টম ফেয়ার জেনে নিন।",
     en: "Pickup–drop fares depend on the time and destination — call to get your custom quote.",
   },
+  whatsapp: { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" },
   home: { bn: "হোম", en: "Home" },
 } as const;
 
@@ -76,64 +77,43 @@ export function PickupPage({ locale }: { locale: Locale }) {
 
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      {/* ------------------------------------------------------ The two hubs */}
-      <section className="mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <div className="reveal-stagger grid gap-5 sm:grid-cols-2">
+      <section className="mx-auto w-full max-w-4xl px-4 py-8 md:py-12">
+        {/* The two hubs, as plain sections — no icon cards. */}
+        <div className="grid gap-8 sm:grid-cols-2">
           {[
-            { Icon: BoltIcon, title: COPY.airportTitle, body: COPY.airportBody },
-            { Icon: SteeringIcon, title: COPY.stationTitle, body: COPY.stationBody },
-          ].map(({ Icon, title, body }) => (
-            <div
-              key={title.en}
-              className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-6 transition"
-            >
-              <span className="bg-brand-soft text-leaf flex size-11 items-center justify-center rounded-xl">
-                <Icon className="size-6" />
-              </span>
-              <h2 className="mt-4 text-lg font-semibold">{t(locale, title)}</h2>
-              <p className="text-muted mt-2 text-sm leading-relaxed">
-                {t(locale, body)}
-              </p>
+            { title: COPY.airportTitle, body: COPY.airportBody },
+            { title: COPY.stationTitle, body: COPY.stationBody },
+          ].map(({ title, body }) => (
+            <div key={title.en}>
+              <h2 className="text-xl font-bold">{t(locale, title)}</h2>
+              <p className="text-muted mt-2 leading-relaxed">{t(locale, body)}</p>
             </div>
           ))}
         </div>
 
-        {/* ------------------------------------------------------- How it works */}
-        <h2 className="reveal mt-14 text-2xl font-semibold md:text-3xl">
-          {t(locale, COPY.stepsTitle)}
-        </h2>
-        <ol className="reveal-stagger mt-6 space-y-3">
+        <h2 className="mt-12 text-2xl font-bold md:text-3xl">{t(locale, COPY.stepsTitle)}</h2>
+        <ol className="border-border mt-5 border-t">
           {COPY.steps.map((step, index) => (
-            <li
-              key={step.en}
-              className="border-border bg-surface-raised shadow-card flex gap-3 rounded-xl border p-4"
-            >
-              <span className="bg-brand text-brand-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-                {locale === "bn" ? ["১", "২", "৩"][index] : index + 1}
+            <li key={step.en} className="border-border flex items-start gap-3 border-b py-3">
+              <span className="tnum bg-brand text-brand-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
+                {localeDigits(locale, index + 1)}
               </span>
-              {t(locale, step)}
+              <span className="pt-0.5">{t(locale, step)}</span>
             </li>
           ))}
         </ol>
 
-        {/* -------------------------------------------------------- Fare + CTA */}
-        <div className="reveal border-accent bg-accent-soft mt-8 rounded-2xl border p-6">
-          <h2 className="text-lg font-semibold">{t(locale, COPY.fareTitle)}</h2>
+        <div className="bg-surface border-border mt-10 rounded-lg border p-6">
+          <h2 className="text-lg font-bold">{t(locale, COPY.fareTitle)}</h2>
           <p className="text-muted mt-1.5">{t(locale, COPY.fareBody)}</p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <a
-              href={`tel:${SITE.phone}`}
-              className="press bg-accent text-accent-fg inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold transition hover:brightness-110"
-            >
+            <a href={`tel:${SITE.phone}`} className="btn-primary">
               <PhoneIcon className="size-5" />
               {t(locale, SITE.phoneDisplay)}
             </a>
-            <a
-              href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-              className="press bg-whatsapp inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold text-black transition hover:brightness-95"
-            >
+            <a href={`https://wa.me/${SITE.whatsapp}?text=${waText}`} className="btn-whatsapp">
               <WhatsAppIcon className="size-5" />
-              {t(locale, { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" })}
+              {t(locale, COPY.whatsapp)}
             </a>
           </div>
         </div>

@@ -359,7 +359,8 @@ html[lang="en"] :where(.eyebrow) {
 
 .prose {
   color: var(--fg);
-  max-width: 68ch;
+  /* ~62 characters: comfortable for long-form reading on a phone. */
+  max-width: 62ch;
 }
 
 .prose :is(h2, h3, h4) {
