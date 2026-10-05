@@ -27,6 +27,14 @@ ErrorDocument 404 /404.html
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set X-Frame-Options "SAMEORIGIN"
+
+  # dev.rajshahirentacar.bd is a public staging copy of the live site. It
+  # must never enter the search index, or it competes with the real domain.
+  # Scoped by Host so this same file serves production without the header.
+  # (noindex via header, not robots.txt — robots.txt would block crawling
+  # and hide the noindex signal from crawlers entirely.)
+  SetEnvIfNoCase Host ^dev\. IS_DEV_HOST
+  Header always set X-Robots-Tag "noindex, nofollow" env=IS_DEV_HOST
 </IfModule>
 
 <FilesMatch "^opengraph-image-[A-Za-z0-9_-]+$">
