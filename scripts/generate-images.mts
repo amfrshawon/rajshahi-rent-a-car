@@ -57,81 +57,92 @@ for (const dir of SOURCE_DIRS) {
  * header size, its lettering is illegible anyway — so the header uses only the
  * device, and the words are set as real text next to it.
  *
- * The seam between device and wordmark is DETECTED rather than hardcoded:
- * it sits at a different height in every version of the logo file the project
- * has had (49% for the 2026-02 WordPress export, ~61% for the 2026-10
- * original). Detection walks the alpha channel's per-row coverage and cuts at
- * the emptiest row inside the middle of the artwork.
+ * The device cannot be cut out by rows. In the current logo the swoosh's left
+ * tail dips down beside the "R" of RAJSHAHI, so no empty row separates the
+ * device from the lettering; the only empty band is between RAJSHAHI and RENT
+ * A CAR. A row-based cut there kept RAJSHAHI in the header.
+ *
+ * So it is separated by colour and position instead. The swoosh is the only
+ * green in the artwork: every green pixel is kept. The pin and the lettering
+ * share the same red, but the pin sits above the lettering and is narrow: red
+ * pixels are kept only above the lettering. Width is not a reliable signal
+ * (the pin's head is ~12% of the logo's width), but position is: the pin sits
+ * entirely in the right third, while the lettering starts at the far left. So
+ * the top of the lettering is the first red pixel in the left 60%.
+ *
+ * The header shows the device about 28 px tall, so it is written at 2× that
+ * (64 px) as WebP: a few kilobytes instead of the 216 KB full-size PNG.
  */
 {
   const source = "public/media/brand/logo-mark.png";
-  const meta = await sharp(source).metadata();
-  if (meta.width && meta.height) {
-    const { data, info } = await sharp(source)
-      .ensureAlpha()
-      .raw()
-      .toBuffer({ resolveWithObject: true });
+  const { data, info } = await sharp(source)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
 
-    const coverage = new Array<number>(info.height);
-    for (let y = 0; y < info.height; y++) {
-      let solid = 0;
-      for (let x = 0; x < info.width; x++) {
-        if (data[(y * info.width + x) * 4 + 3] > 40) solid++;
-      }
-      coverage[y] = solid / info.width;
-    }
+  const { width, height } = info;
+  const px = (x: number, y: number) => (y * width + x) * 4;
+  const isGreen = (i: number) =>
+    data[i + 3] > 40 && data[i + 1] > data[i] + 20 && data[i + 1] > data[i + 2];
+  const isRed = (i: number) =>
+    data[i + 3] > 40 && data[i] > data[i + 1] + 40 && data[i] > data[i + 2] + 40;
 
-    /*
-     * 5% row-coverage separates art from residue: the JPEG-derived master
-     * keeps ~2% speckle coverage in the empty gap between device and
-     * wordmark, while any real art row (even thin text strokes) exceeds 5%.
-     * The seam is the middle of the longest empty run inside the band.
-     */
-    const EMPTY = 0.05;
-    let contentTop = coverage.findIndex((c) => c >= EMPTY);
-    let contentBottom = coverage.findLastIndex((c) => c >= EMPTY);
-    if (contentTop < 0) { contentTop = 0; contentBottom = info.height - 1; }
-
-    let best = { start: -1, length: 0 };
-    let run: { start: number; length: number } | null = null;
-    for (let y = contentTop; y <= contentBottom; y++) {
-      if (coverage[y] < EMPTY) {
-        run ??= { start: y, length: 0 };
-        run.length++;
-      } else if (run) {
-        if (run.length > best.length) best = { start: run.start, length: run.length };
-        run = null;
+  let letteringTop = height;
+  const leftZone = Math.round(width * 0.6);
+  search: for (let y = 0; y < height; y++) {
+    for (let x = 0; x < leftZone; x++) {
+      if (isRed(px(x, y))) {
+        letteringTop = Math.max(0, y - 2);
+        break search;
       }
     }
-    if (run && run.length > best.length) best = { start: run.start, length: run.length };
-
-    // No gap found (logo without a wordmark): keep the whole content band.
-    const seam = best.length >= 4 ? best.start + Math.floor(best.length / 2) : contentBottom + 1;
-
-    // Two passes: within one pipeline sharp applies trim BEFORE extract, so
-    // the extract area would be evaluated against the trimmed image and fail.
-    const iconRegion = await sharp(source)
-      .extract({ left: 0, top: 0, width: meta.width, height: seam })
-      .png()
-      .toBuffer();
-
-    const deviceOnly = await sharp(iconRegion)
-      .trim({ threshold: 5 })
-      .png()
-      .toBuffer();
-
-    await sharp(deviceOnly).png().toFile(path.join(OUT_DIR, "logo-device.png"));
-
-    // White silhouette of the same device — for the OG share card (green
-    // strokes would sink into its green ground) and any dark-ground use.
-    await sharp(deviceOnly)
-      .greyscale()
-      .linear(-1, 255)
-      .png()
-      .toFile(path.join(OUT_DIR, "logo-device-white.png"));
-
-    written += 2;
   }
+
+  const device = Buffer.alloc(data.length);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = px(x, y);
+      const keep = isGreen(i) || (isRed(i) && y < letteringTop);
+      if (!keep) continue;
+      device[i] = data[i];
+      device[i + 1] = data[i + 1];
+      device[i + 2] = data[i + 2];
+      device[i + 3] = data[i + 3];
+    }
+  }
+
+  const deviceOnly = await sharp(device, { raw: { width, height, channels: 4 } })
+    .png()
+    .toBuffer()
+    .then((buf) => sharp(buf).trim({ threshold: 5 }).png().toBuffer());
+
+  // Header: 2x of the ~28 px display height.
+  await sharp(deviceOnly)
+    .resize({ height: 64 })
+    .webp({ quality: 90, alphaQuality: 90 })
+    .toFile(path.join(OUT_DIR, "logo-device.webp"));
+
+  // PNG, a little larger, for the favicon tooling.
+  await sharp(deviceOnly).resize({ height: 160 }).png().toFile(path.join(OUT_DIR, "logo-device.png"));
+
+  // White silhouette of the same device — for the OG share card (green
+  // strokes would sink into its green ground) and any dark-ground use.
+  await sharp(deviceOnly)
+    .resize({ height: 160 })
+    .greyscale()
+    .linear(-1, 255)
+    .png()
+    .toFile(path.join(OUT_DIR, "logo-device-white.png"));
+
+  // And a white WebP for the header in dark mode.
+  await sharp(deviceOnly)
+    .resize({ height: 64 })
+    .greyscale()
+    .linear(-1, 255)
+    .webp({ quality: 90, alphaQuality: 90 })
+    .toFile(path.join(OUT_DIR, "logo-device-white.webp"));
+
+  written += 4;
 }
 
 /*

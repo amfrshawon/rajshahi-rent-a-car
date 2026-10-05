@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { WhatsAppIcon } from "@/components/icons";
 import { FLEET, SITE } from "@/config/site";
 import { type Locale, t } from "@/lib/locale";
@@ -11,6 +11,20 @@ import { type Locale, t } from "@/lib/locale";
  */
 const BOOKING_API = process.env.NEXT_PUBLIC_BOOKING_API ?? "/api/booking";
 
+/*
+ * The booking API is not deployed yet: /api/booking returns 404 on dev, and
+ * every submission used to end on "ইন্টারনেটে সমস্যা হয়েছে" — telling a customer
+ * with perfect signal that their internet was the problem.
+ *
+ * Until the API answers /api/health with 200 on the target environment, the
+ * form's primary action is WhatsApp. Set NEXT_PUBLIC_BOOKING_API_LIVE=true in
+ * the build environment once it does.
+ */
+const API_LIVE = process.env.NEXT_PUBLIC_BOOKING_API_LIVE === "true";
+
+/** Same rule as api/src/validation.js, after removing spaces and dashes. */
+const BD_MOBILE = /^(?:\+?880|0)1[3-9]\d{8}$/;
+
 const COPY = {
   name: { bn: "আপনার নাম", en: "Your name" },
   phone: { bn: "মোবাইল নম্বর", en: "Mobile number" },
@@ -20,9 +34,24 @@ const COPY = {
   destination: { bn: "কোথায় যাবেন", en: "Destination" },
   destinationHint: { bn: "যেমন: পুঠিয়া, নাটোর, ঢাকা", en: "e.g. Puthia, Natore, Dhaka" },
   notes: { bn: "অতিরিক্ত তথ্য", en: "Anything else" },
-  submit: { bn: "বুকিং পাঠান", en: "Send booking" },
+  submitWhatsapp: { bn: "হোয়াটসঅ্যাপে বুকিং পাঠান", en: "Send booking on WhatsApp" },
+  submitApi: { bn: "বুকিং পাঠান", en: "Send booking" },
   sending: { bn: "পাঠানো হচ্ছে…", en: "Sending…" },
   required: { bn: "আবশ্যক", en: "required" },
+  errName: { bn: "নাম লিখুন", en: "Enter your name" },
+  errPhone: {
+    bn: "সঠিক মোবাইল নম্বর দিন — যেমন ০১৭১২৩৪৫৬৭৮",
+    en: "Enter a valid mobile number, for example 01712345678",
+  },
+  whatsappNote: {
+    bn: "বোতাম চাপলে হোয়াটসঅ্যাপ খুলবে, আপনার তথ্য লেখা থাকবে। পাঠানোর আগে দেখে নিতে পারবেন।",
+    en: "WhatsApp opens with your details filled in. You can check the message before sending.",
+  },
+  openedTitle: { bn: "হোয়াটসঅ্যাপ খোলা হয়েছে", en: "WhatsApp is open" },
+  openedBody: {
+    bn: "মেসেজটি পাঠালেই বুকিং আমাদের কাছে পৌঁছাবে। হোয়াটসঅ্যাপ না খুললে নিচের বোতাম চাপুন বা সরাসরি কল করুন।",
+    en: "Send the message and your booking reaches us. If WhatsApp did not open, use the button below or call us.",
+  },
   successTitle: { bn: "বুকিং পাওয়া গেছে", en: "Booking received" },
   successBody: {
     bn: "ধন্যবাদ! আমরা শীঘ্রই আপনাকে ফোন করে বুকিং নিশ্চিত করব।",
@@ -30,10 +59,10 @@ const COPY = {
   },
   reference: { bn: "রেফারেন্স নম্বর", en: "Reference" },
   alsoWhatsapp: { bn: "হোয়াটসঅ্যাপেও পাঠান", en: "Also send on WhatsApp" },
-  failedTitle: { bn: "পাঠানো যায়নি", en: "Could not send" },
+  failedTitle: { bn: "বুকিং আমাদের সার্ভারে পৌঁছায়নি", en: "Your booking did not reach us" },
   failedBody: {
-    bn: "ইন্টারনেটে সমস্যা হয়েছে। নিচের বোতামে চাপ দিয়ে হোয়াটসঅ্যাপে পাঠান, অথবা সরাসরি কল করুন।",
-    en: "Something went wrong. Send it on WhatsApp instead, or just call us.",
+    bn: "সমস্যাটি আমাদের দিকে। একই তথ্য হোয়াটসঅ্যাপে পাঠান, অথবা সরাসরি কল করুন।",
+    en: "The problem is on our side. Send the same details on WhatsApp, or call us.",
   },
   sendOnWhatsapp: { bn: "হোয়াটসঅ্যাপে পাঠান", en: "Send on WhatsApp" },
   callInstead: { bn: "কল করুন", en: "Call us" },
@@ -42,15 +71,28 @@ const COPY = {
 type Status =
   | { kind: "idle" }
   | { kind: "sending" }
+  | { kind: "opened" }
   | { kind: "sent"; id: number | null }
   | { kind: "failed" };
 
 type Fields = Record<string, string>;
+type Errors = Partial<Record<"name" | "phone", string>>;
+
+function validate(locale: Locale, values: Fields): Errors {
+  const errors: Errors = {};
+  if ((values.name ?? "").trim().length < 2) errors.name = t(locale, COPY.errName);
+  const phone = (values.phone ?? "").replace(/[\s-]/g, "");
+  if (!BD_MOBILE.test(phone)) errors.phone = t(locale, COPY.errPhone);
+  return errors;
+}
 
 /**
  * Quick variant: the hero's inline widget (name / phone / vehicle / date in one
- * row). Shares the exact submit path, validation and WhatsApp fallback as the
+ * row). Shares the exact submit path, validation and WhatsApp handling as the
  * full form — one behaviour, two densities.
+ *
+ * Both read ?to=, ?vehicle= and ?trip= from the address on load, so a route,
+ * a car or a trip type tapped elsewhere arrives already filled in.
  */
 export function BookingForm({
   locale,
@@ -60,8 +102,23 @@ export function BookingForm({
   variant?: "full" | "quick";
 }) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Errors>({});
   const [lastValues, setLastValues] = useState<Fields>({});
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Prefill from the query string. Static export: read it on the client.
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form) return;
+    const params = new URLSearchParams(window.location.search);
+    const set = (name: string, value: string | null) => {
+      const el = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null;
+      if (el && value) el.value = value;
+    };
+    const trip = params.get("trip");
+    set("destination", params.get("to") ?? trip);
+    set("vehicle", params.get("vehicle"));
+  }, []);
 
   function whatsappHref(values: Fields) {
     const lines = [
@@ -83,10 +140,24 @@ export function BookingForm({
       [...data.entries()].map(([k, v]) => [k, String(v).trim()]),
     ) as Fields;
 
-    setLastValues(values);
-    setErrors({});
-    setStatus({ kind: "sending" });
+    // Check on the phone first: nothing is sent until name and number are valid.
+    const found = validate(locale, values);
+    setErrors(found);
+    if (found.name || found.phone) {
+      const first = event.currentTarget.elements.namedItem(found.name ? "name" : "phone");
+      (first as HTMLElement | null)?.focus();
+      return;
+    }
 
+    setLastValues(values);
+
+    if (!API_LIVE) {
+      setStatus({ kind: "opened" });
+      window.location.href = whatsappHref(values);
+      return;
+    }
+
+    setStatus({ kind: "sending" });
     try {
       const response = await fetch(BOOKING_API, {
         method: "POST",
@@ -108,54 +179,36 @@ export function BookingForm({
       if (!response.ok || !result.ok) throw new Error(result.error ?? "failed");
       setStatus({ kind: "sent", id: result.id ?? null });
     } catch {
-      // Never lose the booking: hand the customer straight to WhatsApp.
+      // Never lose the booking, and never blame the customer's connection.
       setStatus({ kind: "failed" });
     }
   }
 
-  if (status.kind === "sent") {
+  if (status.kind === "opened" || status.kind === "sent" || status.kind === "failed") {
+    const title =
+      status.kind === "opened" ? COPY.openedTitle : status.kind === "sent" ? COPY.successTitle : COPY.failedTitle;
+    const body =
+      status.kind === "opened" ? COPY.openedBody : status.kind === "sent" ? COPY.successBody : COPY.failedBody;
     return (
-      <div
-        className={
-          variant === "quick"
-            ? "border-brand bg-brand-soft text-brand rounded-xl p-4 text-sm"
-            : "border-brand bg-brand-soft rounded-xl border p-6"
-        }
-      >
-        <h3 className="text-brand text-lg font-semibold">{t(locale, COPY.successTitle)}</h3>
-        <p className="mt-2">{t(locale, COPY.successBody)}</p>
-        {status.id ? (
+      <div role="status" className="border-border bg-surface-raised rounded-lg border p-5">
+        <h3 className="text-lg font-semibold">{t(locale, title)}</h3>
+        <p className="text-muted mt-2">{t(locale, body)}</p>
+        {status.kind === "sent" && status.id ? (
           <p className="text-muted mt-2 text-sm">
             {t(locale, COPY.reference)}: #{status.id}
           </p>
         ) : null}
-        <a
-          href={whatsappHref(lastValues)}
-          className="bg-whatsapp mt-5 inline-flex min-h-12 items-center gap-2 rounded-xl px-5 font-semibold text-black transition active:scale-[0.98]"
-        >
-          <WhatsAppIcon className="size-5" />
-          {t(locale, COPY.alsoWhatsapp)}
-        </a>
-      </div>
-    );
-  }
-
-  if (status.kind === "failed") {
-    return (
-      <div className="border-accent bg-accent-soft rounded-xl border p-6">
-        <h3 className="text-lg font-semibold">{t(locale, COPY.failedTitle)}</h3>
-        <p className="mt-2">{t(locale, COPY.failedBody)}</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <a
             href={whatsappHref(lastValues)}
-            className="bg-whatsapp inline-flex min-h-12 items-center gap-2 rounded-xl px-5 font-semibold text-black transition active:scale-[0.98]"
+            className="bg-whatsapp inline-flex min-h-12 items-center gap-2 rounded-lg px-5 font-semibold text-black transition active:scale-[0.98]"
           >
             <WhatsAppIcon className="size-5" />
-            {t(locale, COPY.sendOnWhatsapp)}
+            {t(locale, status.kind === "sent" ? COPY.alsoWhatsapp : COPY.sendOnWhatsapp)}
           </a>
           <a
             href={`tel:${SITE.phone}`}
-            className="border-border inline-flex min-h-12 items-center rounded-xl border px-5 font-semibold"
+            className="border-border inline-flex min-h-12 items-center rounded-lg border px-5 font-semibold"
           >
             {t(locale, COPY.callInstead)}
           </a>
@@ -165,138 +218,116 @@ export function BookingForm({
   }
 
   const field =
-    "border-border bg-surface-raised text-fg w-full rounded-lg border px-3 py-2.5 text-base";
-  const quickField =
-    "border-border bg-surface text-fg w-full rounded-lg border px-3 py-2.5 text-base";
+    "border-border bg-surface-raised text-fg w-full rounded-lg border px-3 py-2.5 text-base aria-[invalid=true]:border-emergency";
   const sending = status.kind === "sending";
+  const submitLabel = sending
+    ? t(locale, COPY.sending)
+    : t(locale, API_LIVE ? COPY.submitApi : COPY.submitWhatsapp);
+  const honeypot = (
+    <input
+      type="text"
+      name="website"
+      tabIndex={-1}
+      autoComplete="off"
+      aria-hidden="true"
+      className="absolute -left-[9999px] size-0 opacity-0"
+    />
+  );
+
+  const nameField = (
+    <Field label={`${t(locale, COPY.name)} (${t(locale, COPY.required)})`} name="name" error={errors.name}>
+      <input
+        id="booking-name"
+        name="name"
+        autoComplete="name"
+        aria-invalid={errors.name ? true : undefined}
+        aria-describedby={errors.name ? "name-error" : undefined}
+        className={field}
+      />
+    </Field>
+  );
+  const phoneField = (
+    <Field label={`${t(locale, COPY.phone)} (${t(locale, COPY.required)})`} name="phone" error={errors.phone}>
+      <input
+        id="booking-phone"
+        name="phone"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        placeholder="01XXXXXXXXX"
+        aria-invalid={errors.phone ? true : undefined}
+        aria-describedby={errors.phone ? "phone-error" : undefined}
+        className={field}
+      />
+    </Field>
+  );
+  const vehicleField = (
+    <Field label={t(locale, COPY.vehicle)} name="vehicle">
+      <select id="booking-vehicle" name="vehicle" defaultValue="" className={field}>
+        <option value="">{t(locale, COPY.anyVehicle)}</option>
+        {FLEET.map((v) => (
+          <option key={v.slug} value={v.name}>
+            {v.name} — {t(locale, v.type)}
+          </option>
+        ))}
+      </select>
+    </Field>
+  );
+  const dateField = (
+    <Field label={t(locale, COPY.date)} name="date">
+      <input id="booking-date" name="date" type="date" className={field} />
+    </Field>
+  );
+  const submit = (
+    <button
+      type="submit"
+      disabled={sending}
+      className="bg-brand text-brand-fg inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98] disabled:opacity-70"
+    >
+      {API_LIVE ? null : <WhatsAppIcon className="size-5" />}
+      {submitLabel}
+    </button>
+  );
 
   if (variant === "quick") {
     return (
-      <form onSubmit={handleSubmit} noValidate className="grid gap-3 md:grid-cols-4">
-        <Field label={t(locale, COPY.name)} name="name" error={errors.name}>
-          <input name="name" required autoComplete="name" className={quickField} />
-        </Field>
-        <Field label={t(locale, COPY.phone)} name="phone" error={errors.phone}>
-          <input
-            name="phone"
-            required
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="01XXXXXXXXX"
-            className={quickField}
-          />
-        </Field>
-        <Field label={t(locale, COPY.vehicle)} name="vehicle">
-          <select name="vehicle" defaultValue="" className={quickField}>
-            <option value="">{t(locale, COPY.anyVehicle)}</option>
-            {FLEET.map((v) => (
-              <option key={v.slug} value={v.name}>
-                {v.name} — {t(locale, v.type)}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label={t(locale, COPY.date)} name="date">
-          <input name="date" type="date" className={quickField} />
-        </Field>
-
-        {/* Honeypot. Hidden from people, tempting to bots. */}
-        <input
-          type="text"
-          name="website"
-          tabIndex={-1}
-          autoComplete="off"
-          aria-hidden="true"
-          className="absolute -left-[9999px] size-0 opacity-0"
-        />
-
-        <button
-          type="submit"
-          disabled={sending}
-          className="press bg-accent text-accent-fg inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 font-semibold disabled:opacity-70 md:col-span-4"
-        >
-          {sending ? t(locale, COPY.sending) : t(locale, COPY.submit)}
-        </button>
+      <form ref={formRef} onSubmit={handleSubmit} noValidate className="grid gap-3 md:grid-cols-4">
+        {nameField}
+        {phoneField}
+        {vehicleField}
+        {dateField}
+        <input type="hidden" name="destination" />
+        {honeypot}
+        <div className="md:col-span-4">{submit}</div>
       </form>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
-      <Field
-        label={`${t(locale, COPY.name)} (${t(locale, COPY.required)})`}
-        name="name"
-        error={errors.name}
-      >
-        <input name="name" required autoComplete="name" className={field} />
-      </Field>
-
-      <Field
-        label={`${t(locale, COPY.phone)} (${t(locale, COPY.required)})`}
-        name="phone"
-        error={errors.phone}
-      >
-        <input
-          name="phone"
-          required
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          placeholder="01XXXXXXXXX"
-          className={field}
-        />
-      </Field>
-
-      <Field label={t(locale, COPY.vehicle)} name="vehicle">
-        <select name="vehicle" defaultValue="" className={field}>
-          <option value="">{t(locale, COPY.anyVehicle)}</option>
-          {FLEET.map((v) => (
-            <option key={v.slug} value={v.name}>
-              {v.name} — {t(locale, v.type)}
-            </option>
-          ))}
-        </select>
-      </Field>
-
-      <Field label={t(locale, COPY.date)} name="date">
-        <input name="date" type="date" className={field} />
-      </Field>
-
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
+      {nameField}
+      {phoneField}
+      {vehicleField}
+      {dateField}
       <div className="sm:col-span-2">
         <Field label={t(locale, COPY.destination)} name="destination">
           <input
+            id="booking-destination"
             name="destination"
             placeholder={t(locale, COPY.destinationHint)}
             className={field}
           />
         </Field>
       </div>
-
       <div className="sm:col-span-2">
         <Field label={t(locale, COPY.notes)} name="notes">
-          <textarea name="notes" rows={3} className={field} />
+          <textarea id="booking-notes" name="notes" rows={3} className={field} />
         </Field>
       </div>
-
-      {/* Honeypot. Hidden from people, tempting to bots. */}
-      <input
-        type="text"
-        name="website"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-        className="absolute -left-[9999px] size-0 opacity-0"
-      />
-
-      <div className="sm:col-span-2">
-        <button
-          type="submit"
-          disabled={sending}
-          className="bg-accent text-accent-fg inline-flex min-h-12 w-full items-center justify-center rounded-xl px-6 font-semibold transition active:scale-[0.98] disabled:opacity-70 sm:w-auto"
-        >
-          {sending ? t(locale, COPY.sending) : t(locale, COPY.submit)}
-        </button>
+      {honeypot}
+      <div className="grid gap-2 sm:col-span-2">
+        {submit}
+        {API_LIVE ? null : <p className="text-muted text-sm">{t(locale, COPY.whatsappNote)}</p>}
       </div>
     </form>
   );
@@ -318,12 +349,10 @@ function Field({
       <span className="text-sm font-medium">{label}</span>
       {children}
       {error ? (
-        <span role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">
+        <span id={`${name}-error`} role="alert" className="text-emergency-ink text-sm font-medium">
           {error}
         </span>
-      ) : (
-        <span className="sr-only" id={`${name}-no-error`} />
-      )}
+      ) : null}
     </label>
   );
 }

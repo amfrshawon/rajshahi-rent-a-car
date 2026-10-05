@@ -16,11 +16,11 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <address className="text-muted mt-2 text-sm not-italic">
               {t(locale, SITE.address)}
               <br />
-              <a href={`tel:${SITE.phone}`} className="hover:text-fg">
+              <a href={`tel:${SITE.phone}`} className="hover:text-fg inline-flex min-h-11 items-center">
                 {t(locale, SITE.phoneDisplay)}
               </a>
               <br />
-              <a href={`mailto:${SITE.email}`} className="hover:text-fg">
+              <a href={`mailto:${SITE.email}`} className="hover:text-fg inline-flex min-h-11 items-center">
                 {SITE.email}
               </a>
               <br />

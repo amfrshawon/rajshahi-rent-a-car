@@ -169,25 +169,25 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </div>
 
         <div className="mx-auto w-full max-w-6xl px-4 pt-16 pb-24 text-white md:px-6 md:pt-28 md:pb-32">
-          <p className="rise rise-1 bg-accent/95 mb-5 inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold">
+          <p className="bg-accent/95 mb-5 inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold">
             {t(locale, COPY.priceFrom)} ৳{formatTaka(locale, cheapest)}
             {t(locale, COPY.perDay)}
           </p>
 
           {/* rise-move: translates without fading — the h1 is a likely LCP
               text node and an opacity animation could defer LCP attribution. */}
-          <h1 className="rise-move max-w-2xl text-4xl leading-tight font-semibold drop-shadow-sm md:text-6xl">
+          <h1 className="max-w-2xl text-4xl leading-tight font-semibold drop-shadow-sm md:text-6xl">
             {t(locale, COPY.heroTitleA)}
             <span className="block text-white/85 md:text-5xl">
               {t(locale, COPY.heroTitleB)}
             </span>
           </h1>
 
-          <p className="rise rise-2 mt-5 max-w-xl text-base text-white/85 md:text-lg">
+          <p className="mt-5 max-w-xl text-base text-white/85 md:text-lg">
             {t(locale, COPY.heroLead)}
           </p>
 
-          <div className="rise rise-3 mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             <a
               href={`tel:${SITE.phone}`}
               className="press bg-accent text-accent-fg inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold shadow-lg transition hover:brightness-110"
@@ -341,12 +341,14 @@ export async function HomePage({ locale }: { locale: Locale }) {
               { bn: "পুঠিয়া", en: "Puthia" },
               { bn: "বাঘা", en: "Bagha" },
             ].map((r) => (
-              <li
-                key={r.en}
-                className="border-border bg-surface-raised lift shadow-card flex items-center gap-2.5 rounded-full border px-5 py-2.5 font-medium transition"
-              >
-                <MapPinIcon className="text-brand-vivid size-4.5 shrink-0" />
-                {t(locale, r)}
+              <li key={r.en}>
+                <Link
+                  href={`${route(locale, "contact")}?to=${encodeURIComponent(t(locale, r))}#booking`}
+                  className="border-border bg-surface-raised lift shadow-card flex min-h-11 items-center gap-2.5 rounded-full border px-5 py-2.5 font-medium transition"
+                >
+                  <MapPinIcon className="text-brand-vivid size-4.5 shrink-0" />
+                  {t(locale, r)}
+                </Link>
               </li>
             ))}
             <li className="text-muted flex items-center gap-2.5 px-2 py-2.5 text-sm">
@@ -435,9 +437,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
               </span>
             </Link>
 
-            {/* Ambulance tile */}
-            <Link
-              href={route(locale, "ambulance")}
+            {/* Ambulance tile: in an emergency the tile itself places the call. */}
+            <a
+              href={`tel:${SITE.phone}`}
               className="border-emergency/30 bg-emergency-soft text-emergency-ink lift shadow-card group rounded-2xl border p-6 transition"
             >
               <AmbulanceIcon className="size-7" />
@@ -451,10 +453,10 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 })}
               </p>
               <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold">
-                {t(locale, COPY.services[2].label)}
+                {t(locale, { bn: "এখনই কল করুন", en: "Call now" })}
                 <ArrowRightIcon className="size-4 transition group-hover:translate-x-0.5" />
               </span>
-            </Link>
+            </a>
           </div>
         </div>
       </section>

@@ -1,5 +1,5 @@
 import { BookingForm } from "@/components/booking-form";
-import { ClockIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { SITE } from "@/config/site";
@@ -85,7 +85,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
             </div>
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
               <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <WhatsAppIcon className="size-5" />
+                <MailIcon className="size-5" />
               </span>
               <div>
                 <p className="text-muted text-sm">{t(locale, COPY.email)}</p>

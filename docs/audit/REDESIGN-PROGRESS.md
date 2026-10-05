@@ -36,7 +36,11 @@ exist in the built export.
 
 - [x] **Phase 0 — set up and baseline.** Worktree, branch, dependencies,
   preview server, this file.
-- [ ] Phase 1 — fixes
+- [x] **Phase 1 — fixes.** Booking goes to WhatsApp with Bangla checks
+  before anything is sent; ambulance tile is a call link; route chips open
+  booking with the destination filled in; email icon; tap targets and the
+  ambulance spoken label; header logo 216 KB → 5 KB; first screen no longer
+  animates; the deploy keeps `.htaccess`.
 - [ ] Phase 2 — design system
 - [ ] Phase 3 — home and booking
 - [ ] Phase 4 — inner pages
@@ -68,6 +72,26 @@ page (tap-target failure).
   download when a page uses them. Renamed internally to "RRC Sans", as the
   OFL asks of modified versions.
 
+- **Booking goes to WhatsApp until the booking server is live.** The
+  `/api/booking` service is not deployed, so posting to it always fails. The
+  form now checks name and phone in Bangla, then opens WhatsApp with the
+  booking written out. Setting `NEXT_PUBLIC_BOOKING_API_LIVE=true` at build
+  time switches it back to posting. If posting fails, the message says the
+  problem is on our side and offers WhatsApp and a call; it never blames the
+  customer's internet.
+- **Why `.htaccess` was ignored on dev.** Not LiteSpeed: the file never
+  reached the server. `actions/upload-artifact@v4` skips files whose names
+  start with a dot, so the deploy artifact had 413 files and no `.htaccess`.
+  `deploy.yml` now sets `include-hidden-files: true`.
+- **The header logo is the mark only.** The old file was the whole logo at
+  977 × 402 px. The script keeps the green swoosh and the red pin and drops
+  the lettering, since the Bangla name sits beside it in the header. Shown
+  at 75 × 32, saved at 2× as WebP: about 5 KB.
+
 ## Needs the owner
 
-_Nothing yet._
+- **Deploy the booking server**, then build with
+  `NEXT_PUBLIC_BOOKING_API_LIVE=true` (`docs/DEPLOY.md` §5b, needs cPanel).
+- **After the next deploy, check headers:**
+  `curl -I https://dev.rajshahirentacar.bd/_next/static/…` should show
+  `Cache-Control: public, max-age=31536000, immutable`.

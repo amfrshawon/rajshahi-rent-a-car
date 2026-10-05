@@ -34,8 +34,8 @@ export function ArchivePage({
       />
       <div className="mx-auto w-full max-w-3xl px-4 py-10 md:py-16">
         <p aria-hidden="true" className="bg-brand-vivid mb-4 h-1 w-10 rounded-full" />
-        <h1 className="rise-move text-3xl font-semibold md:text-4xl">{title}</h1>
-        {description ? <p className="text-muted rise mt-3">{description}</p> : null}
+        <h1 className="text-3xl font-semibold md:text-4xl">{title}</h1>
+        {description ? <p className="text-muted mt-3">{description}</p> : null}
 
         {articles.length === 0 ? (
           <p className="text-muted mt-8">{t(locale, COPY.empty)}</p>

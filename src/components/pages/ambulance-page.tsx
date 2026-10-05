@@ -190,7 +190,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           */}
           <a
             href={`tel:${SITE.phone}`}
-            aria-label={t(locale, COPY.callAria)}
+            aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
             className="text-emergency-ink mt-7 flex min-h-16 w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 text-2xl font-bold shadow-lg transition active:scale-[0.98] md:text-3xl"
           >
             <PhoneIcon className="size-7 shrink-0" />
@@ -309,7 +309,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           <p className="mt-2 text-white/90">{t(locale, COPY.bottomLead)}</p>
           <a
             href={`tel:${SITE.phone}`}
-            aria-label={t(locale, COPY.callAria)}
+            aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
             className="text-emergency-ink mt-6 inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-xl font-bold shadow-lg transition active:scale-[0.98]"
           >
             <PhoneIcon className="size-6" />

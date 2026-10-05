@@ -48,10 +48,15 @@ jobs:
         env:
           NEXT_PUBLIC_IS_PREVIEW: ${{ github.event_name == 'push' || inputs.target != 'production' }}
 
+      # include-hidden-files: upload-artifact@v4 leaves dotfiles out by
+      # default, which silently dropped out/.htaccess from every deploy —
+      # no caching, no security headers, no dev noindex header, no custom
+      # 404 and no old-sitemap redirects reached the server.
       - uses: actions/upload-artifact@v4
         with:
           name: site
           path: out/
+          include-hidden-files: true
           retention-days: 7
 
   deploy:
