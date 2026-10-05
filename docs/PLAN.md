@@ -12,6 +12,21 @@ Status: approved 2026-09-07. Live site being replaced: https://rajshahirentacar.
 > The §12 outstanding items (photography, SMTP, confirmed business facts,
 > GA4 access) remain open.
 
+> **Business decisions confirmed by the owner, 2026-10-05** (after SERP
+> research into "rent a car rajshahi" competitors):
+> - Rental is **daily-rate only** — no hourly packages.
+> - **No free pickup-and-drop service** within Rajshahi city.
+> - Outstation/intercity routes ARE served, but **fares are not published** —
+>   every route is quoted by phone ("call for your custom fare").
+> - Pickup–drop at **Shah Makhdum Airport and Rajshahi Railway Station** is a
+>   dedicated service with its own page, linked from the home page.
+> - Payment accepted via **Bangla QR** — all mobile financial services
+> (bKash, Nagad, Rocket, Upay) and bank transfer. No card/online payment.
+> - The **only Google Business Profile is for the ambulance service** (5.0,
+> 2 reviews); the rental business has no GBP yet, so no rental review
+> markup or widgets exist. The `sameAs` in the AutoRental schema points to
+> the ambulance GBP deliberately.
+
 ---
 
 ## 1. Why this is not a translation job

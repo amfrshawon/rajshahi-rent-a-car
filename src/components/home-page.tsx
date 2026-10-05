@@ -3,6 +3,7 @@ import { BookingForm } from "@/components/booking-form";
 import {
   AmbulanceIcon,
   ArrowRightIcon,
+  BoltIcon,
   CalendarIcon,
   ClockIcon,
   MapPinIcon,
@@ -65,6 +66,14 @@ const COPY = {
   seats: { bn: "আসন", en: "seats" },
   book: { bn: "বুক করুন", en: "Book" },
 
+  routesTitle: { bn: "শহরের বাইরের রুট", en: "Outstation routes" },
+  routesLead: {
+    bn: "কাস্টম রুটের ভাড়া রুট ও সময় অনুযায়ী নির্ধারিত হয় — কল করে জেনে নিন।",
+    en: "Custom-route fares depend on the route and timing — call to get yours.",
+  },
+  routesAsk: { bn: "ভাড়া জানতে কল করুন", en: "Call for the fare" },
+  routesAnywhere: { bn: "আরও যেকোনো গন্তব্য", en: "Anywhere else" },
+
   whyTitle: { bn: "কেন আমাদের বেছে নেবেন", en: "Why ride with us" },
   bentoAlt: {
     bn: "রাজশাহী রেন্ট এ কার-এর টয়োটা এক্সিও",
@@ -93,6 +102,14 @@ const COPY = {
       body: {
         bn: "সাজানো গাড়ি ও নির্দিষ্ট সময়ে উপস্থিতির নিশ্চয়তা।",
         en: "Decorated cars, guaranteed to arrive on the hour.",
+      },
+    },
+    {
+      key: "pickup" as const,
+      label: { bn: "পিকআপ-ড্রপ", en: "Pickup & drop" },
+      body: {
+        bn: "শাহ মখদুম বিমানবন্দর ও রেলওয়ে স্টেশন — সময় মতো ড্রাইভার হাজির।",
+        en: "Shah Makhdum Airport and the railway station — a driver on time, every time.",
       },
     },
     {
@@ -253,7 +270,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           {FLEET.map((v) => (
             <li
               key={v.slug}
-              className="border-border bg-surface-raised lift group shadow-card w-[82%] shrink-0 snap-center overflow-hidden rounded-2xl border transition sm:w-auto sm:shrink"
+              className="border-border bg-surface-raised tilt group shadow-card w-[82%] shrink-0 snap-center overflow-hidden rounded-2xl border sm:w-auto sm:shrink"
             >
               <div className="bg-surface aspect-[16/10] overflow-hidden">
                 <Photo
@@ -262,7 +279,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   height={v.photo.height}
                   alt={v.name}
                   sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 92vw"
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="parallax-img h-full w-full object-cover"
                 />
               </div>
 
@@ -293,6 +310,52 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </ul>
       </section>
 
+      {/* --------------------------------------------------- Outstation routes */}
+      <section className="content-auto bg-surface border-border border-y">
+        <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-20">
+          <div className="reveal flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold md:text-3xl">
+                {t(locale, COPY.routesTitle)}
+              </h2>
+              <p className="text-muted mt-2 max-w-xl">{t(locale, COPY.routesLead)}</p>
+            </div>
+            <a
+              href={`tel:${SITE.phone}`}
+              className="press bg-accent text-accent-fg inline-flex min-h-11 items-center gap-2 rounded-xl px-5 text-sm font-semibold transition hover:brightness-110"
+            >
+              <PhoneIcon className="size-4" />
+              {t(locale, COPY.routesAsk)}
+            </a>
+          </div>
+
+          {/*
+            Routes we are on record serving (the FAQ already publishes these);
+            fares are deliberately absent — they are quoted per route and time.
+          */}
+          <ul className="reveal-stagger mt-8 flex flex-wrap gap-3">
+            {[
+              { bn: "রাজশাহী → ঢাকা", en: "Rajshahi → Dhaka" },
+              { bn: "নাটোর", en: "Natore" },
+              { bn: "চাঁপাইনবাবগঞ্জ", en: "Chapainawabganj" },
+              { bn: "পুঠিয়া", en: "Puthia" },
+              { bn: "বাঘা", en: "Bagha" },
+            ].map((r) => (
+              <li
+                key={r.en}
+                className="border-border bg-surface-raised lift shadow-card flex items-center gap-2.5 rounded-full border px-5 py-2.5 font-medium transition"
+              >
+                <MapPinIcon className="text-brand-vivid size-4.5 shrink-0" />
+                {t(locale, r)}
+              </li>
+            ))}
+            <li className="text-muted flex items-center gap-2.5 px-2 py-2.5 text-sm">
+              {t(locale, COPY.routesAnywhere)} — {t(locale, COPY.routesAsk)}
+            </li>
+          </ul>
+        </div>
+      </section>
+
       {/* ----------------------------------------------------------- Bento grid */}
       <section className="content-auto bg-surface border-border border-y">
         <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-20">
@@ -309,7 +372,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 height={bentoPhoto.photo.height}
                 alt={t(locale, COPY.bentoAlt)}
                 sizes="(min-width: 1024px) 640px, 92vw"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="parallax-img absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
               <p className="absolute inset-x-0 bottom-0 p-5 text-sm font-medium text-white md:text-base">
@@ -351,19 +414,26 @@ export async function HomePage({ locale }: { locale: Locale }) {
               </p>
             </div>
 
-            {/* Long trips tile */}
-            <div className="border-border bg-surface-raised shadow-card rounded-2xl border p-6">
+            {/* Long trips / pickup tile — links to the airport & station page */}
+            <Link
+              href={route(locale, "pickup")}
+              className="border-border bg-surface-raised lift shadow-card group rounded-2xl border p-6 transition"
+            >
               <MapPinIcon className="text-brand size-7" />
               <h3 className="mt-3 font-semibold">
-                {t(locale, { bn: "লং ট্রিপ", en: "Long trips" })}
+                {t(locale, { bn: "লং ট্রিপ ও পিকআপ", en: "Long trips & pickup" })}
               </h3>
               <p className="text-muted mt-1 text-sm">
                 {t(locale, {
-                  bn: "ঢাকা–রাজশাহী, এয়ারপোর্ট ও রেলস্টেশন পিকআপ-ড্রপ।",
+                  bn: "ঢাকা–রাজশাহী, বিমানবন্দর ও রেলস্টেশন পিকআপ-ড্রপ।",
                   en: "Dhaka–Rajshahi runs, airport and rail station pickup and drop.",
                 })}
               </p>
-            </div>
+              <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold">
+                {t(locale, { bn: "বিস্তারিত", en: "Learn more" })}
+                <ArrowRightIcon className="size-4 transition group-hover:translate-x-0.5" />
+              </span>
+            </Link>
 
             {/* Ambulance tile */}
             <Link
@@ -395,7 +465,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           {t(locale, COPY.servicesTitle)}
         </h2>
 
-        <div className="reveal-stagger mt-8 grid gap-4 md:grid-cols-3">
+        <div className="reveal-stagger mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {COPY.services.map((svc) => (
             <Link
               key={svc.key}
@@ -407,6 +477,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   <MapPinIcon className="size-6" />
                 ) : svc.key === "wedding" ? (
                   <CalendarIcon className="size-6" />
+                ) : svc.key === "pickup" ? (
+                  <BoltIcon className="size-6" />
                 ) : (
                   <AmbulanceIcon className="size-6" />
                 )}

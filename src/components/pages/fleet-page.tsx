@@ -34,7 +34,7 @@ export function FleetPage({ locale }: { locale: Locale }) {
           {FLEET.map((v) => (
             <li
               key={v.slug}
-              className="border-border bg-surface-raised lift group shadow-card flex flex-col overflow-hidden rounded-2xl border transition"
+              className="border-border bg-surface-raised tilt group shadow-card flex flex-col overflow-hidden rounded-2xl border"
             >
               <div className="bg-surface aspect-[16/10] overflow-hidden">
                 <Photo
@@ -43,7 +43,7 @@ export function FleetPage({ locale }: { locale: Locale }) {
                   height={v.photo.height}
                   alt={v.name}
                   sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 92vw"
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="parallax-img h-full w-full object-cover"
                 />
               </div>
 

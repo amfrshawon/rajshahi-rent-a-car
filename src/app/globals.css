@@ -425,6 +425,46 @@ html {
   }
 }
 
+/* lift + a shallow 3D tilt: the fleet cards' hover treatment. Transform-only,
+   hover-capable devices only. */
+@utility tilt {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: perspective(900px) rotateX(1.6deg) rotateY(-1.6deg) translateY(-4px);
+      box-shadow: var(--lift-shadow);
+    }
+  }
+}
+
+/*
+  Photo parallax inside an overflow-hidden frame: the image drifts against
+  the scroll on the compositor (scroll-driven animation, zero JS). Needs the
+  ~12% scale so the drift never exposes the frame's edge. Where the timeline
+  API is unsupported the image simply sits still at the base scale — nothing
+  breaks, nothing clips.
+*/
+@keyframes parallax-drift {
+  from {
+    transform: translateY(-5.5%) scale(1.14);
+  }
+  to {
+    transform: translateY(5.5%) scale(1.14);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .parallax-img {
+      animation: parallax-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 12% cover 88%;
+    }
+  }
+}
+
 /* Route crossfade (React <ViewTransition>, this Next version's built-in
    support). Kept quick — this is a brochure site, not a film — and left as
    pure opacity under reduced motion, which carries no motion-sickness risk. */

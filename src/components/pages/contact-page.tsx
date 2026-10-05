@@ -21,7 +21,21 @@ const COPY = {
   office: { bn: "অফিস", en: "Office" },
   hours: { bn: "সময়", en: "Hours" },
   whatsapp: { bn: "হোয়াটসঅ্যাপে মেসেজ", en: "Message on WhatsApp" },
+  payTitle: { bn: "পেমেন্ট মাধ্যম", en: "Payment" },
+  payLead: {
+    bn: "বাংলা কিউআর — সব মোবাইল ফাইন্যান্সিয়াল সার্ভিস ও ব্যাংক ট্রান্সফার।",
+    en: "Bangla QR — every mobile financial service and bank transfer.",
+  },
 } as const;
+
+/** Accepted channels; one Bangla QR scan covers all of them. */
+const PAYMENTS = [
+  { bn: "বিকাশ", en: "bKash" },
+  { bn: "নগদ", en: "Nagad" },
+  { bn: "রকেট", en: "Rocket" },
+  { bn: "উপায়", en: "Upay" },
+  { bn: "ব্যাংক ট্রান্সফার", en: "Bank transfer" },
+] as const;
 
 export function ContactPage({ locale }: { locale: Locale }) {
   const waText = encodeURIComponent(
@@ -91,6 +105,26 @@ export function ContactPage({ locale }: { locale: Locale }) {
             <WhatsAppIcon className="size-5" />
             {t(locale, COPY.whatsapp)}
           </a>
+
+          {/*
+            Bangla QR is the Bangladesh Bank unified QR standard — one merchant
+            QR payable from every MFS app and banking app. Channels are named
+            as chips so a customer recognises their own without reading.
+          */}
+          <div className="border-border bg-surface-raised shadow-card mt-4 rounded-2xl border p-5">
+            <h2 className="font-semibold">{t(locale, COPY.payTitle)}</h2>
+            <p className="text-muted mt-1 text-sm">{t(locale, COPY.payLead)}</p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {PAYMENTS.map((p) => (
+                <li
+                  key={p.en}
+                  className="border-border bg-surface text-muted rounded-full border px-3 py-1 text-sm"
+                >
+                  {t(locale, p)}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div id="booking" className="reveal scroll-mt-24">
