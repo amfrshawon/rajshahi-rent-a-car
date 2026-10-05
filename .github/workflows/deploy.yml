@@ -38,7 +38,15 @@ jobs:
 
       # `build` also runs verify:routes, which fails if any of the 27 legacy
       # URLs is missing from the export.
-      - run: npm run build
+      #
+      # Every artifact this workflow produces is a non-production copy (the
+      # dev site or an archive) except a production dispatch — those carry
+      # noindex meta + disallow-all robots.txt so they can never compete
+      # with the live domain. .htaccess adds the header layer on top.
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_IS_PREVIEW: ${{ github.event_name == 'push' || inputs.target != 'production' }}
 
       - uses: actions/upload-artifact@v4
         with:
