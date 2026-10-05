@@ -86,18 +86,34 @@ export function FaqPage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-3xl px-4 py-12">
-        <dl className="space-y-4">
-          {faqs.map((f) => (
-            <div
+      <section className="mx-auto w-full max-w-3xl px-4 py-12 md:py-16">
+        {/*
+          <details> keeps the accordion at zero client JavaScript — one less
+          thing to hydrate on a low-end phone. The indicator rotates via CSS
+          when open; the reduced-motion block keeps that transition honest.
+        */}
+        <div className="reveal-stagger space-y-3">
+          {faqs.map((f, i) => (
+            <details
               key={f.q.en}
-              className="border-border bg-surface-raised rounded-xl border p-5"
+              className="border-border bg-surface-raised shadow-card group rounded-2xl border"
+              open={i === 0}
             >
-              <dt className="text-lg font-semibold">{t(locale, f.q)}</dt>
-              <dd className="text-muted mt-2">{t(locale, f.a)}</dd>
-            </div>
+              <summary className="marker:content-none flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 p-5 [&::-webkit-details-marker]:hidden">
+                <h2 className="text-lg font-semibold">{t(locale, f.q)}</h2>
+                <span
+                  aria-hidden="true"
+                  className="border-border text-muted grid size-8 shrink-0 place-items-center rounded-full border transition-transform duration-300 group-open:rotate-45"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="size-4">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
+              </summary>
+              <p className="text-muted px-5 pb-5">{t(locale, f.a)}</p>
+            </details>
           ))}
-        </dl>
+        </div>
       </section>
 
       <JsonLd data={schema} />

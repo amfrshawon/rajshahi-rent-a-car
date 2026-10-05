@@ -10,10 +10,11 @@
     "build:only": "next build",
     "verify:routes": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-legacy-routes.mts",
     "images": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-images.mts",
-    "slugs": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/localise-slugs.mts",
-    "content:pull": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/pull-content.mts"
+    "slugs": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/localise-slugs.mts"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
+    "marked": "^18.0.14",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8"

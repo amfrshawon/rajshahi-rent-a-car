@@ -8,6 +8,11 @@ import type { Locale } from "@/lib/locale";
  * Bangla and English each have their own root layout (via route groups), which
  * is the only way to vary the `lang` attribute in the App Router — and `lang`
  * is what drives the per-script typography in globals.css.
+ *
+ * No animation library is mounted: the motion system is CSS (scroll-driven
+ * reveals, view transitions, press/lift) and costs no JavaScript. If React
+ * `motion` is ever needed, add a LazyMotion provider here with a code-split
+ * feature bundle so it loads only for components that use it.
  */
 export function RootHtml({ locale, children }: { locale: Locale; children: ReactNode }) {
   return (

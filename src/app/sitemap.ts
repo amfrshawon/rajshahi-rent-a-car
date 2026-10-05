@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { getCategoryPathSegments, getTagSlugs } from "@/lib/content";
-import { getAllPosts } from "@/lib/wp";
+import { getAllPosts } from "@/lib/posts";
 
 /**
  * Every URL, in both locales, with hreflang alternates.
@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entries.push({
       bn: `/${post.slug}/`,
       en: `/en/${post.slug}/`,
-      lastModified: `${post.modified_gmt}Z`,
+      lastModified: `${post.modifiedGmt}Z`,
     });
   }
   for (const segments of categorySegments) {

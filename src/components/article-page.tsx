@@ -41,20 +41,22 @@ export function ArticlePage({
     <PageShell locale={locale}>
       {showBackToBlog ? <JsonLd data={articleSchema(locale, article)} /> : null}
       <JsonLd data={breadcrumbSchema(locale, crumbs)} />
-      <article className="mx-auto w-full max-w-3xl px-4 py-10 md:py-14">
+      <article className="mx-auto w-full max-w-3xl px-4 py-10 md:py-16">
         {showBackToBlog ? (
           <Link
             href={route(locale, "blog")}
-            className="text-muted hover:text-fg text-sm"
+            className="border-border text-muted hover:bg-surface hover:text-fg inline-flex min-h-9 items-center gap-1.5 rounded-full border px-4 text-sm transition"
           >
             {t(locale, COPY.backToBlog)}
           </Link>
         ) : null}
 
-        <h1 className="mt-4 text-3xl font-semibold md:text-4xl">{article.title}</h1>
+        <h1 className="rise-move mt-6 text-3xl font-semibold md:text-4xl">
+          {article.title}
+        </h1>
 
         {showBackToBlog ? (
-          <p className="text-muted mt-3 text-sm">
+          <p className="text-muted rise mt-3 text-sm">
             <time dateTime={article.date}>
               {formatArticleDate(locale, article.date)}
             </time>
@@ -68,11 +70,11 @@ export function ArticlePage({
         ) : null}
 
         {/*
-          First-party HTML from the owner's own WordPress, inlined at build
-          time — nothing here is fetched in the browser.
+          Repo-authored Markdown rendered at build time — nothing here is
+          fetched or executed in the browser.
         */}
         <div
-          className="prose mt-8"
+          className="prose rise mt-8"
           lang={article.untranslated && locale === "bn" ? "en" : undefined}
           dangerouslySetInnerHTML={{ __html: article.contentHtml }}
         />

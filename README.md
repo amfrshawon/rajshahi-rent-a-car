@@ -8,7 +8,10 @@ Replaces the existing WordPress site at https://rajshahirentacar.bd/
 - **Next.js 16** (App Router) · React 19 · TypeScript
 - **Tailwind CSS v4**
 - **Static export** (`output: "export"`) — no Node process serves pages in production
-- **Headless WordPress** as the content source, read at build time
+- **Content as Markdown in the repo** (`src/content/posts/`) — no CMS, no API,
+  builds are offline and reproducible
+- **motion** (LazyMotion, ~5–10 KB) + CSS scroll-driven animations for the
+  motion system; everything degrades to static content without JS
 - Deployed to **ExonHost shared hosting** (LiteSpeed, Dhaka/BDIX)
 
 ## Why static
@@ -22,7 +25,8 @@ See [docs/PLAN.md](docs/PLAN.md) for the full plan, constraints and phasing.
 
 ## Language routing
 
-Bangla is the default and is served at the **original WordPress URLs**.
+Bangla is the default and is served at the **original WordPress-era URLs**
+(the site replaced a WordPress install; its indexed paths are frozen).
 English is mirrored under `/en/`.
 
 ```
@@ -50,8 +54,18 @@ npm run lint
 
 ```
 src/
-  app/           routes (Bangla at root, English under /en)
-  config/        legacy-routes.ts and site constants
+  app/            routes (Bangla at root, English under /en)
+  config/         legacy-routes.ts and site constants
+  content/posts/  blog articles as Markdown (index.md + bn.md per post)
+  lib/posts.ts    the Markdown content loader
+api/              booking endpoint (separate small Node app)
 docs/
-  PLAN.md        the agreed plan
+  PLAN.md         the agreed plan
 ```
+
+## Editing content
+
+Posts live in `src/content/posts/<slug>/`. `index.md` is the English article;
+`bn.md` carries the Bangla title/excerpt (and body, once translated) in its
+frontmatter. Category and tag names live in `src/content/taxonomy.ts`. Commit
+the change, push, and CI rebuilds the site — there is no CMS to log into.

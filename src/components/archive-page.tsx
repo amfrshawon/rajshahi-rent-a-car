@@ -32,31 +32,29 @@ export function ArchivePage({
           ...(crumbs ?? []),
         ])}
       />
-      <div className="mx-auto w-full max-w-3xl px-4 py-10 md:py-14">
-        <h1 className="text-3xl font-semibold md:text-4xl">{title}</h1>
-        {description ? <p className="text-muted mt-3">{description}</p> : null}
+      <div className="mx-auto w-full max-w-3xl px-4 py-10 md:py-16">
+        <p aria-hidden="true" className="bg-brand-vivid mb-4 h-1 w-10 rounded-full" />
+        <h1 className="rise-move text-3xl font-semibold md:text-4xl">{title}</h1>
+        {description ? <p className="text-muted rise mt-3">{description}</p> : null}
 
         {articles.length === 0 ? (
           <p className="text-muted mt-8">{t(locale, COPY.empty)}</p>
         ) : (
-          <ul className="mt-8 space-y-6">
+          <ul className="reveal-stagger mt-8 space-y-4">
             {articles.map((a) => (
-              <li
-                key={a.slug}
-                className="content-auto border-border border-b pb-6 last:border-0"
-              >
-                <h2 className="text-xl font-semibold">
-                  <Link
-                    href={localePath(locale, `/${a.slug}/`)}
-                    className="hover:text-brand"
-                  >
+              <li key={a.slug} className="content-auto">
+                <Link
+                  href={localePath(locale, `/${a.slug}/`)}
+                  className="border-border bg-surface-raised lift shadow-card group block rounded-2xl border p-6 transition"
+                >
+                  <p className="text-muted text-sm">
+                    <time dateTime={a.date}>{formatArticleDate(locale, a.date)}</time>
+                  </p>
+                  <h2 className="mt-2 text-xl font-semibold group-hover:text-brand">
                     {a.title}
-                  </Link>
-                </h2>
-                <p className="text-muted mt-1 text-sm">
-                  <time dateTime={a.date}>{formatArticleDate(locale, a.date)}</time>
-                </p>
-                <p className="text-muted mt-2">{a.excerpt}</p>
+                  </h2>
+                  <p className="text-muted mt-2">{a.excerpt}</p>
+                </Link>
               </li>
             ))}
           </ul>

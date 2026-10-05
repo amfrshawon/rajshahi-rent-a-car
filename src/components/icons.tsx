@@ -100,3 +100,39 @@ export function ChecklistIcon(props: { className?: string }) {
     </svg>
   );
 }
+
+export function CalendarIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+      <path d="M3.5 9.5h17M8 3v4M16 3v4" />
+    </svg>
+  );
+}
+
+export function ArrowRightIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 12h16M14 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+export function UsersIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="9" cy="8.5" r="3.2" />
+      <path d="M3.5 19.5c.6-3 2.9-4.5 5.5-4.5s4.9 1.5 5.5 4.5" />
+      <path d="M16 5.6a3.2 3.2 0 0 1 0 5.8M17.8 15.4c1.6.7 2.6 2 3 4.1" />
+    </svg>
+  );
+}
+
+export function GearIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+      <path d="M19 12c0-.5 0-1-.1-1.4l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2.4-1.4L13.7 2h-3.4l-.4 2.6a7 7 0 0 0-2.4 1.4l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2.8l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2.4 1.4l.4 2.6h3.4l.4-2.6a7 7 0 0 0 2.4-1.4l2.4 1 2-3.4-2-1.6c.1-.4.1-.9.1-1.4z" />
+    </svg>
+  );
+}

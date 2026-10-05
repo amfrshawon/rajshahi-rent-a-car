@@ -36,7 +36,6 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_IS_PREVIEW: "true"
-          WP_API_URL: ${{ vars.WP_API_URL }}
         run: npm run build
 
       # Without this, Pages runs Jekyll, which ignores directories starting

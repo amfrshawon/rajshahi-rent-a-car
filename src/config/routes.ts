@@ -37,6 +37,11 @@ export const ROUTES = {
   about: { bn: "/আমাদের-সম্পর্কে/", en: "/en/about/", ascii: "/about/" },
   contact: { bn: "/যোগাযোগ/", en: "/en/contact/", ascii: "/contact/" },
   faq: { bn: "/সাধারণ-জিজ্ঞাসা/", en: "/en/faq/", ascii: "/faq/" },
+  pickup: {
+    bn: "/এয়ারপোর্ট-স্টেশন-পিকআপ/",
+    en: "/en/airport-station-pickup/",
+    ascii: "/airport-station-pickup/",
+  },
 
   // Legacy — indexed, must not change.
   blog: { bn: "/blog/", en: "/en/blog/" },

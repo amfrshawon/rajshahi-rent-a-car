@@ -16,6 +16,9 @@ import { type Locale, localePath, t } from "@/lib/locale";
 
 const ORGANISATION_ID = `${SITE.url}/#organisation`;
 
+/** The owner's Google Business Profile — factual, and already linked from the ambulance page. */
+const GOOGLE_BUSINESS_PROFILE = "https://share.google/52MSxbL6RCxlZ1huf";
+
 function absolute(locale: Locale, path: string): string {
   return new URL(localePath(locale, path), SITE.url).toString();
 }
@@ -23,6 +26,12 @@ function absolute(locale: Locale, path: string): string {
 /** The business itself. AutoRental is the specific LocalBusiness subtype. */
 export function businessSchema(locale: Locale) {
   const prices = FLEET.map((v) => v.pricePerDay);
+  const logo = {
+    "@type": "ImageObject",
+    url: `${SITE.url}/media/brand/logo-full.png`,
+    width: 512,
+    height: 512,
+  };
 
   return {
     "@context": "https://schema.org",
@@ -33,6 +42,10 @@ export function businessSchema(locale: Locale) {
     telephone: SITE.phone,
     email: SITE.email,
     inLanguage: locale,
+    // Google's local-business logo comes from these two fields.
+    logo,
+    image: logo,
+    sameAs: [GOOGLE_BUSINESS_PROFILE],
     address: {
       "@type": "PostalAddress",
       streetAddress: locale === "bn" ? "কাদিরগঞ্জ, গ্রেটার রোড" : "Kadirgonj Greater Road",

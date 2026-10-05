@@ -37,25 +37,31 @@ export function WeddingCarPage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-4xl px-4 py-12">
-        <h2 className="text-2xl font-semibold">{t(locale, COPY.suitedTitle)}</h2>
+      <section className="mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
+        <h2 className="reveal text-2xl font-semibold md:text-3xl">{t(locale, COPY.suitedTitle)}</h2>
 
-        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+        <div className="reveal-stagger mt-6 grid gap-6 sm:grid-cols-2">
           {[
             { heading: COPY.couple, vehicles: sedans },
             { heading: COPY.guests, vehicles: vans },
           ].map(({ heading, vehicles }) => (
             <div
               key={heading.en}
-              className="border-border bg-surface-raised rounded-xl border p-5"
+              className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-6 transition"
             >
               <h3 className="font-semibold">{t(locale, heading)}</h3>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-4 space-y-3">
                 {vehicles.map((v) => (
-                  <li key={v.slug} className="flex justify-between gap-3">
-                    <span>{v.name}</span>
-                    <span className="text-brand font-semibold whitespace-nowrap">
+                  <li
+                    key={v.slug}
+                    className="border-border flex items-baseline justify-between gap-3 border-b pb-3 last:border-0 last:pb-0"
+                  >
+                    <span className="font-medium">{v.name}</span>
+                    <span className="text-brand font-bold whitespace-nowrap">
                       ৳{formatTaka(locale, v.pricePerDay)}
+                      <span className="text-muted text-sm font-normal">
+                        {" "}{t(locale, COPY.perDay)}
+                      </span>
                     </span>
                   </li>
                 ))}
@@ -64,10 +70,13 @@ export function WeddingCarPage({ locale }: { locale: Locale }) {
           ))}
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold">{t(locale, COPY.notesTitle)}</h2>
-        <ul className="mt-4 space-y-3">
+        <h2 className="reveal mt-14 text-2xl font-semibold md:text-3xl">{t(locale, COPY.notesTitle)}</h2>
+        <ul className="reveal-stagger mt-6 space-y-3">
           {NOTES.map((n) => (
-            <li key={n.en} className="border-border bg-surface-raised rounded-lg border p-4">
+            <li
+              key={n.en}
+              className="border-border bg-surface-raised shadow-card rounded-xl border p-4"
+            >
               {t(locale, n)}
             </li>
           ))}
