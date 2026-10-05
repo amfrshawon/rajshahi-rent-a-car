@@ -53,20 +53,20 @@ export function ContactPage({ locale }: { locale: Locale }) {
         <div className="reveal">
           <div className="grid gap-4">
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
+              <span className="bg-brand-soft text-leaf mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
                 <PhoneIcon className="size-5" />
               </span>
               <div>
                 <p className="text-muted text-sm">{t(locale, COPY.phone)}</p>
                 <p className="mt-0.5 text-lg font-semibold">
-                  <a href={`tel:${SITE.phone}`} className="hover:text-brand">
+                  <a href={`tel:${SITE.phone}`} className="hover:text-leaf">
                     {t(locale, SITE.phoneDisplay)}
                   </a>
                 </p>
               </div>
             </div>
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
+              <span className="bg-brand-soft text-leaf mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
                 <MapPinIcon className="size-5" />
               </span>
               <div>
@@ -75,7 +75,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
               </div>
             </div>
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
+              <span className="bg-brand-soft text-leaf mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
                 <ClockIcon className="size-5" />
               </span>
               <div>
@@ -84,13 +84,13 @@ export function ContactPage({ locale }: { locale: Locale }) {
               </div>
             </div>
             <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
+              <span className="bg-brand-soft text-leaf mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
                 <MailIcon className="size-5" />
               </span>
               <div>
                 <p className="text-muted text-sm">{t(locale, COPY.email)}</p>
                 <p className="mt-0.5">
-                  <a href={`mailto:${SITE.email}`} className="hover:text-brand">
+                  <a href={`mailto:${SITE.email}`} className="hover:text-leaf">
                     {SITE.email}
                   </a>
                 </p>

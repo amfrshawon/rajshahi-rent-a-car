@@ -59,7 +59,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
                   <th scope="row" className="px-5 py-4 font-semibold">{v.name}</th>
                   <td className="text-muted px-5 py-4">{t(locale, v.type)}</td>
                   <td className="text-muted px-5 py-4">{formatTaka(locale, v.seats)}</td>
-                  <td className="text-brand px-5 py-4 text-right text-lg font-bold whitespace-nowrap">
+                  <td className="text-leaf px-5 py-4 text-right text-lg font-bold whitespace-nowrap">
                     ৳{formatTaka(locale, v.pricePerDay)}
                   </td>
                 </tr>
@@ -78,7 +78,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
               key={item.en}
               className="border-border bg-surface-raised flex items-start gap-3 rounded-xl border p-4"
             >
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
+              <span className="bg-brand-soft text-leaf mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
                 <ChecklistIcon className="size-4.5" />
               </span>
               {t(locale, item)}

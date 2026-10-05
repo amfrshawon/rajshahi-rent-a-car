@@ -87,7 +87,7 @@ export function PickupPage({ locale }: { locale: Locale }) {
               key={title.en}
               className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-6 transition"
             >
-              <span className="bg-brand-soft text-brand flex size-11 items-center justify-center rounded-xl">
+              <span className="bg-brand-soft text-leaf flex size-11 items-center justify-center rounded-xl">
                 <Icon className="size-6" />
               </span>
               <h2 className="mt-4 text-lg font-semibold">{t(locale, title)}</h2>

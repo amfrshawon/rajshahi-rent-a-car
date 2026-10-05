@@ -58,7 +58,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
                 key={item.en}
                 className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5"
               >
-                <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
+                <span className="bg-brand-soft text-leaf mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
                   <Icon className="size-5.5" />
                 </span>
                 {t(locale, item)}

@@ -57,7 +57,7 @@ export function WeddingCarPage({ locale }: { locale: Locale }) {
                     className="border-border flex items-baseline justify-between gap-3 border-b pb-3 last:border-0 last:pb-0"
                   >
                     <span className="font-medium">{v.name}</span>
-                    <span className="text-brand font-bold whitespace-nowrap">
+                    <span className="text-leaf font-bold whitespace-nowrap">
                       ৳{formatTaka(locale, v.pricePerDay)}
                       <span className="text-muted text-sm font-normal">
                         {" "}{t(locale, COPY.perDay)}

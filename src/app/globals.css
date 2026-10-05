@@ -51,8 +51,13 @@
   --lift-shadow: 0 2px 4px rgb(15 23 19 / 0.07), 0 20px 48px -18px rgb(15 23 19 / 0.3);
 }
 
+/*
+ * Dark mode is three-state, and must stay that way: follow the system by
+ * default, but let `data-theme="dark"` / `data-theme="light"` on the root
+ * override it either way. The media query excludes an explicit light override.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #0a0f0c;
     --surface: #111a15;
     --surface-raised: #16211b;
@@ -87,6 +92,41 @@
     --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 26px -14px rgb(0 0 0 / 0.6);
     --lift-shadow: 0 2px 4px rgb(0 0 0 / 0.5), 0 20px 48px -18px rgb(0 0 0 / 0.7);
   }
+}
+
+/* Explicit override, independent of the system preference. */
+:root[data-theme="dark"] {
+  --bg: #0a0f0c;
+  --surface: #111a15;
+  --surface-raised: #16211b;
+  --fg: #e8efea;
+  --muted: #9aa8a1;
+  --border: #263129;
+
+  --padma: #0e4632;
+  --leaf: #5fc79a;
+  --leaf-strong: #7bd6ac;
+  --pin: #ff6b7e;
+
+  --brand: #0e4632;
+  --brand-strong: #15583f;
+  --brand-fg: #eef6f1;
+  --brand-soft: #12291d;
+  --brand-vivid: #5fc79a;
+
+  --accent: #0e4632;
+  --accent-soft: #111a15;
+  --accent-fg: #eef6f1;
+
+  --emergency: #ff6b7e;
+  --emergency-ink: #ff9aa6;
+  --emergency-soft: #2a1114;
+  --emergency-fg: #0a0f0c;
+
+  --whatsapp-ink: #25d366;
+
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 26px -14px rgb(0 0 0 / 0.6);
+  --lift-shadow: 0 2px 4px rgb(0 0 0 / 0.5), 0 20px 48px -18px rgb(0 0 0 / 0.7);
 }
 
 @theme inline {

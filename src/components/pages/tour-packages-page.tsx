@@ -34,7 +34,7 @@ export function TourPackagesPage({ locale }: { locale: Locale }) {
               key={d.slug}
               className="border-border bg-surface-raised lift shadow-card flex flex-col rounded-2xl border p-6 transition"
             >
-              <span className="bg-brand-soft text-brand flex size-10 items-center justify-center rounded-xl">
+              <span className="bg-brand-soft text-leaf flex size-10 items-center justify-center rounded-xl">
                 <MapPinIcon className="size-5" />
               </span>
               <h2 className="mt-4 text-lg font-semibold">{t(locale, d.name)}</h2>
@@ -45,7 +45,7 @@ export function TourPackagesPage({ locale }: { locale: Locale }) {
                 </p>
               ) : null}
               <p className="text-muted mt-3 flex-1">{t(locale, d.blurb)}</p>
-              <p className="text-brand mt-4 text-sm font-semibold">
+              <p className="text-leaf mt-4 text-sm font-semibold">
                 {t(locale, COPY.quote)}
               </p>
             </li>

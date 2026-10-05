@@ -50,7 +50,7 @@ export function FleetPage({ locale }: { locale: Locale }) {
               <div className="flex flex-1 flex-col p-5">
                 <div className="flex items-baseline justify-between gap-3">
                   <h2 className="text-xl font-semibold">{v.name}</h2>
-                  <p className="text-brand text-lg font-bold whitespace-nowrap">
+                  <p className="text-leaf text-lg font-bold whitespace-nowrap">
                     ৳{formatTaka(locale, v.pricePerDay)}
                     <span className="text-muted text-sm font-normal">
                       {t(locale, COPY.perDay)}
@@ -71,7 +71,7 @@ export function FleetPage({ locale }: { locale: Locale }) {
 
                 <a
                   href={`${route(locale, "contact")}#booking`}
-                  className="press border-brand/40 text-brand hover:bg-brand-soft mt-5 inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border px-4 text-sm font-semibold transition"
+                  className="press border-brand/40 text-leaf hover:bg-brand-soft mt-5 inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border px-4 text-sm font-semibold transition"
                 >
                   {t(locale, COPY.book)}
                   <ArrowRightIcon className="size-4" />

@@ -50,7 +50,7 @@ export function ArchivePage({
                   <p className="text-muted text-sm">
                     <time dateTime={a.date}>{formatArticleDate(locale, a.date)}</time>
                   </p>
-                  <h2 className="mt-2 text-xl font-semibold group-hover:text-brand">
+                  <h2 className="mt-2 text-xl font-semibold group-hover:text-leaf">
                     {a.title}
                   </h2>
                   <p className="text-muted mt-2">{a.excerpt}</p>

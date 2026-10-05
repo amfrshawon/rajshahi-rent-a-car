@@ -290,7 +290,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
           <a
             href={GBP_URL}
             rel="noopener"
-            className="text-brand mt-3 inline-block font-semibold hover:underline"
+            className="text-leaf mt-3 inline-block font-semibold hover:underline"
           >
             {t(locale, COPY.viewOnGoogle)} →
           </a>

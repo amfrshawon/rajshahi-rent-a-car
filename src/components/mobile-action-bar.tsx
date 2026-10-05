@@ -27,7 +27,7 @@ export function MobileActionBar({ locale }: { locale: Locale }) {
       <a
         href={`tel:${SITE.phone}`}
         aria-label={t(locale, COPY.call)}
-        className="border-border text-brand flex items-center justify-center rounded-lg border transition active:bg-surface"
+        className="border-border text-leaf flex items-center justify-center rounded-lg border transition active:bg-surface"
       >
         <PhoneIcon className="size-5" />
       </a>

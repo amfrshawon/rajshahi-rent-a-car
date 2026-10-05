@@ -39,7 +39,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             height={56}
             className="dark:brightness-0 dark:invert h-6 w-auto shrink-0 sm:h-7"
           />
-          <span className="text-brand truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
+          <span className="text-leaf truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
             {t(locale, SITE.name)}
           </span>
         </Link>
