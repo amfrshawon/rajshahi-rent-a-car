@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { WhatsAppIcon } from "@/components/icons";
+import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { FLEET, SITE } from "@/config/site";
-import { type Locale, t } from "@/lib/locale";
+import { TRIPS, isTripKey } from "@/config/trips";
+import { type Locale, formatTaka, localeDigits, t } from "@/lib/locale";
 
 /**
  * Same-origin in production: the Node app runs under cPanel's Node.js
@@ -26,27 +27,49 @@ const API_LIVE = process.env.NEXT_PUBLIC_BOOKING_API_LIVE === "true";
 const BD_MOBILE = /^(?:\+?880|0)1[3-9]\d{8}$/;
 
 const COPY = {
-  name: { bn: "আপনার নাম", en: "Your name" },
-  phone: { bn: "মোবাইল নম্বর", en: "Mobile number" },
-  vehicle: { bn: "গাড়ি", en: "Vehicle" },
-  anyVehicle: { bn: "যেকোনো গাড়ি", en: "Any vehicle" },
+  stepTrip: { bn: "কোন ধরনের যাত্রা", en: "What kind of trip" },
+  stepWhen: { bn: "কবে, কখন", en: "When" },
+  stepWhere: { bn: "কোথা থেকে, কোথায়", en: "From where, to where" },
+  stepCar: { bn: "গাড়ি", en: "Car" },
+  stepYou: { bn: "আপনার নাম ও নম্বর", en: "Your name and number" },
+
   date: { bn: "তারিখ", en: "Date" },
+  time: { bn: "সময়", en: "Time" },
+  pickup: { bn: "কোথা থেকে উঠবেন", en: "Pickup point" },
+  pickupHint: { bn: "যেমন: সাহেব বাজার, রেলস্টেশন", en: "e.g. Shaheb Bazar, the railway station" },
   destination: { bn: "কোথায় যাবেন", en: "Destination" },
   destinationHint: { bn: "যেমন: পুঠিয়া, নাটোর, ঢাকা", en: "e.g. Puthia, Natore, Dhaka" },
-  notes: { bn: "অতিরিক্ত তথ্য", en: "Anything else" },
+  anyCar: { bn: "যেকোনো গাড়ি", en: "Any car" },
+  anyCarNote: { bn: "যাত্রী আর রুট শুনে আমরা বলে দেব", en: "We will suggest one for your group and route" },
+  seats: { bn: "আসন", en: "seats" },
+  perDay: { bn: "/ দিন", en: "a day" },
+  name: { bn: "নাম", en: "Name" },
+  phone: { bn: "মোবাইল নম্বর", en: "Mobile number" },
+  notes: { bn: "আর কিছু জানাতে চাইলে", en: "Anything else" },
+  optional: { bn: "ঐচ্ছিক", en: "optional" },
+
   submitWhatsapp: { bn: "হোয়াটসঅ্যাপে বুকিং পাঠান", en: "Send booking on WhatsApp" },
   submitApi: { bn: "বুকিং পাঠান", en: "Send booking" },
   sending: { bn: "পাঠানো হচ্ছে…", en: "Sending…" },
-  required: { bn: "আবশ্যক", en: "required" },
+  whatsappNote: {
+    bn: "হোয়াটসঅ্যাপ খুলবে, আপনার তথ্য লেখা থাকবে। পাঠানোর আগে দেখে নিতে পারবেন।",
+    en: "WhatsApp opens with your details written out. You can check the message before sending.",
+  },
+
   errName: { bn: "নাম লিখুন", en: "Enter your name" },
   errPhone: {
     bn: "সঠিক মোবাইল নম্বর দিন — যেমন ০১৭১২৩৪৫৬৭৮",
     en: "Enter a valid mobile number, for example 01712345678",
   },
-  whatsappNote: {
-    bn: "বোতাম চাপলে হোয়াটসঅ্যাপ খুলবে, আপনার তথ্য লেখা থাকবে। পাঠানোর আগে দেখে নিতে পারবেন।",
-    en: "WhatsApp opens with your details filled in. You can check the message before sending.",
-  },
+
+  message: { bn: "নতুন বুকিং", en: "New booking" },
+  msgTrip: { bn: "যাত্রা", en: "Trip" },
+  msgWhen: { bn: "কবে", en: "When" },
+  msgPickup: { bn: "পিকআপ", en: "Pickup" },
+  msgDestination: { bn: "গন্তব্য", en: "Destination" },
+  msgPhone: { bn: "মোবাইল", en: "Mobile" },
+  msgNotes: { bn: "অন্যান্য", en: "Notes" },
+
   openedTitle: { bn: "হোয়াটসঅ্যাপ খোলা হয়েছে", en: "WhatsApp is open" },
   openedBody: {
     bn: "মেসেজটি পাঠালেই বুকিং আমাদের কাছে পৌঁছাবে। হোয়াটসঅ্যাপ না খুললে নিচের বোতাম চাপুন বা সরাসরি কল করুন।",
@@ -66,6 +89,7 @@ const COPY = {
   },
   sendOnWhatsapp: { bn: "হোয়াটসঅ্যাপে পাঠান", en: "Send on WhatsApp" },
   callInstead: { bn: "কল করুন", en: "Call us" },
+  startOver: { bn: "ফর্মে ফিরে যান", en: "Back to the form" },
 } as const;
 
 type Status =
@@ -87,64 +111,119 @@ function validate(locale: Locale, values: Fields): Errors {
 }
 
 /**
- * Quick variant: the hero's inline widget (name / phone / vehicle / date in one
- * row). Shares the exact submit path, validation and WhatsApp handling as the
- * full form — one behaviour, two densities.
- *
- * Both read ?to=, ?vehicle= and ?trip= from the address on load, so a route,
- * a car or a trip type tapped elsewhere arrives already filled in.
+ * "09:30" -> "সকাল ৯:৩০" / "9:30 am". Bangla names the part of the day
+ * rather than writing AM/PM, which the bn-BD locale leaves in Latin.
  */
-export function BookingForm({
-  locale,
-  variant = "full",
-}: {
-  locale: Locale;
-  variant?: "full" | "quick";
-}) {
+function describeTime(locale: Locale, time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return time;
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  const mm = String(m).padStart(2, "0");
+  if (locale === "en") return `${h12}:${mm} ${h < 12 ? "am" : "pm"}`;
+  const period =
+    h >= 4 && h < 12 ? "সকাল" : h < 16 && h >= 12 ? "দুপুর" : h >= 16 && h < 18 ? "বিকেল" : h >= 18 && h < 20 ? "সন্ধ্যা" : "রাত";
+  return `${period} ${localeDigits(locale, `${h12}:${mm}`)}`;
+}
+
+/** "2026-10-12" + "09:30" -> "সোমবার, ১২ অক্টোবর, সকাল ৯:৩০". */
+function describeWhen(locale: Locale, date: string, time: string): string {
+  const parts: string[] = [];
+  if (date) {
+    const d = new Date(`${date}T00:00`);
+    if (!Number.isNaN(d.getTime())) {
+      parts.push(
+        d.toLocaleDateString(locale === "bn" ? "bn-BD" : "en-GB", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        }),
+      );
+    }
+  }
+  if (time) parts.push(describeTime(locale, time));
+  return parts.join(", ");
+}
+
+/**
+ * The booking flow: trip, when, where, car, then name and number. Only the
+ * last two are required. A trip tile, a route row or a car elsewhere on the
+ * site links here with ?trip=, ?to= or ?vehicle= set, and those arrive
+ * already chosen.
+ *
+ * Nothing is sent until name and number pass the same checks the server
+ * uses, with the message in Bangla under the field.
+ */
+export function BookingForm({ locale }: { locale: Locale }) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [errors, setErrors] = useState<Errors>({});
   const [lastValues, setLastValues] = useState<Fields>({});
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Prefill from the query string. Static export: read it on the client.
+  // Prefill from the query string; a static export can only read it here.
   useEffect(() => {
     const form = formRef.current;
     if (!form) return;
     const params = new URLSearchParams(window.location.search);
-    const set = (name: string, value: string | null) => {
-      const el = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null;
-      if (el && value) el.value = value;
-    };
+
     const trip = params.get("trip");
-    set("destination", params.get("to") ?? trip);
-    set("vehicle", params.get("vehicle"));
+    if (isTripKey(trip)) {
+      const radio = form.querySelector<HTMLInputElement>(`input[name="trip"][value="${trip}"]`);
+      if (radio) radio.checked = true;
+    }
+    const vehicle = params.get("vehicle");
+    const car = FLEET.find((v) => v.slug === vehicle);
+    if (car) {
+      const radio = form.querySelector<HTMLInputElement>(`input[name="vehicle"][value="${car.slug}"]`);
+      if (radio) radio.checked = true;
+    }
+    const to = params.get("to");
+    const destination = form.elements.namedItem("destination") as HTMLInputElement | null;
+    if (to && destination) destination.value = to;
+
+    // Today, in the visitor's own clock, as the earliest date.
+    const date = form.elements.namedItem("date") as HTMLInputElement | null;
+    if (date) {
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, "0");
+      date.min = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    }
   }, []);
 
+  const tripLabel = (key: string) => {
+    const trip = TRIPS.find((x) => x.key === key);
+    return trip ? t(locale, trip.label) : "";
+  };
+  const carName = (slug: string) => FLEET.find((v) => v.slug === slug)?.name ?? "";
+
   function whatsappHref(values: Fields) {
-    const lines = [
-      t(locale, { bn: "নতুন বুকিং", en: "New booking" }),
-      `${t(locale, COPY.name)}: ${values.name ?? ""}`,
-      `${t(locale, COPY.phone)}: ${values.phone ?? ""}`,
-    ];
-    if (values.vehicle) lines.push(`${t(locale, COPY.vehicle)}: ${values.vehicle}`);
-    if (values.date) lines.push(`${t(locale, COPY.date)}: ${values.date}`);
-    if (values.destination) lines.push(`${t(locale, COPY.destination)}: ${values.destination}`);
-    if (values.notes) lines.push(`${t(locale, COPY.notes)}: ${values.notes}`);
+    const when = describeWhen(locale, values.date ?? "", values.time ?? "");
+    const lines = [`*${t(locale, COPY.message)}*`];
+    const add = (label: { bn: string; en: string }, value: string | undefined) => {
+      if (value) lines.push(`${t(locale, label)}: ${value}`);
+    };
+    add(COPY.msgTrip, tripLabel(values.trip ?? ""));
+    add(COPY.msgWhen, when);
+    add(COPY.msgPickup, values.pickup);
+    add(COPY.msgDestination, values.destination);
+    add(COPY.stepCar, carName(values.vehicle ?? ""));
+    add(COPY.name, values.name);
+    add(COPY.msgPhone, values.phone);
+    add(COPY.msgNotes, values.notes);
     return `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const data = new FormData(form);
     const values = Object.fromEntries(
       [...data.entries()].map(([k, v]) => [k, String(v).trim()]),
     ) as Fields;
 
-    // Check on the phone first: nothing is sent until name and number are valid.
     const found = validate(locale, values);
     setErrors(found);
     if (found.name || found.phone) {
-      const first = event.currentTarget.elements.namedItem(found.name ? "name" : "phone");
+      const first = form.elements.namedItem(found.name ? "name" : "phone");
       (first as HTMLElement | null)?.focus();
       return;
     }
@@ -157,12 +236,30 @@ export function BookingForm({
       return;
     }
 
+    // The API's schema has no fields for trip, time or pickup, so they
+    // travel in the notes.
+    const extra = [
+      values.trip ? `${t(locale, COPY.msgTrip)}: ${tripLabel(values.trip)}` : "",
+      values.time ? `${t(locale, COPY.time)}: ${describeTime(locale, values.time)}` : "",
+      values.pickup ? `${t(locale, COPY.msgPickup)}: ${values.pickup}` : "",
+      values.notes ?? "",
+    ].filter(Boolean);
+
     setStatus({ kind: "sending" });
     try {
       const response = await fetch(BOOKING_API, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...values, locale }),
+        body: JSON.stringify({
+          name: values.name,
+          phone: values.phone,
+          vehicle: carName(values.vehicle ?? ""),
+          date: values.date,
+          destination: values.destination,
+          notes: extra.join("\n"),
+          website: values.website,
+          locale,
+        }),
       });
       const result = await response.json();
 
@@ -190,169 +287,241 @@ export function BookingForm({
     const body =
       status.kind === "opened" ? COPY.openedBody : status.kind === "sent" ? COPY.successBody : COPY.failedBody;
     return (
-      <div role="status" className="border-border bg-surface-raised rounded-lg border p-5">
-        <h3 className="text-lg font-semibold">{t(locale, title)}</h3>
-        <p className="text-muted mt-2">{t(locale, body)}</p>
+      <div role="status" className="border-line bg-raised rounded-lg border p-6 md:p-8">
+        <h3 className="text-2xl">{t(locale, title)}</h3>
+        <p className="text-ink-soft mt-3 max-w-xl">{t(locale, body)}</p>
         {status.kind === "sent" && status.id ? (
-          <p className="text-muted mt-2 text-sm">
-            {t(locale, COPY.reference)}: #{status.id}
+          <p className="text-ink-soft mt-2 text-sm">
+            {t(locale, COPY.reference)}: #{localeDigits(locale, status.id)}
           </p>
         ) : null}
-        <div className="mt-5 flex flex-wrap gap-3">
-          <a
-            href={whatsappHref(lastValues)}
-            className="bg-whatsapp inline-flex min-h-12 items-center gap-2 rounded-lg px-5 font-semibold text-black transition active:scale-[0.98]"
-          >
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a href={whatsappHref(lastValues)} className="btn btn-primary">
             <WhatsAppIcon className="size-5" />
             {t(locale, status.kind === "sent" ? COPY.alsoWhatsapp : COPY.sendOnWhatsapp)}
           </a>
-          <a
-            href={`tel:${SITE.phone}`}
-            className="border-border inline-flex min-h-12 items-center rounded-lg border px-5 font-semibold"
-          >
+          <a href={`tel:${SITE.phone}`} className="btn btn-quiet">
+            <PhoneIcon className="size-5" />
             {t(locale, COPY.callInstead)}
           </a>
+          <button
+            type="button"
+            onClick={() => setStatus({ kind: "idle" })}
+            className="text-leaf inline-flex min-h-12 items-center px-2 underline-offset-4 hover:underline"
+          >
+            {t(locale, COPY.startOver)}
+          </button>
         </div>
       </div>
     );
   }
 
-  const field =
-    "border-border bg-surface-raised text-fg w-full rounded-lg border px-3 py-2.5 text-base aria-[invalid=true]:border-emergency";
   const sending = status.kind === "sending";
-  const submitLabel = sending
-    ? t(locale, COPY.sending)
-    : t(locale, API_LIVE ? COPY.submitApi : COPY.submitWhatsapp);
-  const honeypot = (
-    <input
-      type="text"
-      name="website"
-      tabIndex={-1}
-      autoComplete="off"
-      aria-hidden="true"
-      className="absolute -left-[9999px] size-0 opacity-0"
-    />
-  );
-
-  const nameField = (
-    <Field label={`${t(locale, COPY.name)} (${t(locale, COPY.required)})`} name="name" error={errors.name}>
-      <input
-        id="booking-name"
-        name="name"
-        autoComplete="name"
-        aria-invalid={errors.name ? true : undefined}
-        aria-describedby={errors.name ? "name-error" : undefined}
-        className={field}
-      />
-    </Field>
-  );
-  const phoneField = (
-    <Field label={`${t(locale, COPY.phone)} (${t(locale, COPY.required)})`} name="phone" error={errors.phone}>
-      <input
-        id="booking-phone"
-        name="phone"
-        type="tel"
-        inputMode="tel"
-        autoComplete="tel"
-        placeholder="01XXXXXXXXX"
-        aria-invalid={errors.phone ? true : undefined}
-        aria-describedby={errors.phone ? "phone-error" : undefined}
-        className={field}
-      />
-    </Field>
-  );
-  const vehicleField = (
-    <Field label={t(locale, COPY.vehicle)} name="vehicle">
-      <select id="booking-vehicle" name="vehicle" defaultValue="" className={field}>
-        <option value="">{t(locale, COPY.anyVehicle)}</option>
-        {FLEET.map((v) => (
-          <option key={v.slug} value={v.name}>
-            {v.name} — {t(locale, v.type)}
-          </option>
-        ))}
-      </select>
-    </Field>
-  );
-  const dateField = (
-    <Field label={t(locale, COPY.date)} name="date">
-      <input id="booking-date" name="date" type="date" className={field} />
-    </Field>
-  );
-  const submit = (
-    <button
-      type="submit"
-      disabled={sending}
-      className="bg-brand text-brand-fg inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98] disabled:opacity-70"
-    >
-      {API_LIVE ? null : <WhatsAppIcon className="size-5" />}
-      {submitLabel}
-    </button>
-  );
-
-  if (variant === "quick") {
-    return (
-      <form ref={formRef} onSubmit={handleSubmit} noValidate className="grid gap-3 md:grid-cols-4">
-        {nameField}
-        {phoneField}
-        {vehicleField}
-        {dateField}
-        <input type="hidden" name="destination" />
-        {honeypot}
-        <div className="md:col-span-4">{submit}</div>
-      </form>
-    );
-  }
+  const optional = <span className="text-ink-soft"> ({t(locale, COPY.optional)})</span>;
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
-      {nameField}
-      {phoneField}
-      {vehicleField}
-      {dateField}
-      <div className="sm:col-span-2">
-        <Field label={t(locale, COPY.destination)} name="destination">
-          <input
-            id="booking-destination"
-            name="destination"
-            placeholder={t(locale, COPY.destinationHint)}
-            className={field}
-          />
-        </Field>
-      </div>
-      <div className="sm:col-span-2">
-        <Field label={t(locale, COPY.notes)} name="notes">
-          <textarea id="booking-notes" name="notes" rows={3} className={field} />
-        </Field>
-      </div>
-      {honeypot}
-      <div className="grid gap-2 sm:col-span-2">
-        {submit}
-        {API_LIVE ? null : <p className="text-muted text-sm">{t(locale, COPY.whatsappNote)}</p>}
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="grid gap-10">
+      <Step n={1} locale={locale} title={t(locale, COPY.stepTrip)}>
+        <div className="grid grid-cols-2 gap-2">
+          {TRIPS.map((trip) => (
+            <Choice key={trip.key} name="trip" value={trip.key}>
+              <span className="type-display leading-snug">{t(locale, trip.label)}</span>
+            </Choice>
+          ))}
+        </div>
+      </Step>
+
+      <Step n={2} locale={locale} title={t(locale, COPY.stepWhen)}>
+        <div className="grid grid-cols-2 gap-3">
+          <Field id="booking-date" label={t(locale, COPY.date)}>
+            <input id="booking-date" name="date" type="date" className={INPUT} />
+          </Field>
+          <Field id="booking-time" label={t(locale, COPY.time)}>
+            <input id="booking-time" name="time" type="time" className={INPUT} />
+          </Field>
+        </div>
+      </Step>
+
+      <Step n={3} locale={locale} title={t(locale, COPY.stepWhere)}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field id="booking-pickup" label={t(locale, COPY.pickup)}>
+            <input
+              id="booking-pickup"
+              name="pickup"
+              autoComplete="street-address"
+              placeholder={t(locale, COPY.pickupHint)}
+              className={INPUT}
+            />
+          </Field>
+          <Field id="booking-destination" label={<>{t(locale, COPY.destination)}{optional}</>}>
+            <input
+              id="booking-destination"
+              name="destination"
+              placeholder={t(locale, COPY.destinationHint)}
+              className={INPUT}
+            />
+          </Field>
+        </div>
+      </Step>
+
+      <Step n={4} locale={locale} title={t(locale, COPY.stepCar)}>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <Choice name="vehicle" value="" defaultChecked>
+            <span className="grid">
+              <span className="type-display">{t(locale, COPY.anyCar)}</span>
+              <span className="text-ink-soft text-sm">{t(locale, COPY.anyCarNote)}</span>
+            </span>
+          </Choice>
+          {FLEET.map((v) => (
+            <Choice key={v.slug} name="vehicle" value={v.slug}>
+              <span className="flex flex-1 items-center justify-between gap-3">
+                <span className="grid">
+                  <span className="type-display">{v.name}</span>
+                  <span className="text-ink-soft text-sm">
+                    {t(locale, v.type)} · {localeDigits(locale, v.seats)} {t(locale, COPY.seats)}
+                  </span>
+                </span>
+                <span className="text-end whitespace-nowrap">
+                  <span className="figures text-lg">৳{formatTaka(locale, v.pricePerDay)}</span>
+                  <span className="text-ink-soft block text-xs">{t(locale, COPY.perDay)}</span>
+                </span>
+              </span>
+            </Choice>
+          ))}
+        </div>
+      </Step>
+
+      <Step n={5} locale={locale} title={t(locale, COPY.stepYou)}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field id="booking-name" label={t(locale, COPY.name)} error={errors.name}>
+            <input
+              id="booking-name"
+              name="name"
+              autoComplete="name"
+              required
+              aria-invalid={errors.name ? true : undefined}
+              aria-describedby={errors.name ? "booking-name-error" : undefined}
+              className={INPUT}
+            />
+          </Field>
+          <Field id="booking-phone" label={t(locale, COPY.phone)} error={errors.phone}>
+            <input
+              id="booking-phone"
+              name="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              required
+              placeholder="01XXXXXXXXX"
+              aria-invalid={errors.phone ? true : undefined}
+              aria-describedby={errors.phone ? "booking-phone-error" : undefined}
+              className={INPUT}
+            />
+          </Field>
+          <div className="sm:col-span-2">
+            <Field id="booking-notes" label={<>{t(locale, COPY.notes)}{optional}</>}>
+              <textarea id="booking-notes" name="notes" rows={3} className={`${INPUT} py-3`} />
+            </Field>
+          </div>
+        </div>
+      </Step>
+
+      {/* Honeypot: invisible to people, filled in by bots. */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] size-0 opacity-0"
+      />
+
+      <div className="grid gap-3">
+        <button type="submit" disabled={sending} className="btn btn-primary min-h-14 w-full text-lg disabled:opacity-70">
+          {API_LIVE ? null : <WhatsAppIcon className="size-5" />}
+          {sending ? t(locale, COPY.sending) : t(locale, API_LIVE ? COPY.submitApi : COPY.submitWhatsapp)}
+        </button>
+        {API_LIVE ? null : <p className="text-ink-soft text-sm">{t(locale, COPY.whatsappNote)}</p>}
       </div>
     </form>
   );
 }
 
-function Field({
-  label,
+const INPUT =
+  "border-field bg-raised text-ink placeholder:text-ink-soft min-h-12 w-full rounded-lg border px-3.5 text-base aria-[invalid=true]:border-pin-ink aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-pin-ink";
+
+function Step({
+  n,
+  locale,
+  title,
+  children,
+}: {
+  n: number;
+  locale: Locale;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <fieldset className="min-w-0">
+      <legend className="mb-4 flex items-baseline gap-3">
+        <span aria-hidden="true" className="figures text-leaf text-2xl">
+          {localeDigits(locale, n)}
+        </span>
+        <span className="type-display text-xl md:text-2xl">{title}</span>
+      </legend>
+      {children}
+    </fieldset>
+  );
+}
+
+/** A radio drawn as a tile: the whole tile is the hit area. */
+function Choice({
   name,
+  value,
+  defaultChecked,
+  children,
+}: {
+  name: string;
+  value: string;
+  defaultChecked?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="border-field bg-raised has-[:checked]:border-leaf has-[:checked]:ring-leaf has-[:focus-visible]:outline-focus flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-colors has-[:checked]:ring-1 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2">
+      <input
+        type="radio"
+        name={name}
+        value={value}
+        defaultChecked={defaultChecked}
+        className="accent-leaf size-4 shrink-0 focus-visible:outline-none"
+      />
+      {children}
+    </label>
+  );
+}
+
+function Field({
+  id,
+  label,
   error,
   children,
 }: {
-  label: string;
-  name: string;
+  id: string;
+  label: React.ReactNode;
   error?: string;
   children: React.ReactNode;
 }) {
   return (
-    <label className="grid gap-1.5">
-      <span className="text-sm font-medium">{label}</span>
+    <div className="grid content-start gap-1.5">
+      <label htmlFor={id} className="text-sm">
+        {label}
+      </label>
       {children}
       {error ? (
-        <span id={`${name}-error`} role="alert" className="text-emergency-ink text-sm font-medium">
+        <p id={`${id}-error`} role="alert" className="text-pin-ink text-sm">
           {error}
-        </span>
+        </p>
       ) : null}
-    </label>
+    </div>
   );
 }

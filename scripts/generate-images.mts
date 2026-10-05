@@ -13,7 +13,7 @@ import sharp from "sharp";
 
 const SOURCE_DIRS = ["public/media/fleet"];
 const OUT_DIR = "public/media/generated";
-const WIDTHS = [480, 800, 1200, 1600];
+const WIDTHS = [480, 640, 800, 1200, 1600];
 
 await mkdir(OUT_DIR, { recursive: true });
 

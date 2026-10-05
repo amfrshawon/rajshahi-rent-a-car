@@ -45,6 +45,10 @@
   --whatsapp-ink: #0f7b52;
 
   --focus: #1d7a4e;
+
+  /* Tappable tiles: raised on the page ground, translucent on green. */
+  --tile: var(--raised);
+  --tile-hover: var(--mist);
 }
 
 /* Three states: follow the system, or a data-theme on <html> overrides it. */
@@ -123,6 +127,8 @@
   --primary-hover: #e3ece7;
   --on-primary: #0b3d2c;
   --focus: #ffffff;
+  --tile: rgb(255 255 255 / 0.06);
+  --tile-hover: rgb(255 255 255 / 0.12);
 }
 .surface-padma { background-color: var(--padma); }
 .surface-deep { background-color: var(--padma-deep); }
@@ -148,6 +154,8 @@
   --color-primary-hover: var(--primary-hover);
   --color-on-primary: var(--on-primary);
   --color-whatsapp-ink: var(--whatsapp-ink);
+  --color-tile: var(--tile);
+  --color-tile-hover: var(--tile-hover);
 
   /*
     LEGACY ALIASES. The inner pages still use the old names until Phase 4
@@ -175,19 +183,22 @@
   --color-whatsapp: #25d366;
 
   /*
-    Type. One family (Anek, cut locally into static files, see
-    scripts/build-fonts.py) in three cuts. The --rrc-* variables come from
-    src/lib/fonts-bn.ts or fonts-en.ts, whichever layout the page is in.
-      text     width 100, weight 400: reading
-      display  width 125, weight 800: headlines, numbers, buttons, labels
-      strong   width 100, weight 600: bold words inside long text only.
-               Not preloaded, so pages that never set it never download it.
+    Type. Anek, cut locally into static files (scripts/build-fonts.py),
+    in up to three cuts. The --rrc-* variables come from src/lib/fonts-bn.ts
+    or fonts-en.ts, whichever layout the page is in.
+      display  width 125, weight 800: headlines, figures, buttons, labels.
+               Both locales.
+      text     width 100, weight 400: English reading text. Bangla reading
+               text uses the system's Bengali font instead (see fonts-bn.ts
+               for the measurement), so --rrc-text is unset on Bangla pages
+               and the var() falls through to system-ui.
+      strong   width 100, weight 600: bold words in English articles only.
   */
-  --font-text: var(--rrc-text), "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--rrc-display), var(--rrc-text), "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
-  --font-strong: var(--rrc-strong), var(--rrc-text), "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
+  --font-text: var(--rrc-text, system-ui), "Noto Sans Bengali", "Kohinoor Bangla", "Bangla Sangam MN", "Nirmala UI", ui-sans-serif, sans-serif;
+  --font-display: var(--rrc-display), var(--rrc-text, system-ui), "Noto Sans Bengali", "Kohinoor Bangla", "Bangla Sangam MN", "Nirmala UI", ui-sans-serif, sans-serif;
+  --font-strong: var(--rrc-strong, system-ui), "Noto Sans Bengali", "Kohinoor Bangla", "Bangla Sangam MN", "Nirmala UI", ui-sans-serif, sans-serif;
 
-  --text-hero: clamp(2.5rem, 1.6rem + 3.9vw, 5.25rem);
+  --text-hero: clamp(2.5rem, 1.6rem + 3.6vw, 4.75rem);
   --text-title: clamp(2.125rem, 1.6rem + 2.4vw, 3.75rem);
   --text-section: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
   --text-figure: clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem);
@@ -228,6 +239,10 @@ html[lang="en"] body { line-height: 1.6; }
 }
 html[lang="bn"] :is(h1, h2, h3, .type-display) { line-height: 1.3; }
 html[lang="en"] :is(h1, h2, h3, .type-display) { line-height: 1.08; letter-spacing: -0.015em; }
+/* The two largest sizes sit tighter; Bangla still keeps room for its
+   vowel signs above and conjuncts below. */
+html[lang="bn"] :is(.text-hero, .text-title) { line-height: 1.2; }
+html[lang="en"] :is(.text-hero, .text-title) { line-height: 1.02; letter-spacing: -0.02em; }
 
 :is(strong, b) {
   font-family: var(--font-strong);

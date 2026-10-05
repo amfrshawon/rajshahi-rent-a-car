@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/brand-mark";
-import { ArrowRightIcon, WhatsAppIcon } from "@/components/icons";
+import { WhatsAppIcon } from "@/components/icons";
 import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, localeDigits, t } from "@/lib/locale";
@@ -12,9 +12,7 @@ const COPY = {
   },
   callAria: { bn: "কল করুন", en: "Call" },
   whatsapp: { bn: "হোয়াটসঅ্যাপে লিখুন", en: "Message on WhatsApp" },
-  form: { bn: "বুকিং ফর্ম", en: "Booking form" },
-  services: { bn: "সার্ভিস", en: "Services" },
-  company: { bn: "আমাদের কথা", en: "About" },
+  pages: { bn: "সাইটের পাতা", en: "Site pages" },
   pickup: { bn: "এয়ারপোর্ট ও স্টেশন", en: "Airport & station" },
   fleet: { bn: "গাড়িবহর", en: "Fleet" },
   pricing: { bn: "ভাড়ার তালিকা", en: "Pricing" },
@@ -28,8 +26,18 @@ const COPY = {
   rights: { bn: "রাজশাহী রেন্ট এ কার", en: "Rajshahi Rent A Car" },
 } as const;
 
-const SERVICES = ["fleet", "pricing", "tours", "wedding", "pickup", "ambulance"] as const;
-const COMPANY = ["about", "faq", "blog", "contact"] as const;
+const LINKS = [
+  "fleet",
+  "pricing",
+  "tours",
+  "wedding",
+  "pickup",
+  "ambulance",
+  "about",
+  "faq",
+  "blog",
+  "contact",
+] as const;
 
 /**
  * The close of every page: the phone number set as large as the headline,
@@ -52,23 +60,25 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         <a
           href={`tel:${SITE.phone}`}
           aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
-          className="figures mt-6 inline-flex min-h-11 items-center text-[clamp(2rem,0.9rem+5.4vw,5rem)] whitespace-nowrap hover:underline hover:decoration-2 hover:underline-offset-8"
+          className={`figures mt-6 inline-flex min-h-11 items-center whitespace-nowrap hover:underline hover:decoration-2 hover:underline-offset-8 ${
+            // The international form is five characters longer, so it is
+            // set smaller to stay on one line at 320 px.
+            locale === "bn"
+              ? "text-[clamp(1.875rem,0.75rem+5.4vw,5rem)]"
+              : "text-[clamp(1.375rem,0.2rem+5vw,4.25rem)]"
+          }`}
         >
           {t(locale, SITE.phoneDisplay)}
         </a>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-6 md:mt-8">
           <a href={`https://wa.me/${SITE.whatsapp}?text=${waText}`} className="btn btn-primary">
             <WhatsAppIcon className="size-5" />
             {t(locale, COPY.whatsapp)}
           </a>
-          <Link href={`${route(locale, "contact")}#booking`} className="btn btn-quiet">
-            {t(locale, COPY.form)}
-            <ArrowRightIcon className="size-4" />
-          </Link>
         </div>
       </div>
 
-      <div className="wrap border-line grid gap-10 border-t py-12 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="wrap border-line grid gap-8 border-t py-10 md:grid-cols-[1.4fr_2fr] md:gap-10 md:py-12">
         <div>
           <div className="flex items-center gap-3">
             <BrandMark onDark className="h-8 w-auto" />
@@ -83,41 +93,27 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           </address>
         </div>
 
-        <FooterList title={t(locale, COPY.services)} locale={locale} keys={SERVICES} />
-        <FooterList title={t(locale, COPY.company)} locale={locale} keys={COMPANY} />
+        {/* One list: it wraps into a few rows on a phone and two columns on
+            wide screens. Every link keeps a 44 px tap height. */}
+        <nav aria-label={t(locale, COPY.pages)}>
+          <ul className="flex flex-wrap gap-x-6 md:grid md:grid-cols-2 md:gap-x-10">
+            {LINKS.map((key) => (
+              <li key={key}>
+                <Link
+                  href={route(locale, key)}
+                  className="hover:text-ink text-ink-soft flex min-h-11 items-center underline-offset-4 hover:underline"
+                >
+                  {t(locale, COPY[key])}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
       <div className="wrap border-line text-ink-soft border-t py-6 text-sm">
         © {year} {t(locale, COPY.rights)}
       </div>
     </footer>
-  );
-}
-
-function FooterList({
-  title,
-  locale,
-  keys,
-}: {
-  title: string;
-  locale: Locale;
-  keys: readonly (keyof typeof COPY & Parameters<typeof route>[1])[];
-}) {
-  return (
-    <nav aria-label={title}>
-      <p className="type-display text-ink-soft mb-2 text-sm">{title}</p>
-      <ul>
-        {keys.map((key) => (
-          <li key={key}>
-            <Link
-              href={route(locale, key)}
-              className="hover:text-ink flex min-h-11 items-center underline-offset-4 hover:underline"
-            >
-              {t(locale, COPY[key])}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
   );
 }

@@ -8,7 +8,10 @@
 
 import { asset } from "@/config/deploy";
 
-const WIDTHS = [480, 800, 1200, 1600] as const;
+const WIDTHS = [480, 640, 800, 1200, 1600] as const;
+
+/** 1 x 1 transparent GIF: an <img> that never makes a request. */
+const NOTHING = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 
 export function Photo({
   name,
@@ -18,6 +21,7 @@ export function Photo({
   sizes,
   className,
   priority = false,
+  media,
 }: {
   name: string;
   width: number;
@@ -27,6 +31,11 @@ export function Photo({
   className?: string;
   /** Set on the LCP image only. */
   priority?: boolean;
+  /**
+   * Only show the photo where this media query matches. Elsewhere nothing
+   * is downloaded at all; the caller hides the element there with CSS.
+   */
+  media?: string;
 }) {
   const available = WIDTHS.filter((w) => w <= width);
   const widths = available.length > 0 ? available : [width];
@@ -37,10 +46,10 @@ export function Photo({
 
   return (
     <picture>
-      <source type="image/avif" srcSet={srcSet("avif")} sizes={sizes} />
-      <source type="image/webp" srcSet={srcSet("webp")} sizes={sizes} />
+      <source type="image/avif" srcSet={srcSet("avif")} sizes={sizes} media={media} />
+      <source type="image/webp" srcSet={srcSet("webp")} sizes={sizes} media={media} />
       <img
-        src={asset(`/media/generated/${name}-${widths[widths.length - 1]}.webp`)}
+        src={media ? NOTHING : asset(`/media/generated/${name}-${widths[widths.length - 1]}.webp`)}
         alt={alt}
         width={width}
         height={height}

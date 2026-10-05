@@ -1,41 +1,34 @@
 import { BookingForm } from "@/components/booking-form";
-import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { WhatsAppIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { SITE } from "@/config/site";
 import { type Locale, t } from "@/lib/locale";
 
 const COPY = {
-  title: { bn: "যোগাযোগ ও বুকিং", en: "Contact & Booking" },
+  title: { bn: "বুকিং ও যোগাযোগ", en: "Booking & contact" },
   lead: {
-    bn: "দিনরাত ২৪ ঘণ্টা খোলা। ফোন, হোয়াটসঅ্যাপ বা নিচের ফর্ম — যেভাবে সুবিধা।",
-    en: "Open 24 hours. Phone, WhatsApp or the form below — whichever suits you.",
+    bn: "দিনরাত ২৪ ঘণ্টা খোলা। নিচের ফর্মটি এক মিনিটের, অথবা সরাসরি কল বা হোয়াটসঅ্যাপ করুন।",
+    en: "Open 24 hours. The form below takes a minute, or call or message us directly.",
   },
-  formTitle: { bn: "বুকিং ফর্ম", en: "Booking form" },
+  formTitle: { bn: "গাড়ি বুক করুন", en: "Book a car" },
   formLead: {
-    bn: "ফর্ম পাঠানোর পর আমরা ফোন করে বুকিং নিশ্চিত করব।",
-    en: "After you send the form, we call you back to confirm.",
+    bn: "শুধু নাম আর নম্বর বাধ্যতামূলক। বাকিটা জানা থাকলে লিখুন, না থাকলে আমরা ফোনে জেনে নেব।",
+    en: "Only your name and number are required. Fill in what you know; we will ask about the rest on the phone.",
   },
-  phone: { bn: "ফোন", en: "Phone" },
+  direct: { bn: "সরাসরি", en: "Directly" },
+  phone: { bn: "ফোন, ২৪ ঘণ্টা", en: "Phone, 24 hours" },
+  callAria: { bn: "কল করুন", en: "Call" },
+  whatsapp: { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" },
+  whatsappLink: { bn: "হোয়াটসঅ্যাপে লিখুন", en: "Message on WhatsApp" },
   email: { bn: "ইমেইল", en: "Email" },
   office: { bn: "অফিস", en: "Office" },
-  hours: { bn: "সময়", en: "Hours" },
-  whatsapp: { bn: "হোয়াটসঅ্যাপে মেসেজ", en: "Message on WhatsApp" },
-  payTitle: { bn: "পেমেন্ট মাধ্যম", en: "Payment" },
-  payLead: {
-    bn: "বাংলা কিউআর — সব মোবাইল ফাইন্যান্সিয়াল সার্ভিস ও ব্যাংক ট্রান্সফার।",
-    en: "Bangla QR — every mobile financial service and bank transfer.",
+  payTitle: { bn: "পেমেন্ট", en: "Payment" },
+  pay: {
+    bn: "বাংলা কিউআর: বিকাশ, নগদ, রকেট, উপায়, অথবা ব্যাংক ট্রান্সফার। কার্ড নেওয়া হয় না।",
+    en: "Bangla QR: bKash, Nagad, Rocket, Upay, or bank transfer. Cards are not accepted.",
   },
 } as const;
-
-/** Accepted channels; one Bangla QR scan covers all of them. */
-const PAYMENTS = [
-  { bn: "বিকাশ", en: "bKash" },
-  { bn: "নগদ", en: "Nagad" },
-  { bn: "রকেট", en: "Rocket" },
-  { bn: "উপায়", en: "Upay" },
-  { bn: "ব্যাংক ট্রান্সফার", en: "Bank transfer" },
-] as const;
 
 export function ContactPage({ locale }: { locale: Locale }) {
   const waText = encodeURIComponent(
@@ -49,92 +42,63 @@ export function ContactPage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 md:px-6 lg:grid-cols-[1fr_1.3fr] md:py-16">
-        <div className="reveal">
-          <div className="grid gap-4">
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <PhoneIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.phone)}</p>
-                <p className="mt-0.5 text-lg font-semibold">
-                  <a href={`tel:${SITE.phone}`} className="hover:text-brand">
-                    {t(locale, SITE.phoneDisplay)}
-                  </a>
-                </p>
-              </div>
-            </div>
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <MapPinIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.office)}</p>
-                <p className="mt-0.5">{t(locale, SITE.address)}</p>
-              </div>
-            </div>
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <ClockIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.hours)}</p>
-                <p className="mt-0.5">{t(locale, SITE.hours)}</p>
-              </div>
-            </div>
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <MailIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.email)}</p>
-                <p className="mt-0.5">
-                  <a href={`mailto:${SITE.email}`} className="hover:text-brand">
-                    {SITE.email}
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <a
-            href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-            className="press bg-whatsapp mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-6 font-semibold text-black transition hover:brightness-95"
-          >
-            <WhatsAppIcon className="size-5" />
-            {t(locale, COPY.whatsapp)}
-          </a>
-
-          {/*
-            Bangla QR is the Bangladesh Bank unified QR standard — one merchant
-            QR payable from every MFS app and banking app. Channels are named
-            as chips so a customer recognises their own without reading.
-          */}
-          <div className="border-border bg-surface-raised shadow-card mt-4 rounded-2xl border p-5">
-            <h2 className="font-semibold">{t(locale, COPY.payTitle)}</h2>
-            <p className="text-muted mt-1 text-sm">{t(locale, COPY.payLead)}</p>
-            <ul className="mt-3 flex flex-wrap gap-2">
-              {PAYMENTS.map((p) => (
-                <li
-                  key={p.en}
-                  className="border-border bg-surface text-muted rounded-full border px-3 py-1 text-sm"
-                >
-                  {t(locale, p)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div id="booking" className="reveal scroll-mt-24">
-          <h2 className="text-2xl font-semibold">{t(locale, COPY.formTitle)}</h2>
-          <p className="text-muted mt-1">{t(locale, COPY.formLead)}</p>
-          <div className="mt-5">
+      <div className="wrap grid gap-14 pb-20 lg:grid-cols-[1.5fr_1fr] lg:gap-20 lg:pb-28">
+        <section id="booking" aria-labelledby="booking-title" className="border-line border-t pt-8 md:pt-10">
+          <h2 id="booking-title" className="text-section">
+            {t(locale, COPY.formTitle)}
+          </h2>
+          <p className="text-ink-soft mt-3 max-w-xl">{t(locale, COPY.formLead)}</p>
+          <div className="mt-8 md:mt-10">
             <BookingForm locale={locale} />
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Real methods, as a plain list: no icon cards. */}
+        <aside aria-labelledby="direct-title" className="border-line border-t pt-8 md:pt-10 lg:sticky lg:top-24 lg:self-start">
+          <h2 id="direct-title" className="text-section">
+            {t(locale, COPY.direct)}
+          </h2>
+          <dl className="mt-6 grid">
+            <div className="border-line border-b pb-5">
+              <dt className="text-ink-soft text-sm">{t(locale, COPY.phone)}</dt>
+              <dd>
+                <a
+                  href={`tel:${SITE.phone}`}
+                  aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
+                  className="figures inline-flex min-h-12 items-center text-3xl hover:underline md:text-4xl"
+                >
+                  {t(locale, SITE.phoneDisplay)}
+                </a>
+              </dd>
+            </div>
+            <div className="border-line border-b py-5">
+              <dt className="text-ink-soft text-sm">{t(locale, COPY.whatsapp)}</dt>
+              <dd className="mt-2">
+                <a href={`https://wa.me/${SITE.whatsapp}?text=${waText}`} className="btn btn-quiet">
+                  <WhatsAppIcon className="text-whatsapp-ink size-5" />
+                  {t(locale, COPY.whatsappLink)}
+                </a>
+              </dd>
+            </div>
+            <div className="border-line border-b py-5">
+              <dt className="text-ink-soft text-sm">{t(locale, COPY.email)}</dt>
+              <dd>
+                <a href={`mailto:${SITE.email}`} className="text-leaf inline-flex min-h-11 items-center underline-offset-4 hover:underline">
+                  {SITE.email}
+                </a>
+              </dd>
+            </div>
+            <div className="border-line border-b py-5">
+              <dt className="text-ink-soft text-sm">{t(locale, COPY.office)}</dt>
+              <dd className="mt-1">{t(locale, SITE.address)}</dd>
+            </div>
+            <div className="py-5">
+              <dt className="text-ink-soft text-sm">{t(locale, COPY.payTitle)}</dt>
+              <dd className="mt-1">{t(locale, COPY.pay)}</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
     </PageShell>
   );
 }

@@ -19,16 +19,24 @@ const COPY = {
 
 /** Wide screens show the services; the rest live in the menu and footer. */
 const WIDE_NAV: readonly RouteKey[] = ["fleet", "pricing", "tours", "wedding", "ambulance"];
+const MENU: readonly RouteKey[] = [
+  "fleet",
+  "pricing",
+  "tours",
+  "wedding",
+  "pickup",
+  "ambulance",
+  "blog",
+  "about",
+  "faq",
+  "contact",
+];
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const wide = NAV.filter((item) => WIDE_NAV.includes(item.key));
-  const contact = NAV.filter((item) => item.key === "contact");
-  const menu = [
-    ...NAV.filter((item) => item.key !== "contact"),
-    { key: "pickup" as const, label: COPY.pickup },
-    ...FOOTER_NAV,
-    ...contact,
-  ];
+  // Services first, then the rest, the same order as the footer.
+  const labelled = [...NAV, ...FOOTER_NAV, { key: "pickup" as const, label: COPY.pickup }];
+  const menu = MENU.map((key) => labelled.find((item) => item.key === key)!);
 
   return (
     <header className="border-line bg-ground sticky top-0 z-40 border-b">

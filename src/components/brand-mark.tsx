@@ -12,7 +12,8 @@ export function BrandMark({ onDark = false, className }: { onDark?: boolean; cla
   const light = asset("/media/generated/logo-device.webp");
   const dark = asset("/media/generated/logo-device-on-dark.webp");
   if (onDark) {
-    return <img src={dark} alt="" width={150} height={64} className={className} />;
+    // Only the footer uses this copy on its own, far below the first screen.
+    return <img src={dark} alt="" width={150} height={64} loading="lazy" className={className} />;
   }
   return (
     <picture>
