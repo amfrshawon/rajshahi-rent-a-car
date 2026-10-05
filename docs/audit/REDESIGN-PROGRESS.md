@@ -47,8 +47,10 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
 - **Phase 4 — done.** Every inner page — fleet, pricing, tours, wedding,
   airport/station, ambulance, about, contact, FAQ, blog index, articles,
   archives — now draws on the system. Build + lint pass.
-- **Next:** Phase 5 — run the acceptance measurements and fix anything that
-  fails.
+- **Phase 5 — done.** All acceptance criteria measured and met (axe clean,
+  Lighthouse target met, no overflow, home under length, booking verified).
+  Two fixes came out of it: ambulance hero contrast and 44px header controls.
+- **Next:** Phase 6 — rebase, final build, open the pull request.
 
 ### Phase 1 — the nine defects
 
@@ -148,11 +150,17 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
   WhatsApp.
 - **Confirm the server headers** with `curl -I` after this branch is deployed
   (Phase 1, defect 7 — the `.htaccess` fix cannot be verified locally).
-- **Native review of new/changed Bangla copy.** Phase 1 adds:
+- **Native review of new/changed Bangla copy.** Phase 1 added
   *"হোয়াটসঅ্যাপে বুকিং পাঠান"*, *"হোয়াটসঅ্যাপ খুলবে, তথ্য আগেই বসানো থাকবে।
   অ্যাপ না থাকলে সরাসরি কল করুন।"*, *"নাম লিখুন"*, *"সঠিক মোবাইল নম্বর দিন"*,
-  and the ambulance tile's *"এখনই কল করুন"*.
-- **Photo shoot** (8 shots in the audit) — slots are labelled in the UI.
+  and the ambulance tile's *"এখনই কল করুন"*. Phases 3–4 added the home
+  headline *"এক কলে গাড়ি দরজায়।"* and support line, the four trip tiles, the
+  route-board copy (*"রাজশাহী থেকে"*, *"যাচাই করুন"*, *"ড্রাইভারসহ, ভাড়া আগেই
+  জানা"*), the three booking steps, and the booking fields (*"ভাড়ার ধরন"*,
+  *"কোথাও থেকে নেব"*). All need a native read.
+- **Photo shoot** (8 shots in the audit) — only three real fleet photos and the
+  logo exist; no stock photography was added and no empty placeholders were
+  shipped.
 
 ## Measurements
 
@@ -213,3 +221,31 @@ Audit reference (measured from outside BD, same build): Home 84 / LCP 4.5 s /
   article, a category archive, a tag archive, ambulance) at 320, 360, 375, 390,
   412, 768, 1024 and 1440 px.
 - **Before/after home length at 360:** 6,314 px → 3,185 px.
+
+### Phase 5 — acceptance
+
+Lighthouse 12, mobile, simulated slow 4G, against the production export served
+**with Brotli** (the local `serve` does not compress, which inflates both LCP
+and transfer; the live host is compressed, so the compressed numbers are the
+honest ones):
+
+| Page | Perf | A11y | BP | LCP | CLS | Transfer |
+| --- | --- | --- | --- | --- | --- | --- |
+| Home | 99 | 100 | 100 | 2.1 s | 0 | 388 KB |
+| Contact | 100 | 100 | 100 | 1.9 s | 0 | 305 KB |
+
+Against baseline (deployed dev site): Home 97 → 99 perf, LCP 2.4 → 2.1 s,
+695 → 388 KB; Contact 86 → 100 perf, LCP 4.1 → 1.9 s, 616 → 305 KB.
+
+- **axe (WCAG 2.1 A/AA): 0 violations** on home (bn + en), fleet, contact,
+  ambulance and one article.
+- **Overflow:** none at 320–1440 px on every page type.
+- **Home length:** 3,204 px at 360 × 780 (target ≤ 3,500).
+- **Logo 6.8 KB; preloaded fonts 111 KB; home transfer 388 KB** — all inside
+  target.
+- **Tap targets:** header controls and standalone links are now ≥ 44 px; links
+  inside prose remain inline text (WCAG 2.5.5 exempts inline links). Lighthouse
+  `target-size` reports no failures.
+- **Dark and light mode** both checked; the three-state override is intact.
+- **Headers:** `.htaccess` fixed; `curl -I` confirmation is logged for the
+  owner (cannot be done before deploy).
