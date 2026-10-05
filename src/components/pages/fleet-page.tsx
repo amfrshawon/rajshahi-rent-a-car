@@ -1,4 +1,3 @@
-import { BookingCta } from "@/components/booking-cta";
 import { ArrowRightIcon, GearIcon, UsersIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
@@ -82,7 +81,6 @@ export function FleetPage({ locale }: { locale: Locale }) {
         </ul>
       </section>
 
-      <BookingCta locale={locale} />
     </PageShell>
   );
 }

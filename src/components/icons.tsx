@@ -145,3 +145,19 @@ export function GearIcon(props: { className?: string }) {
     </svg>
   );
 }
+
+export function StarIcon(props: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" />
+    </svg>
+  );
+}
+
+export function MenuIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 8h16M4 16h16" />
+    </svg>
+  );
+}

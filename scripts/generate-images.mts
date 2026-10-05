@@ -98,23 +98,42 @@ for (const dir of SOURCE_DIRS) {
     }
   }
 
+  // Two copies: the logo's own colours, and one for dark grounds (the green
+  // header in dark mode, the share card) where the green swoosh turns white
+  // and the pin keeps its red.
   const device = Buffer.alloc(data.length);
+  const onDark = Buffer.alloc(data.length);
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const i = px(x, y);
-      const keep = isGreen(i) || (isRed(i) && y < letteringTop);
-      if (!keep) continue;
-      device[i] = data[i];
-      device[i + 1] = data[i + 1];
-      device[i + 2] = data[i + 2];
-      device[i + 3] = data[i + 3];
+      const green = isGreen(i);
+      if (!green && !(isRed(i) && y < letteringTop)) continue;
+      for (let c = 0; c < 4; c++) device[i + c] = data[i + c];
+      onDark[i] = green ? 255 : data[i];
+      onDark[i + 1] = green ? 255 : data[i + 1];
+      onDark[i + 2] = green ? 255 : data[i + 2];
+      onDark[i + 3] = data[i + 3];
     }
   }
 
-  const deviceOnly = await sharp(device, { raw: { width, height, channels: 4 } })
+  // Trim both to the same box, found on the coloured copy.
+  const trimBox = await sharp(device, { raw: { width, height, channels: 4 } })
     .png()
     .toBuffer()
-    .then((buf) => sharp(buf).trim({ threshold: 5 }).png().toBuffer());
+    .then((buf) => sharp(buf).trim({ threshold: 5 }).toBuffer({ resolveWithObject: true }))
+    .then(({ info: t }) => ({
+      left: -(t.trimOffsetLeft ?? 0),
+      top: -(t.trimOffsetTop ?? 0),
+      width: t.width,
+      height: t.height,
+    }));
+  const crop = (raw: Buffer) =>
+    sharp(raw, { raw: { width, height, channels: 4 } })
+      .png()
+      .toBuffer()
+      .then((buf) => sharp(buf).extract(trimBox).png().toBuffer());
+  const deviceOnly = await crop(device);
+  const deviceOnDark = await crop(onDark);
 
   // Header: 2x of the ~28 px display height.
   await sharp(deviceOnly)
@@ -125,22 +144,13 @@ for (const dir of SOURCE_DIRS) {
   // PNG, a little larger, for the favicon tooling.
   await sharp(deviceOnly).resize({ height: 160 }).png().toFile(path.join(OUT_DIR, "logo-device.png"));
 
-  // White silhouette of the same device — for the OG share card (green
-  // strokes would sink into its green ground) and any dark-ground use.
-  await sharp(deviceOnly)
-    .resize({ height: 160 })
-    .greyscale()
-    .linear(-1, 255)
-    .png()
-    .toFile(path.join(OUT_DIR, "logo-device-white.png"));
-
-  // And a white WebP for the header in dark mode.
-  await sharp(deviceOnly)
+  // On-dark copy: the OG share card (green strokes would sink into its green
+  // ground) and the header in dark mode.
+  await sharp(deviceOnDark).resize({ height: 160 }).png().toFile(path.join(OUT_DIR, "logo-device-on-dark.png"));
+  await sharp(deviceOnDark)
     .resize({ height: 64 })
-    .greyscale()
-    .linear(-1, 255)
     .webp({ quality: 90, alphaQuality: 90 })
-    .toFile(path.join(OUT_DIR, "logo-device-white.webp"));
+    .toFile(path.join(OUT_DIR, "logo-device-on-dark.webp"));
 
   written += 4;
 }
@@ -155,8 +165,8 @@ for (const dir of SOURCE_DIRS) {
  *   img = d.copy(); img.thumbnail((48, 48), Image.LANCZOS)
  *   canvas.paste(img, ((48 - img.width) // 2, (48 - img.height) // 2), img)
  *   canvas.save('src/app/favicon.ico', format='ICO', sizes=[(16, 16), (32, 32), (48, 48)])
- *   green = Image.new('RGBA', (180, 180), (11, 107, 58, 255))
- *   w = Image.open('public/media/generated/logo-device-white.png')
+ *   green = Image.new('RGBA', (180, 180), (11, 61, 44, 255))
+ *   w = Image.open('public/media/generated/logo-device-on-dark.png')
  *   w.thumbnail((120, 120), Image.LANCZOS)
  *   green.paste(w, ((180 - w.width) // 2, (180 - w.height) // 2), w)
  *   green.convert('RGB').save('src/app/apple-icon.png')

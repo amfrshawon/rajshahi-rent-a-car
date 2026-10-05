@@ -1,4 +1,3 @@
-import { BookingCta } from "@/components/booking-cta";
 import { BoltIcon, PhoneIcon, SteeringIcon, WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
@@ -139,7 +138,6 @@ export function PickupPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <BookingCta locale={locale} />
     </PageShell>
   );
 }

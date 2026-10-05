@@ -4,6 +4,7 @@ import "../globals.css";
 import { RootHtml } from "@/components/root-html";
 import { IS_PREVIEW } from "@/config/deploy";
 import { SITE } from "@/config/site";
+import { fontVariables } from "@/lib/fonts-bn";
 
 /**
  * Bangla root layout. Bangla is the default locale and is served at the
@@ -26,5 +27,5 @@ export const metadata: Metadata = {
 };
 
 export default function BanglaRootLayout({ children }: { children: ReactNode }) {
-  return <RootHtml locale="bn">{children}</RootHtml>;
+  return <RootHtml locale="bn" fontVariables={fontVariables}>{children}</RootHtml>;
 }

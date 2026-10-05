@@ -41,7 +41,12 @@ exist in the built export.
   booking with the destination filled in; email icon; tap targets and the
   ambulance spoken label; header logo 216 KB → 5 KB; first screen no longer
   animates; the deploy keeps `.htaccess`.
-- [ ] Phase 2 — design system
+- [x] **Phase 2 — design system.** Padma / Leaf / Pin / Mist / Ink tokens
+  with a computed dark palette; one type family in three local cuts; new
+  header, footer with the closing call strip, sticky bar and page header.
+  Retired: the pulsing call button, the closing CTA band, the grey page
+  header with its green bar, and every reveal / rise / parallax / tilt /
+  lift animation.
 - [ ] Phase 3 — home and booking
 - [ ] Phase 4 — inner pages
 - [ ] Phase 5 — verify
@@ -65,12 +70,37 @@ page (tap-target failure).
 
 - **Fonts are cut locally instead of loaded from Google.** Measured: the
   Bangla font with the width axis is 437 KB, and asking Google for two
-  weights returns the full 152 KB variable file. Single fixed cuts are about
-  55 KB. `scripts/build-fonts.py` cuts text 400, strong 600 and display
-  800 (width 125) from the OFL source into `src/fonts/`. Bangla pages preload
-  text and display (120 KB together). The bold cut and the Latin letters only
-  download when a page uses them. Renamed internally to "RRC Sans", as the
-  OFL asks of modified versions.
+  weights returns the full 152 KB variable file. `scripts/build-fonts.py`
+  cuts static files from the OFL source into `src/fonts/`, served through
+  `next/font/local`. Renamed internally to "RRC Sans", as the OFL asks of
+  modified versions.
+- **Two cuts on screen, a third only in articles.** Text (width 100,
+  weight 400) for reading; display (width 125, weight 800) for headlines,
+  figures, buttons and labels. The brief's narrow 600 cut for numbers would
+  have been a third Bangla file (74 KB) on every page and broken the
+  150 KB budget, so figures use the display cut. A 600 cut exists only for
+  bold words inside articles and downloads only there.
+- **Display weight is 800, not 760–780.** 800 is the font's own master;
+  any weight between masters is interpolated and compresses worse
+  (760: 70.6 KB, 780: 69.3 KB, 800: 60.5 KB). The difference is not
+  visible.
+- **The Bangla cuts include the Latin alphabet** (+8 KB each). Car names and
+  "WhatsApp" are on most Bangla pages, so without it a second font would
+  download late on most of them.
+- **Measured preload: Bangla pages 134.5 KB, English pages 34.2 KB** (was
+  242 KB). This needed `experimental.cssChunking: { type: "graph",
+  requestCost: 100 }` in `next.config.ts`: by default both layouts' CSS
+  merged into one file and every page preloaded both locales' fonts
+  (167 KB). Cost: one extra stylesheet request of under 1.5 KB.
+- **No `dark:` variants.** Colours are tokens, redefined for dark mode under
+  `prefers-color-scheme` and under `html[data-theme]`, so the three states
+  work without touching components. Green panels (`.surface-padma`,
+  `.surface-deep`) re-scope the tokens, so text, buttons and focus rings
+  adapt on them automatically. There is no theme toggle in the UI, as
+  before.
+- **The dark-ground logo keeps its red pin.** The old "white" logo was a
+  grey inversion that turned the pin grey. It is now white swoosh, red pin.
+- **Language switch, call and menu are 44 px** (were 36 px).
 
 - **Booking goes to WhatsApp until the booking server is live.** The
   `/api/booking` service is not deployed, so posting to it always fails. The

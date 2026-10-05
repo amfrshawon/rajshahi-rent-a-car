@@ -1,187 +1,254 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Design tokens
+   Colour
 
-   Semantic names only. Components never reference a raw hex value, so the
-   dark palette below is the single place dark mode is defined.
+   Taken from the logo: Padma green for the big surfaces, the logo's leaf
+   green for links and selected states, and the pin red only for pins, live
+   status and emergencies. Components use these names, never a hex value.
+
+   Every text pair is computed, not eyeballed (WCAG 2.1 AA, 4.5:1 for text,
+   3:1 for field borders), in both themes:
+     ink / ground 18.2 · ink-soft / mist 6.6 · leaf / mist 4.9
+     pin-ink / mist 5.4 · on-padma-soft / padma 7.2 · white / pin 5.0
+     dark: ink / ground 16.2 · ink-soft / mist 7.6 · leaf / ground 9.0
+           on-primary / primary 8.7 · pin-ink / mist 6.5
    --------------------------------------------------------------------------- */
 
 :root {
-  --bg: #ffffff;
-  --surface: #f5f7f6;
-  --surface-raised: #ffffff;
-  --fg: #0f1613;
-  --muted: #57635c;
-  --border: #e1e6e3;
+  color-scheme: light;
 
-  /* Deep green reads as "available / go" and sits close to the national
-     palette without being a flag pastiche. */
-  --brand: #0b6b3a;
-  --brand-strong: #085730;
-  --brand-soft: #e8f3ec;
-  --brand-fg: #ffffff;
-  /* Fresher green for small non-text accents — chips, dots, active pills.
-     ~3.3:1 on white: fine for graphics and large type, never body text. */
-  --brand-vivid: #10a35e;
+  --ground: #ffffff;
+  --mist: #f2f5f3; /* section ground: faintly green, never cream */
+  --raised: #ffffff;
+  --ink: #0f1713;
+  --ink-soft: #4d5a53;
+  --line: #dce3df; /* decorative rules */
+  --field: #7c8983; /* input borders, 3.6:1 */
 
-  /* Warm amber for primary calls to action, so CTAs never compete with
-     the WhatsApp green. */
-  --accent: #b45309;
-  --accent-soft: #fdf3e3;
-  --accent-fg: #ffffff;
+  --padma: #0b3d2c;
+  --padma-deep: #072a1e;
+  --on-padma: #ffffff;
+  --on-padma-soft: #b4cdbf;
+  --padma-line: #2a5a47;
 
-  /*
-   * Emergency red, used only on the ambulance page. The rest of the site is
-   * green; an emergency number needs to read as urgent and distinct.
-   * #c81e1e is 5.74:1 both as white-on-fill and as ink on white.
-   */
-  --emergency: #c81e1e;
-  --emergency-ink: #b91c1c;
-  --emergency-soft: #fdeaea;
-  --emergency-fg: #ffffff;
+  --leaf: #1d7a4e;
+  --pin: #d7263d;
+  --pin-ink: #c21f35;
+  --on-pin: #ffffff;
 
-  --whatsapp: #25d366;
-  /*
-   * #25d366 is only 1.98:1 on white — acceptable as a button fill with
-   * black text on it, an AA failure as text or an icon. This is the ink
-   * for light surfaces (5.28:1) and still reads as WhatsApp green.
-   */
+  --primary: #0b3d2c;
+  --primary-hover: #0f4d38;
+  --on-primary: #ffffff;
+
+  /* WhatsApp's own #25d366 is 2:1 on white, so it is never used for text. */
   --whatsapp-ink: #0f7b52;
 
-  --ring: color-mix(in oklab, var(--brand) 45%, transparent);
-  --card-shadow: 0 1px 2px rgb(15 22 19 / 0.05), 0 8px 24px -12px rgb(15 22 19 / 0.18);
-  --lift-shadow: 0 2px 4px rgb(15 22 19 / 0.06), 0 18px 44px -16px rgb(15 22 19 / 0.28);
+  --focus: #1d7a4e;
 }
 
+/* Three states: follow the system, or a data-theme on <html> overrides it. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0a0f0c;
-    --surface: #121a16;
-    --surface-raised: #172019;
-    --fg: #e8efea;
-    --muted: #9aa8a1;
-    --border: #232e28;
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
 
-    --brand: #45b277;
-    --brand-strong: #63c48f;
-    --brand-soft: #12291d;
-    --brand-fg: #04140b;
-    --brand-vivid: #35c47c;
+    --ground: #0b110e;
+    --mist: #111a16;
+    --raised: #16211b;
+    --ink: #e7eeea;
+    --ink-soft: #9eada5;
+    --line: #24302a;
+    --field: #6b7a72;
 
-    --accent: #e0952f;
-    --accent-soft: #2a1e0c;
-    --accent-fg: #1a1000;
+    --padma: #0f3a2b;
+    --padma-deep: #08201a;
+    --on-padma-soft: #a9c6b7;
+    --padma-line: #2b5444;
 
-    --emergency: #dc2626;
-    /* 6.99:1 on the dark ground. */
-    --emergency-ink: #f87171;
-    --emergency-soft: #2a1113;
-    --emergency-fg: #ffffff;
+    --leaf: #5dc594;
+    --pin-ink: #ff6b7a;
 
-    /* On the dark ground #25d366 is already 9.74:1. */
-    --whatsapp-ink: #25d366;
+    --primary: #5dc594;
+    --primary-hover: #74d2a6;
+    --on-primary: #06170f;
 
-    --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
-    --lift-shadow: 0 2px 4px rgb(0 0 0 / 0.5), 0 18px 44px -16px rgb(0 0 0 / 0.7);
+    --whatsapp-ink: #3ddc84;
+    --focus: #5dc594;
   }
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ground: #0b110e;
+  --mist: #111a16;
+  --raised: #16211b;
+  --ink: #e7eeea;
+  --ink-soft: #9eada5;
+  --line: #24302a;
+  --field: #6b7a72;
+
+  --padma: #0f3a2b;
+  --padma-deep: #08201a;
+  --on-padma-soft: #a9c6b7;
+  --padma-line: #2b5444;
+
+  --leaf: #5dc594;
+  --pin-ink: #ff6b7a;
+
+  --primary: #5dc594;
+  --primary-hover: #74d2a6;
+  --on-primary: #06170f;
+
+  --whatsapp-ink: #3ddc84;
+  --focus: #5dc594;
+}
+
+/*
+  Green panels re-scope the tokens, so anything placed on one (text-ink,
+  text-ink-soft, a primary button, a focus ring) adapts without a second set
+  of classes. The primary button turns white on green.
+*/
+@layer components {
+.surface-padma,
+.surface-deep {
+  color: var(--on-padma);
+  --ink: var(--on-padma);
+  --ink-soft: var(--on-padma-soft);
+  --line: var(--padma-line);
+  --field: var(--on-padma-soft);
+  --leaf: #9fe0bf; /* 8.1:1 on padma */
+  --pin-ink: #ff8a96; /* 5.4:1 on padma */
+  --primary: #ffffff;
+  --primary-hover: #e3ece7;
+  --on-primary: #0b3d2c;
+  --focus: #ffffff;
+}
+.surface-padma { background-color: var(--padma); }
+.surface-deep { background-color: var(--padma-deep); }
+}
+
 @theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
-  --color-fg: var(--fg);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-brand: var(--brand);
-  --color-brand-strong: var(--brand-strong);
-  --color-brand-soft: var(--brand-soft);
-  --color-brand-fg: var(--brand-fg);
-  --color-brand-vivid: var(--brand-vivid);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --color-accent-fg: var(--accent-fg);
-  --color-emergency: var(--emergency);
-  --color-emergency-ink: var(--emergency-ink);
-  --color-emergency-soft: var(--emergency-soft);
-  --color-emergency-fg: var(--emergency-fg);
-  --color-whatsapp: var(--whatsapp);
+  --color-ground: var(--ground);
+  --color-mist: var(--mist);
+  --color-raised: var(--raised);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-field: var(--field);
+  --color-padma: var(--padma);
+  --color-padma-deep: var(--padma-deep);
+  --color-on-padma: var(--on-padma);
+  --color-on-padma-soft: var(--on-padma-soft);
+  --color-leaf: var(--leaf);
+  --color-pin: var(--pin);
+  --color-pin-ink: var(--pin-ink);
+  --color-on-pin: var(--on-pin);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
   --color-whatsapp-ink: var(--whatsapp-ink);
 
-  --shadow-card: var(--card-shadow);
-  --shadow-lift: var(--lift-shadow);
+  /*
+    LEGACY ALIASES. The inner pages still use the old names until Phase 4
+    rebuilds them; mapping them here keeps those pages readable meanwhile.
+    Delete this block once nothing references them.
+  */
+  --color-bg: var(--ground);
+  --color-surface: var(--mist);
+  --color-surface-raised: var(--raised);
+  --color-fg: var(--ink);
+  --color-muted: var(--ink-soft);
+  --color-border: var(--line);
+  --color-brand: var(--leaf);
+  --color-brand-strong: var(--padma);
+  --color-brand-soft: var(--mist);
+  --color-brand-fg: var(--on-primary);
+  --color-brand-vivid: var(--leaf);
+  --color-accent: var(--primary);
+  --color-accent-soft: var(--mist);
+  --color-accent-fg: var(--on-primary);
+  --color-emergency: var(--pin);
+  --color-emergency-ink: var(--pin-ink);
+  --color-emergency-soft: var(--mist);
+  --color-emergency-fg: var(--on-pin);
+  --color-whatsapp: #25d366;
 
-  /* Latin runs inside Bangla text fall through to Inter — Hind Siliguri
-     ships no Latin subset here, so this avoids carrying Latin glyphs twice. */
-  --font-bn: var(--font-bangla), var(--font-latin), "Noto Sans Bengali", sans-serif;
-  --font-en: var(--font-latin), ui-sans-serif, system-ui, sans-serif;
+  /*
+    Type. One family (Anek, cut locally into static files, see
+    scripts/build-fonts.py) in three cuts. The --rrc-* variables come from
+    src/lib/fonts-bn.ts or fonts-en.ts, whichever layout the page is in.
+      text     width 100, weight 400: reading
+      display  width 125, weight 800: headlines, numbers, buttons, labels
+      strong   width 100, weight 600: bold words inside long text only.
+               Not preloaded, so pages that never set it never download it.
+  */
+  --font-text: var(--rrc-text), "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--rrc-display), var(--rrc-text), "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
+  --font-strong: var(--rrc-strong), var(--rrc-text), "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
+
+  --text-hero: clamp(2.5rem, 1.6rem + 3.9vw, 5.25rem);
+  --text-title: clamp(2.125rem, 1.6rem + 2.4vw, 3.75rem);
+  --text-section: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+  --text-figure: clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem);
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
 }
 
 /* ---------------------------------------------------------------------------
-   Base typography
-
-   Bangla needs materially more leading than Latin — conjuncts (যুক্তাক্ষর) plus
-   the matra line make tight line-height genuinely hard to read. Headings get
-   looser leading than a Latin design would use for the same reason.
+   Base
    --------------------------------------------------------------------------- */
 
+/* Layered, so a utility class on an element always wins over these. */
+@layer base {
 html {
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
   scroll-behavior: smooth;
-  /* Keeps a smooth-scrolled anchor clear of the sticky header. */
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5rem; /* clears the sticky header */
+  font-family: var(--font-text);
+  /* Each cut is a single weight; faking bold from it would smear Bangla. */
+  font-synthesis-weight: none;
 }
 
 body {
-  background: var(--bg);
-  color: var(--fg);
+  background: var(--ground);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
-html[lang="bn"] body {
-  font-family: var(--font-bn);
-  line-height: 1.8;
-}
+/* Bangla needs more leading than Latin: conjuncts below and vowel signs
+   above the matra line. Never letter-space Bangla; it breaks conjuncts. */
+html[lang="bn"] body { line-height: 1.75; }
+html[lang="en"] body { line-height: 1.6; }
 
-html[lang="en"] body {
-  font-family: var(--font-en);
-  line-height: 1.65;
-}
-
-h1, h2, h3, h4 {
+:is(h1, h2, h3) {
+  font-family: var(--font-display);
+  font-weight: 800;
   text-wrap: balance;
+}
+html[lang="bn"] :is(h1, h2, h3, .type-display) { line-height: 1.3; }
+html[lang="en"] :is(h1, h2, h3, .type-display) { line-height: 1.08; letter-spacing: -0.015em; }
+
+:is(strong, b) {
+  font-family: var(--font-strong);
   font-weight: 600;
-}
-
-html[lang="bn"] :is(h1, h2, h3, h4) {
-  line-height: 1.45;
-  /* Hind Siliguri's bold is heavy; 600 keeps Bangla headings readable. */
-  letter-spacing: 0;
-}
-
-html[lang="en"] :is(h1, h2, h3, h4) {
-  line-height: 1.2;
-  letter-spacing: -0.015em;
 }
 
 p { text-wrap: pretty; }
 
-/*
-  English content embedded inside a Bangla page — the untranslated article
-  fallback. Without this it inherits the Bangla face, whose Latin glyphs are
-  serviceable but not built for long-form English.
-*/
-[lang="en"] {
-  font-family: var(--font-en);
-  line-height: 1.65;
-}
+/* English inside a Bangla page (untranslated article fallback). */
+[lang="en"] { line-height: 1.6; }
 
-:where(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--brand);
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
+
+:where(a, button, summary, label, [role="button"]) {
+  touch-action: manipulation;
+}
+
+:target { scroll-margin-top: 5rem; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -191,58 +258,141 @@ p { text-wrap: pretty; }
     transition-duration: 0.01ms !important;
   }
 }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilities
+   --------------------------------------------------------------------------- */
+
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+
+@utility type-text {
+  font-family: var(--font-text);
+  font-weight: 400;
+}
+
+/* Prices, distances and times: figures that line up in a column. */
+@utility figures {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* Page width and gutter. 16 px gutter on phones. */
+@utility wrap {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 40rem) { padding-inline: 1.5rem; }
+  @media (width >= 64rem) { padding-inline: 2rem; }
+}
+
+@utility section-y {
+  padding-block: clamp(3.5rem, 2.6rem + 3.6vw, 6.5rem);
+}
+
+/*
+  Buttons. 48 px tall, 8 px radius, set in the display cut so an action
+  reads differently from a sentence. The primary fill is Padma green; on a
+  green panel the tokens turn it white.
+*/
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1.25;
+  text-align: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  &:active { transform: scale(0.98); }
+}
+
+@utility btn-primary {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  &:hover { background-color: var(--primary-hover); }
+}
+
+@utility btn-quiet {
+  border: 1px solid var(--field);
+  color: var(--ink);
+  &:hover { border-color: var(--ink); }
+}
 
 /* Room for the sticky mobile action bar, including the home indicator. */
 @utility pb-action-bar {
   padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
 }
 
+/* Skip layout and paint for sections that are still off screen. */
+@utility content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Instant feedback under a finger. */
+@utility press {
+  transition: transform 0.15s ease;
+  &:active { transform: scale(0.97); }
+}
+
 /* ---------------------------------------------------------------------------
    Article body
 
-   WordPress hands us raw HTML, so this styles bare tags. Written by hand
-   instead of @tailwindcss/typography so Bangla keeps its looser leading.
+   Bare tags from Markdown. About 62 characters a line, with Bangla's
+   looser leading.
    --------------------------------------------------------------------------- */
 
+@layer components {
 .prose {
-  color: var(--fg);
-  max-width: 68ch;
+  color: var(--ink);
+  max-width: 40rem;
+  font-size: 1.0625rem;
 }
+html[lang="bn"] .prose { line-height: 1.85; }
 
 .prose :is(h2, h3, h4) {
-  margin-block: 1.8em 0.6em;
-  font-weight: 600;
+  margin-block: 2em 0.6em;
+  font-family: var(--font-display);
+  font-weight: 800;
 }
-
 .prose h2 { font-size: 1.5rem; }
-.prose h3 { font-size: 1.25rem; }
+.prose h3 { font-size: 1.2rem; }
 
-.prose p,
-.prose ul,
-.prose ol,
-.prose blockquote,
-.prose figure,
-.prose table {
-  margin-block: 1.1em;
-}
-
+.prose :is(p, ul, ol, blockquote, figure, table) { margin-block: 1.1em; }
 .prose :is(ul, ol) { padding-inline-start: 1.4em; }
 .prose ul { list-style: disc; }
 .prose ol { list-style: decimal; }
 .prose li { margin-block: 0.35em; }
+.prose li::marker { color: var(--leaf); }
 
 .prose a {
-  color: var(--brand);
+  color: var(--leaf);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 
-.prose strong { font-weight: 600; }
-
 .prose blockquote {
-  border-inline-start: 3px solid var(--brand);
+  border-inline-start: 2px solid var(--leaf);
   padding-inline-start: 1em;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .prose :is(img, video) {
@@ -256,221 +406,26 @@ p { text-wrap: pretty; }
   border-collapse: collapse;
   display: block;
   overflow-x: auto;
+  font-size: 0.95rem;
 }
-
 .prose :is(th, td) {
-  border: 1px solid var(--border);
-  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  padding: 0.6rem 0.75rem 0.6rem 0;
   text-align: start;
+  vertical-align: top;
+}
+.prose th {
+  font-family: var(--font-display);
+  font-weight: 800;
 }
 
 .prose hr {
   border: 0;
-  border-top: 1px solid var(--border);
-  margin-block: 2em;
+  border-top: 1px solid var(--line);
+  margin-block: 2.5em;
+}
 }
 
-/* ---------------------------------------------------------------------------
-   Touch behaviour
-
-   The grey flash on tap and the legacy 300ms click delay both make a site feel
-   sluggish on Android in particular. Components add their own :active styles
-   so a tap still gives immediate feedback.
-   --------------------------------------------------------------------------- */
-
-html {
-  -webkit-tap-highlight-color: transparent;
-}
-
-:where(a, button, summary, label, [role="button"]) {
-  touch-action: manipulation;
-}
-
-/* Anchor targets must clear the sticky header. */
-:target {
-  scroll-margin-top: 5rem;
-}
-
-/*
-  Skip layout and paint for sections that are still off screen. The blog
-  archives and long service pages are tall on a phone, and this keeps
-  scrolling smooth on low-end hardware.
-*/
-@utility content-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 640px;
-}
-
-/*
-  Header call button. A slow ring, not a flashing one — the phone number is
-  the most valuable link on the site and should read as live without becoming
-  an irritant on a page someone is trying to read. Suppressed entirely by the
-  reduced-motion block above.
-*/
-@keyframes call-ring {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--brand) 40%, transparent);
-  }
-  70% {
-    box-shadow: 0 0 0 9px color-mix(in oklab, var(--brand) 0%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--brand) 0%, transparent);
-  }
-}
-
-@utility animate-call-ring {
-  animation: call-ring 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Horizontal snap rail, used for the fleet on phones. */
-@utility no-scrollbar {
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   Motion system
-
-   Premium but restrained: every animation runs on the compositor (transform,
-   translate, opacity only) and every effect degrades to "content is simply
-   visible" — never to "content is missing" — when a browser lacks support or
-   the visitor asks for reduced motion.
-
-   The reveal system rides CSS scroll-driven animations (Chromium 115+, Safari
-   26): zero JavaScript, driven by the compositor's scroll position, so it
-   cannot jank on a low-end phone. Browsers without animation-timeline see the
-   element at rest, and the global reduced-motion block further neutralises
-   everything below.
-   --------------------------------------------------------------------------- */
-
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    translate: 0 28px;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    /* Enter over the first ~40% of the element's arrival, then rest. */
-    .reveal {
-      animation: reveal-up 1s cubic-bezier(0.22, 1, 0.36, 1) both;
-      animation-timeline: view();
-      animation-range: entry 3% entry 40%;
-    }
-
-    /* Sibling stagger by shifting each child's range a little later. */
-    .reveal-stagger > :nth-child(2) { animation-range: entry 6% entry 46%; }
-    .reveal-stagger > :nth-child(3) { animation-range: entry 9% entry 52%; }
-    .reveal-stagger > :nth-child(4) { animation-range: entry 12% entry 58%; }
-    .reveal-stagger > :nth-child(5) { animation-range: entry 15% entry 64%; }
-    .reveal-stagger > :nth-child(6) { animation-range: entry 18% entry 70%; }
-  }
-
-  /* Load-time entrance for above-the-fold hero content. The h1 deliberately
-     rises without an opacity change — fading the likely LCP text element can
-     defer LCP attribution on slow connections. */
-  @keyframes rise-in {
-    from {
-      opacity: 0;
-      translate: 0 18px;
-    }
-    to {
-      opacity: 1;
-      translate: 0 0;
-    }
-  }
-  @keyframes rise-in-move {
-    from { translate: 0 18px; }
-    to { translate: 0 0; }
-  }
-
-  .rise {
-    animation: rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .rise-move {
-    animation: rise-in-move 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .rise-1 { animation-delay: 0.06s; }
-  .rise-2 { animation-delay: 0.14s; }
-  .rise-3 { animation-delay: 0.22s; }
-}
-
-/* Physical feedback under a finger or cursor. Press is instant (feedback
-   must precede the click), lift is a slower, larger counterpart for cards —
-   hover-only devices, so a phone never pays for it. */
-@utility press {
-  transition: transform 0.15s ease;
-  &:active {
-    transform: scale(0.97);
-  }
-}
-
-@utility lift {
-  transition:
-    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      translate: 0 -4px;
-      box-shadow: var(--lift-shadow);
-    }
-  }
-}
-
-/* lift + a shallow 3D tilt: the fleet cards' hover treatment. Transform-only,
-   hover-capable devices only. */
-@utility tilt {
-  transition:
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      transform: perspective(900px) rotateX(1.6deg) rotateY(-1.6deg) translateY(-4px);
-      box-shadow: var(--lift-shadow);
-    }
-  }
-}
-
-/*
-  Photo parallax inside an overflow-hidden frame: the image drifts against
-  the scroll on the compositor (scroll-driven animation, zero JS). Needs the
-  ~12% scale so the drift never exposes the frame's edge. Where the timeline
-  API is unsupported the image simply sits still at the base scale — nothing
-  breaks, nothing clips.
-*/
-@keyframes parallax-drift {
-  from {
-    transform: translateY(-5.5%) scale(1.14);
-  }
-  to {
-    transform: translateY(5.5%) scale(1.14);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .parallax-img {
-      animation: parallax-drift linear both;
-      animation-timeline: view();
-      animation-range: cover 12% cover 88%;
-    }
-  }
-}
-
-/* Route crossfade (React <ViewTransition>, this Next version's built-in
-   support). Kept quick — this is a brochure site, not a film — and left as
-   pure opacity under reduced motion, which carries no motion-sickness risk. */
-::view-transition-old(root) {
-  animation-duration: 140ms;
-}
-::view-transition-new(root) {
-  animation-duration: 190ms;
-}
+/* Route crossfade (React <ViewTransition>). Opacity only, and quick. */
+::view-transition-old(root) { animation-duration: 140ms; }
+::view-transition-new(root) { animation-duration: 190ms; }

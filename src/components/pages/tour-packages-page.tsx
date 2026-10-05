@@ -1,4 +1,3 @@
-import { BookingCta } from "@/components/booking-cta";
 import { MapPinIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
@@ -53,7 +52,6 @@ export function TourPackagesPage({ locale }: { locale: Locale }) {
         </ul>
       </section>
 
-      <BookingCta locale={locale} />
     </PageShell>
   );
 }

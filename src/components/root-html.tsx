@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { IS_PREVIEW } from "@/config/deploy";
-import { bangla, latin } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
 
 /**
@@ -10,18 +9,26 @@ import type { Locale } from "@/lib/locale";
  * is the only way to vary the `lang` attribute in the App Router — and `lang`
  * is what drives the per-script typography in globals.css.
  *
- * No animation library is mounted: the motion system is CSS (scroll-driven
- * reveals, view transitions, press/lift) and costs no JavaScript. If React
- * `motion` is ever needed, add a LazyMotion provider here with a code-split
- * feature bundle so it loads only for components that use it.
+ * Fonts are passed in by each layout rather than imported here: next/font
+ * preloads a font on every route under the file that loads it, so importing
+ * both locales' fonts in this shared file would preload all of them on
+ * every page.
  */
-export function RootHtml({ locale, children }: { locale: Locale; children: ReactNode }) {
+export function RootHtml({
+  locale,
+  fontVariables,
+  children,
+}: {
+  locale: Locale;
+  fontVariables: string;
+  children: ReactNode;
+}) {
   return (
     <html
       lang={locale}
-      className={`${bangla.variable} ${latin.variable} h-full antialiased`}
+      className={`${fontVariables} h-full`}
     >
-      <body className="bg-bg text-fg flex min-h-full flex-col pb-action-bar md:pb-0">
+      <body className="bg-ground text-ink flex min-h-full flex-col pb-action-bar md:pb-0">
         {/* Non-production copies (dev site, Pages preview) carry a noindex
             meta.robots in addition to the disallow-all robots.txt — the meta
             keeps working even where .htaccess headers are unavailable. */}

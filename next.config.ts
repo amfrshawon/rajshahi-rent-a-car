@@ -28,6 +28,15 @@ const nextConfig: NextConfig = {
   // Without this, Turbopack walks up and infers the wrong workspace root.
   turbopack: { root: process.cwd() },
 
+  // Each locale's root layout loads its own fonts, and next/font preloads a
+  // font on every page whose CSS includes it. The default chunking merges
+  // both layouts' CSS into one file, which made every page preload both
+  // locales' fonts (167 KB). A request cost this low keeps each layout's
+  // few hundred bytes of @font-face rules in their own chunk.
+  experimental: {
+    cssChunking: { type: "graph", requestCost: 100 },
+  },
+
   // Set for GitHub Pages previews, where a project site is served from
   // /<repo>/ rather than the domain root. Empty for the real deployment.
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,

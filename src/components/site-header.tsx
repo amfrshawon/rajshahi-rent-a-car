@@ -1,103 +1,113 @@
 import Link from "next/link";
-import { CallButton } from "@/components/call-button";
+import { BrandMark } from "@/components/brand-mark";
+import { MenuIcon, PhoneIcon } from "@/components/icons";
 import { LanguageSwitch } from "@/components/language-switch";
-import { NAV } from "@/config/navigation";
-import { asset } from "@/config/deploy";
-import { route } from "@/config/routes";
+import { FOOTER_NAV, NAV } from "@/config/navigation";
+import { type RouteKey, route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, localePath, t } from "@/lib/locale";
 
 const COPY = {
+  lockup1: { bn: "রাজশাহী", en: "Rajshahi" },
+  lockup2: { bn: "রেন্ট এ কার", en: "Rent A Car" },
   menu: { bn: "মেনু", en: "Menu" },
   primaryNav: { bn: "প্রধান মেনু", en: "Primary" },
+  call: { bn: "কল করুন", en: "Call" },
+  book: { bn: "বুক করুন", en: "Book" },
+  pickup: { bn: "এয়ারপোর্ট ও স্টেশন", en: "Airport & station" },
 } as const;
 
+/** Wide screens show the services; the rest live in the menu and footer. */
+const WIDE_NAV: readonly RouteKey[] = ["fleet", "pricing", "tours", "wedding", "ambulance"];
+
 export function SiteHeader({ locale }: { locale: Locale }) {
+  const wide = NAV.filter((item) => WIDE_NAV.includes(item.key));
+  const contact = NAV.filter((item) => item.key === "contact");
+  const menu = [
+    ...NAV.filter((item) => item.key !== "contact"),
+    { key: "pickup" as const, label: COPY.pickup },
+    ...FOOTER_NAV,
+    ...contact,
+  ];
+
   return (
-    <header className="border-border bg-bg/95 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 py-3 md:gap-6 md:px-6 md:py-4">
+    <header className="border-line bg-ground sticky top-0 z-40 border-b">
+      <div className="wrap flex h-16 items-center gap-2 lg:h-[4.5rem]">
         {/*
-          min-w-0 plus a truncating name is what keeps the header inside the
-          viewport. Without it the Bangla name refused to shrink and pushed the
-          whole bar 63px past the edge of a 360px Android screen.
+          The name is two short lines beside the mark, so the header fits a
+          320 px screen with the three round controls and never truncates.
         */}
         <Link
           href={localePath(locale, "/")}
-          className="flex min-w-0 items-center gap-2 sm:gap-2.5"
+          className="flex min-w-0 shrink-0 items-center gap-2.5"
         >
-          {/* The device only; the brand name sits beside it as real text, so
-              alt stays empty — repeating the name would announce twice for a
-              screen-reader user. The SEO identity of the logo lives in the
-              AutoRental JSON-LD (logo/image fields), which is what search
-              engines actually read. The strokes are dark green, invisible on
-              the dark-mode header — flipped to a white silhouette there (the
-              name text carries the brand colour instead). */}
-          <img
-            src={asset("/media/generated/logo-device.webp")}
-            alt=""
-            width={150}
-            height={64}
-            className="dark:brightness-0 dark:invert h-6 w-auto shrink-0 sm:h-7"
-          />
-          <span className="text-brand truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
-            {t(locale, SITE.name)}
+          <BrandMark className="h-7 w-auto shrink-0 sm:h-8" />
+          <span className="type-display text-ink flex flex-col text-[0.8125rem] leading-[1.15] sm:text-[0.9375rem]">
+            <span>{t(locale, COPY.lockup1)}</span>
+            <span>{t(locale, COPY.lockup2)}</span>
           </span>
         </Link>
 
-        <nav
-          aria-label={t(locale, COPY.primaryNav)}
-          className="hidden items-center gap-5 lg:flex"
-        >
-          {NAV.map((item) => (
-            <Link
-              key={item.key}
-              href={route(locale, item.key)}
-              className="text-muted hover:text-fg text-sm font-medium whitespace-nowrap"
-            >
-              {t(locale, item.label)}
-            </Link>
-          ))}
+        <nav aria-label={t(locale, COPY.primaryNav)} className="ms-auto hidden lg:block">
+          <ul className="flex items-center">
+            {wide.map((item) => (
+              <li key={item.key}>
+                <Link
+                  href={route(locale, item.key)}
+                  className={`flex min-h-11 items-center px-3 whitespace-nowrap transition-colors xl:px-4 ${
+                    item.key === "ambulance" ? "text-pin-ink" : "text-ink-soft hover:text-ink"
+                  }`}
+                >
+                  {t(locale, item.label)}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </nav>
 
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          {/* Shown from md up; below that the sticky bottom bar carries Call. */}
-          <CallButton locale={locale} className="hidden text-sm md:inline-flex" />
-
+        <div className="ms-auto flex shrink-0 items-center gap-1.5 lg:ms-3 lg:gap-2">
           <LanguageSwitch locale={locale} />
 
+          <a
+            href={`tel:${SITE.phone}`}
+            aria-label={`${t(locale, COPY.call)} ${t(locale, SITE.phoneDisplay)}`}
+            className="btn-primary press grid size-11 place-items-center rounded-full"
+          >
+            <PhoneIcon className="size-5" />
+          </a>
+
+          <Link
+            href={`${route(locale, "contact")}#booking`}
+            className="btn btn-primary hidden lg:inline-flex"
+          >
+            {t(locale, COPY.book)}
+          </Link>
+
           {/*
-            The menu lives inside the header row as a dropdown rather than in a
-            second bar below it — that second bar was costing ~40px of a phone
-            screen on every page. <details> keeps it at zero client JavaScript.
+            <details> keeps the menu at zero JavaScript. The panel is
+            positioned against the sticky header, so it spans the full width
+            under it. PageShell renders per page, so it closes on navigation.
           */}
-          <details className="relative lg:hidden">
+          <details className="group lg:hidden">
             <summary
               aria-label={t(locale, COPY.menu)}
-              className="border-border text-fg marker:content-none flex size-9 cursor-pointer list-none items-center justify-center rounded-full border [&::-webkit-details-marker]:hidden"
+              className="border-field text-ink group-open:bg-mist grid size-11 cursor-pointer list-none place-items-center rounded-full border marker:content-none [&::-webkit-details-marker]:hidden"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                aria-hidden="true"
-                className="size-5"
-              >
-                <path d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
+              <MenuIcon className="size-5" />
             </summary>
 
             <nav
               aria-label={t(locale, COPY.primaryNav)}
-              className="border-border bg-surface-raised shadow-card absolute end-0 top-full z-50 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-xl border p-1.5"
+              className="border-line bg-ground absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b"
             >
-              <ul>
-                {NAV.map((item) => (
-                  <li key={item.key}>
+              <ul className="wrap grid py-2 sm:grid-cols-2 sm:gap-x-8">
+                {menu.map((item) => (
+                  <li key={item.key} className="border-line border-b">
                     <Link
                       href={route(locale, item.key)}
-                      className="text-fg hover:bg-surface active:bg-surface flex min-h-11 items-center rounded-lg px-3 text-sm"
+                      className={`flex min-h-13 items-center text-lg ${
+                        item.key === "ambulance" ? "text-pin-ink" : "text-ink"
+                      }`}
                     >
                       {t(locale, item.label)}
                     </Link>

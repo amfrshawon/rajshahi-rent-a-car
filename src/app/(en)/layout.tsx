@@ -4,6 +4,7 @@ import "../globals.css";
 import { RootHtml } from "@/components/root-html";
 import { IS_PREVIEW } from "@/config/deploy";
 import { SITE } from "@/config/site";
+import { fontVariables } from "@/lib/fonts-en";
 
 /** English root layout. Every English route lives under /en/. */
 export const metadata: Metadata = {
@@ -23,5 +24,5 @@ export const metadata: Metadata = {
 };
 
 export default function EnglishRootLayout({ children }: { children: ReactNode }) {
-  return <RootHtml locale="en">{children}</RootHtml>;
+  return <RootHtml locale="en" fontVariables={fontVariables}>{children}</RootHtml>;
 }

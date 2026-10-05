@@ -1,4 +1,3 @@
-import { BookingCta } from "@/components/booking-cta";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { FLEET } from "@/config/site";
@@ -83,7 +82,6 @@ export function WeddingCarPage({ locale }: { locale: Locale }) {
         </ul>
       </section>
 
-      <BookingCta locale={locale} />
     </PageShell>
   );
 }

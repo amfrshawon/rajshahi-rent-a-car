@@ -1,4 +1,3 @@
-import { BookingCta } from "@/components/booking-cta";
 import { ChecklistIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
@@ -87,7 +86,6 @@ export function PricingPage({ locale }: { locale: Locale }) {
         </ul>
       </section>
 
-      <BookingCta locale={locale} />
     </PageShell>
   );
 }

@@ -1,4 +1,3 @@
-import { BookingCta } from "@/components/booking-cta";
 import { AmbulanceIcon, MapPinIcon, SteeringIcon, TagIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
@@ -81,7 +80,6 @@ export function AboutPage({ locale }: { locale: Locale }) {
         </address>
       </section>
 
-      <BookingCta locale={locale} />
     </PageShell>
   );
 }
