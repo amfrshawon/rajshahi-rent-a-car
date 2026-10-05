@@ -120,13 +120,25 @@ for (const dir of SOURCE_DIRS) {
       .png()
       .toBuffer();
 
-    await sharp(deviceOnly).png().toFile(path.join(OUT_DIR, "logo-device.png"));
+    /*
+     * Header mark. The header shows it at 28px tall at most, so 56px covers a
+     * 2x screen. WebP keeps the flat art to a few KB — the old full-resolution
+     * PNG was 216 KB and loaded on every page, five times the hero photo.
+     */
+    await sharp(deviceOnly)
+      .resize({ height: 56, withoutEnlargement: true })
+      .webp({ quality: 82 })
+      .toFile(path.join(OUT_DIR, "logo-device.webp"));
 
-    // White silhouette of the same device — for the OG share card (green
-    // strokes would sink into its green ground) and any dark-ground use.
+    /*
+     * White silhouette for the OG share card (green strokes would sink into
+     * its green ground). Satori inlines it at 140px wide, so 280px is ample;
+     * the full-resolution PNG was 168 KB sitting unused in the export.
+     */
     await sharp(deviceOnly)
       .greyscale()
       .linear(-1, 255)
+      .resize({ width: 280, withoutEnlargement: true })
       .png()
       .toFile(path.join(OUT_DIR, "logo-device-white.png"));
 
@@ -139,7 +151,7 @@ for (const dir of SOURCE_DIRS) {
  * change when the logo does, and sharp cannot write .ico. Regenerate with:
  *   python3 - <<'EOF'
  *   from PIL import Image
- *   d = Image.open('public/media/generated/logo-device.png').convert('RGBA')
+ *   d = Image.open('public/media/generated/logo-device.webp').convert('RGBA')
  *   canvas = Image.new('RGBA', (48, 48), (0, 0, 0, 0))
  *   img = d.copy(); img.thumbnail((48, 48), Image.LANCZOS)
  *   canvas.paste(img, ((48 - img.width) // 2, (48 - img.height) // 2), img)

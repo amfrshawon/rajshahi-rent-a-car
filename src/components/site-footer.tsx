@@ -16,11 +16,17 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <address className="text-muted mt-2 text-sm not-italic">
               {t(locale, SITE.address)}
               <br />
-              <a href={`tel:${SITE.phone}`} className="hover:text-fg">
+              <a
+                href={`tel:${SITE.phone}`}
+                className="hover:text-fg inline-flex min-h-11 items-center"
+              >
                 {t(locale, SITE.phoneDisplay)}
               </a>
               <br />
-              <a href={`mailto:${SITE.email}`} className="hover:text-fg">
+              <a
+                href={`mailto:${SITE.email}`}
+                className="hover:text-fg inline-flex min-h-11 items-center"
+              >
                 {SITE.email}
               </a>
               <br />
@@ -34,7 +40,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
                 <li key={item.key}>
                   <Link
                     href={route(locale, item.key)}
-                    className="hover:text-fg block py-1"
+                    className="hover:text-fg flex min-h-11 items-center"
                   >
                     {t(locale, item.label)}
                   </Link>

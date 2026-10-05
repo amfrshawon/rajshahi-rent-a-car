@@ -32,36 +32,32 @@ const NOTES = [
 export function WeddingCarPage({ locale }: { locale: Locale }) {
   const sedans = FLEET.filter((v) => v.seats <= 5);
   const vans = FLEET.filter((v) => v.seats > 5);
+  const groups = [
+    { heading: COPY.couple, vehicles: sedans },
+    { heading: COPY.guests, vehicles: vans },
+  ];
 
   return (
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <h2 className="reveal text-2xl font-semibold md:text-3xl">{t(locale, COPY.suitedTitle)}</h2>
+      <section className="mx-auto w-full max-w-4xl px-4 py-8 md:py-12">
+        <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.suitedTitle)}</h2>
 
-        <div className="reveal-stagger mt-6 grid gap-6 sm:grid-cols-2">
-          {[
-            { heading: COPY.couple, vehicles: sedans },
-            { heading: COPY.guests, vehicles: vans },
-          ].map(({ heading, vehicles }) => (
-            <div
-              key={heading.en}
-              className="border-border bg-surface-raised lift shadow-card rounded-2xl border p-6 transition"
-            >
-              <h3 className="font-semibold">{t(locale, heading)}</h3>
-              <ul className="mt-4 space-y-3">
+        <div className="mt-6 grid gap-8 sm:grid-cols-2">
+          {groups.map(({ heading, vehicles }) => (
+            <div key={heading.en}>
+              <h3 className="text-muted text-sm font-semibold">{t(locale, heading)}</h3>
+              <ul className="border-border mt-3 border-t">
                 {vehicles.map((v) => (
                   <li
                     key={v.slug}
-                    className="border-border flex items-baseline justify-between gap-3 border-b pb-3 last:border-0 last:pb-0"
+                    className="border-border flex items-baseline justify-between gap-3 border-b py-3"
                   >
                     <span className="font-medium">{v.name}</span>
-                    <span className="text-brand font-bold whitespace-nowrap">
+                    <span className="text-leaf tnum font-bold whitespace-nowrap">
                       ৳{formatTaka(locale, v.pricePerDay)}
-                      <span className="text-muted text-sm font-normal">
-                        {" "}{t(locale, COPY.perDay)}
-                      </span>
+                      <span className="text-muted text-sm font-normal"> {t(locale, COPY.perDay)}</span>
                     </span>
                   </li>
                 ))}
@@ -70,13 +66,10 @@ export function WeddingCarPage({ locale }: { locale: Locale }) {
           ))}
         </div>
 
-        <h2 className="reveal mt-14 text-2xl font-semibold md:text-3xl">{t(locale, COPY.notesTitle)}</h2>
-        <ul className="reveal-stagger mt-6 space-y-3">
+        <h2 className="mt-12 text-2xl font-bold md:text-3xl">{t(locale, COPY.notesTitle)}</h2>
+        <ul className="border-border mt-5 border-t">
           {NOTES.map((n) => (
-            <li
-              key={n.en}
-              className="border-border bg-surface-raised shadow-card rounded-xl border p-4"
-            >
+            <li key={n.en} className="border-border border-b py-3">
               {t(locale, n)}
             </li>
           ))}

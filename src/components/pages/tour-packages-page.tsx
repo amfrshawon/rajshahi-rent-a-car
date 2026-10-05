@@ -1,7 +1,8 @@
 import { BookingCta } from "@/components/booking-cta";
-import { MapPinIcon } from "@/components/icons";
+import { ArrowRightIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
+import { route } from "@/config/routes";
 import { DESTINATIONS } from "@/config/services";
 import { formatTaka, type Locale, t } from "@/lib/locale";
 
@@ -19,35 +20,40 @@ const COPY = {
   },
   distance: { bn: "শহর থেকে", en: "From the city" },
   km: { bn: "কিমি", en: "km" },
-  quote: { bn: "ভাড়া জানতে কল করুন", en: "Call for a quote" },
+  quote: { bn: "ভাড়া কলে জানুন", en: "Quoted by phone" },
+  book: { bn: "এই ট্রিপ বুক করুন", en: "Book this trip" },
 } as const;
 
 export function TourPackagesPage({ locale }: { locale: Locale }) {
+  const contact = route(locale, "contact");
+
   return (
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
-        <ul className="reveal-stagger grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:py-12">
+        {/* Flat entries with hairlines — the distance is the decoration. */}
+        <ul className="grid gap-x-10 md:grid-cols-2">
           {DESTINATIONS.map((d) => (
-            <li
-              key={d.slug}
-              className="border-border bg-surface-raised lift shadow-card flex flex-col rounded-2xl border p-6 transition"
-            >
-              <span className="bg-brand-soft text-brand flex size-10 items-center justify-center rounded-xl">
-                <MapPinIcon className="size-5" />
-              </span>
-              <h2 className="mt-4 text-lg font-semibold">{t(locale, d.name)}</h2>
-              {d.distanceKm ? (
-                <p className="text-muted mt-1 text-sm">
-                  {t(locale, COPY.distance)} {formatTaka(locale, d.distanceKm)}{" "}
-                  {t(locale, COPY.km)}
-                </p>
-              ) : null}
-              <p className="text-muted mt-3 flex-1">{t(locale, d.blurb)}</p>
-              <p className="text-brand mt-4 text-sm font-semibold">
-                {t(locale, COPY.quote)}
-              </p>
+            <li key={d.slug} className="border-border border-t py-5">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="text-xl font-bold">{t(locale, d.name)}</h2>
+                {d.distanceKm ? (
+                  <span className="tnum text-leaf shrink-0 font-semibold whitespace-nowrap">
+                    {formatTaka(locale, d.distanceKm)} {t(locale, COPY.km)}
+                  </span>
+                ) : (
+                  <span className="text-muted shrink-0 text-sm">{t(locale, COPY.quote)}</span>
+                )}
+              </div>
+              <p className="text-muted mt-2">{t(locale, d.blurb)}</p>
+              <a
+                href={`${contact}?destination=${encodeURIComponent(t(locale, d.name))}#booking`}
+                className="text-leaf mt-3 inline-flex items-center gap-1.5 text-sm font-semibold"
+              >
+                {t(locale, COPY.book)}
+                <ArrowRightIcon className="size-4" />
+              </a>
             </li>
           ))}
         </ul>

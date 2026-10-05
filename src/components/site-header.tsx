@@ -23,7 +23,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         */}
         <Link
           href={localePath(locale, "/")}
-          className="flex min-w-0 items-center gap-2 sm:gap-2.5"
+          className="flex min-h-11 min-w-0 items-center gap-2 sm:gap-2.5"
         >
           {/* The device only; the brand name sits beside it as real text, so
               alt stays empty — repeating the name would announce twice for a
@@ -33,13 +33,13 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               the dark-mode header — flipped to a white silhouette there (the
               name text carries the brand colour instead). */}
           <img
-            src={asset("/media/generated/logo-device.png")}
+            src={asset("/media/generated/logo-device.webp")}
             alt=""
-            width={236}
-            height={97}
+            width={136}
+            height={56}
             className="dark:brightness-0 dark:invert h-6 w-auto shrink-0 sm:h-7"
           />
-          <span className="text-brand truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
+          <span className="text-leaf truncate text-sm leading-tight font-semibold sm:text-base md:text-lg">
             {t(locale, SITE.name)}
           </span>
         </Link>
@@ -60,8 +60,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          {/* Shown from md up; below that the sticky bottom bar carries Call. */}
-          <CallButton locale={locale} className="hidden text-sm md:inline-flex" />
+          {/* Round call button, shown at every size — the number is the most
+              valuable action on the site. */}
+          <CallButton locale={locale} />
 
           <LanguageSwitch locale={locale} />
 
@@ -73,7 +74,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <details className="relative lg:hidden">
             <summary
               aria-label={t(locale, COPY.menu)}
-              className="border-border text-fg marker:content-none flex size-9 cursor-pointer list-none items-center justify-center rounded-full border [&::-webkit-details-marker]:hidden"
+              className="border-border text-fg marker:content-none flex size-11 cursor-pointer list-none items-center justify-center rounded-full border [&::-webkit-details-marker]:hidden"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -90,7 +91,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
             <nav
               aria-label={t(locale, COPY.primaryNav)}
-              className="border-border bg-surface-raised shadow-card absolute end-0 top-full z-50 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-xl border p-1.5"
+              className="border-border bg-surface-raised shadow-card absolute end-0 top-full z-50 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-lg border p-1.5"
             >
               <ul>
                 {NAV.map((item) => (
