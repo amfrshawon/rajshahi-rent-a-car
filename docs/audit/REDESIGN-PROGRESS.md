@@ -38,7 +38,10 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
   server live on 3100; baseline measured (below).
 - **Phase 1 — done.** All nine defects fixed (see below). Build + lint pass;
   branch pushed.
-- **Next:** Phase 2 — design system.
+- **Phase 2 — done.** Palette tokens, Anek typography, shared buttons/tiles,
+  restyled header/page-header/sticky bar. Preloaded fonts **111 KB** (was
+  242 KB).
+- **Next:** Phase 3 — rebuild the home page and the booking flow.
 
 ### Phase 1 — the nine defects
 
@@ -86,6 +89,23 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
 - **`?destination=` prefill uses a ref, not state**, to avoid a
   React `set-state-in-effect` lint error and keep the value out of a render
   cascade.
+- **The width axis is on Anek Latin only, not Anek Bangla.** next/font/google
+  can only request an axis as a *range*; the Bengali width-axis file is
+  **437 KB** and the weight-only Bengali variable is **152 KB**, either of which
+  breaks the 150 KB preload budget on its own. Greeking Bangla display by
+  weight instead keeps it at 111 KB. The Latin width axis is cheap (~100 KB,
+  loaded lazily). The whole family still carries the design; only the Bangla
+  width axis is dropped, and the reason is measured, not estimated.
+- **Amber, mint and pink are retired.** The primary CTA is Padma green; the
+  logo's pin red is used only for pins, live status and emergency; section
+  grounds are Mist. `--accent` now resolves to the primary so any un-migrated
+  `bg-accent` reads green, and `--accent-soft`/`--emergency-soft` are neutral/
+  faint washes pending the per-page cleanup.
+- **Shared radii drop from 16px (`rounded-2xl`) to 8px.** The big soft radius
+  plus a border and shadow on every block was one of the strongest generated
+  tells; only elements that must stand apart get a shadow now.
+- **The sticky bar is two actions, not three** (call icon + filled "বুক করুন"),
+  per 5.6; WhatsApp keeps its buttons in the page body.
 
 ## Needs the owner
 
@@ -128,3 +148,13 @@ Audit reference (measured from outside BD, same build): Home 84 / LCP 4.5 s /
   phone `12345` → *"সঠিক মোবাইল নম্বর দিন"*; destination prefill from
   `?destination=ঢাকা` verified.
 - Full Lighthouse re-measurement is deferred to Phase 5, after the layout work.
+
+### Phase 2
+
+- **Preloaded fonts: 111 KB** (Anek Bangla 400 = 55 KB, Anek Bangla 700 =
+  56 KB). Was 242 KB across three files. Target ≤ 150 KB met.
+- **Anek Latin width axis:** ~101 KB, loaded on demand (not preloaded).
+- **Bengali width-axis variable:** 437 KB — rejected (measured, see Decisions).
+- **Contrast (computed, not eyeballed):** Leaf `#1D7A4E` on white 5.32:1, on
+  Mist 4.85:1; Pin red `#D7263D` on white 4.96:1, on Mist 4.52:1; white on
+  Padma 12.22:1; Ink on white 18.22:1. All ≥ 4.5:1.
