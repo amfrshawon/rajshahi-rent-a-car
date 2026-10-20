@@ -219,7 +219,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
               <span className="text-sm font-semibold sm:text-base">
                 {locale === "bn" ? value : valueEn}
               </span>
-              <span className="text-muted text-xs">{t(locale, label)}</span>
+              <span className="text-muted text-[13px]">{t(locale, label)}</span>
             </div>
           ))}
         </div>
