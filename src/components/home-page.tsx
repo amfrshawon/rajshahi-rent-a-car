@@ -20,7 +20,7 @@ const COPY = {
     bn: "শহরে, বিমানবন্দরে কিংবা ঢাকায় — ভাড়া আগেই জানিয়ে দিই।",
     en: "Across the city, to the airport, or Dhaka — the fare agreed up front.",
   },
-  callNow: { bn: "একল করুন", en: "Call now" },
+  callNow: { bn: "কল করুন", en: "Call now" },
   whatsapp: { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" },
   heroAlt: { bn: "রাজশাহী রেন্ট এ কার-এর টয়োটা প্রিমিও", en: "A Toyota Premio from Rajshahi Rent A Car" },
   proof: {
@@ -57,7 +57,7 @@ const COPY = {
 
   ctaTitle: { bn: "যাত্রার প্ল্যান ঠিক হয়ে গেছে?", en: "Trip planned?" },
   ctaLead: {
-    bn: "একল ফোনে গাড়ি ও ড্রাইভার নিশ্চিত করুন — ঢাকা–রাজশাহীসহ যেকোনো রুট।",
+    bn: "এক কলেই গাড়ি ও ড্রাইভার নিশ্চিত করুন — ঢাকা–রাজশাহীসহ যেকোনো রুট।",
     en: "One call confirms the car and the driver — Dhaka–Rajshahi and beyond.",
   },
   guides: { bn: "ভ্রমণ গাইড পড়ুন", en: "Read the travel guides" },
