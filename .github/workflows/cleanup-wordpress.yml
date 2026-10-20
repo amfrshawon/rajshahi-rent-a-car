@@ -1,0 +1,45 @@
+name: Remove WordPress leftovers
+
+# One-off cleanup after the static cutover. The production-scoped FTP account
+# is rooted at public_html, where the static site now lives, so only the
+# WordPress paths are removed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type DELETE-WORDPRESS to confirm
+        required: true
+        type: string
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ inputs.confirm }}" != "DELETE-WORDPRESS" ]; then
+            echo "Confirmation did not match."
+            exit 1
+          fi
+
+      - name: Delete WordPress over FTPS
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+          lftp --env-password -u "$FTP_USERNAME" "$FTP_HOST" -e "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set ssl:check-hostname no;
+            cd '$FTP_REMOTE_DIR';
+            rm -rf wp-admin wp-content wp-includes;
+            rm -f wp-*.php index.php xmlrpc.php readme.html license.txt .user.ini;
+            bye
+          "

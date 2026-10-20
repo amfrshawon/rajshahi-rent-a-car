@@ -1,22 +1,13 @@
-import { Anek_Latin, Hind_Siliguri } from "next/font/google";
+import { Anek_Latin, Noto_Sans_Bengali } from "next/font/google";
 
 /**
- * Hind Siliguri is used for every Bangla page. Load only the Bengali subset
- * and the 400/600 static weights needed for body and heading text to stay
- * within the mobile preload budget.
+ * Noto Sans Bengali covers Bangla text and Bengali numerals. Preload only
+ * the Bengali subset; the variable face supplies real body and heading
+ * weights through one family.
  */
-export const bangla = Hind_Siliguri({
+export const bangla = Noto_Sans_Bengali({
   variable: "--font-bangla",
   subsets: ["bengali"],
-  weight: "400",
-  display: "swap",
-  preload: true,
-});
-
-export const banglaSemibold = Hind_Siliguri({
-  variable: "--font-bangla-semibold",
-  subsets: ["bengali"],
-  weight: "600",
   display: "swap",
   preload: true,
 });

@@ -36,9 +36,9 @@ async function loadBanglaFont(): Promise<ArrayBuffer> {
 }
 
 /*
- * Hind Siliguri is also the site's Bangla face. Satori renders "শুরু" as
- * "শবু" in Anek Bangla, so keeping this checked font here avoids mismatched
- * rendering as well as mismatched typography.
+ * Social images retain the separately checked Hind Siliguri face; the
+ * website uses Noto Sans Bengali. Satori renders "শুরু" as "শবু" in Anek
+ * Bangla, so changing this image font requires a separate shaping review.
  *
  * Satori (behind ImageResponse) does not shape Bengali reliably. "গাড়ি ভাড়া"
  * rendered as "গাড়ভিাড়া" here — the ি jumped across the word boundary — while

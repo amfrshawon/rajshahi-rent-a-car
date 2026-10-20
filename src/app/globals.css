@@ -160,7 +160,7 @@
 
   /* Keep Latin runs inside Bangla text on the same Anek face as English. */
   --font-bn:
-    var(--font-latin), var(--font-bangla), "Hind Siliguri", "Noto Sans Bengali", sans-serif;
+    var(--font-latin), var(--font-bangla), "Noto Sans Bengali", sans-serif;
   --font-en: var(--font-latin), ui-sans-serif, system-ui, sans-serif;
 }
 
