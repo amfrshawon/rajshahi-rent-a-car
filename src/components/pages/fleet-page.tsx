@@ -56,7 +56,7 @@ export function FleetPage({ locale }: { locale: Locale }) {
               </p>
 
               <a
-                href={`${contact}?trip=city&destination=${encodeURIComponent(v.name)}#booking`}
+                href={`${contact}?trip=city&vehicle=${encodeURIComponent(v.name)}#booking`}
                 className="btn-primary mt-4 w-full"
               >
                 {t(locale, COPY.book)}

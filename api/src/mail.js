@@ -29,7 +29,10 @@ export async function sendBookingEmail(booking, id) {
     ["নাম / Name", booking.name],
     ["ফোন / Phone", booking.phone],
     ["গাড়ি / Vehicle", booking.vehicle],
+    ["ভাড়ার ধরন / Trip type", booking.tripType],
     ["তারিখ / Date", booking.date],
+    ["সময় / Time", booking.time],
+    ["পিকআপ / Pickup", booking.pickup],
     ["গন্তব্য / Destination", booking.destination],
     ["নোট / Notes", booking.notes],
   ]

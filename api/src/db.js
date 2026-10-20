@@ -29,13 +29,16 @@ export function getPool() {
 export async function insertBooking(booking) {
   const [result] = await getPool().execute(
     `INSERT INTO bookings
-       (name, phone, vehicle, trip_date, destination, notes, locale, ip, user_agent)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (name, phone, vehicle, trip_type, trip_date, trip_time, pickup, destination, notes, locale, ip, user_agent)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       booking.name,
       booking.phone,
       booking.vehicle || null,
+      booking.tripType || null,
       booking.date || null,
+      booking.time || null,
+      booking.pickup || null,
       booking.destination || null,
       booking.notes || null,
       booking.locale,
@@ -48,7 +51,8 @@ export async function insertBooking(booking) {
 
 export async function listBookings(limit = 100) {
   const [rows] = await getPool().query(
-    `SELECT id, created_at, name, phone, vehicle, trip_date, destination, notes, locale
+    `SELECT id, created_at, name, phone, vehicle, trip_type, trip_date, trip_time,
+            pickup, destination, notes, locale
        FROM bookings ORDER BY id DESC LIMIT ?`,
     [limit],
   );

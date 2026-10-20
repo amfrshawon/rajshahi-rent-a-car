@@ -50,7 +50,10 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
 - **Phase 5 — done.** All acceptance criteria measured and met (axe clean,
   Lighthouse target met, no overflow, home under length, booking verified).
   Two fixes came out of it: ambulance hero contrast and 44px header controls.
-- **Next:** Phase 6 — rebase, final build, open the pull request.
+- **Phase 6 — done.** Merged into `dev` as PR #2 (`d67329d`); the staging
+  deploy uploaded cleanly. Post-merge fixes: the call-to-action typo, the
+  fleet "Book this car" link now prefills the vehicle instead of the
+  destination, and the booking API stores trip type, time and pickup.
 
 ### Phase 1 — the nine defects
 

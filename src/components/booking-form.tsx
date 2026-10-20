@@ -22,6 +22,7 @@ const PHONE_RE = /^(?:\+?880|0)1[3-9]\d{8}$/;
 const COPY = {
   tripType: { bn: "ভাড়ার ধরন", en: "Trip type" },
   anyTrip: { bn: "যেকোনো", en: "Any" },
+  vehicle: { bn: "গাড়ি", en: "Vehicle" },
   date: { bn: "তারিখ", en: "Date" },
   time: { bn: "সময়", en: "Time" },
   pickup: { bn: "কোথা থেকে নেব", en: "Pick up from" },
@@ -48,25 +49,30 @@ export function BookingForm({ locale }: { locale: Locale }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const tripRef = useRef<HTMLSelectElement>(null);
   const destinationRef = useRef<HTMLInputElement>(null);
+  const vehicleRef = useRef<HTMLInputElement>(null);
 
   /*
-   * Trip tiles and route rows link here with ?trip=…&destination=…, so the
-   * customer does not re-pick or retype. Written straight to the fields rather
-   * than held in state — a full page load guarantees they are mounted, and it
-   * keeps the value out of a state-in-effect render cascade.
+   * Trip tiles, route rows and fleet cards link here with ?trip=…,
+   * ?destination=… or ?vehicle=…, so the customer does not re-pick or retype.
+   * Written straight to the fields rather than held in state — a full page
+   * load guarantees they are mounted, and it keeps the value out of a
+   * state-in-effect render cascade.
    */
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const trip = params.get("trip");
     const destination = params.get("destination");
+    const vehicle = params.get("vehicle");
     if (trip && tripRef.current) tripRef.current.value = trip;
     if (destination && destinationRef.current) destinationRef.current.value = destination;
+    if (vehicle && vehicleRef.current) vehicleRef.current.value = vehicle;
   }, []);
 
   function whatsappHref(values: Fields) {
     const trip = TRIP_TYPES.find((tp) => tp.key === values.tripType);
     const lines: string[] = [t(locale, COPY.newBooking)];
     if (trip) lines.push(`${t(locale, COPY.tripType)}: ${t(locale, trip.label)}`);
+    if (values.vehicle) lines.push(`${t(locale, COPY.vehicle)}: ${values.vehicle}`);
     if (values.date) lines.push(`${t(locale, COPY.date)}: ${values.date}`);
     if (values.time) lines.push(`${t(locale, COPY.time)}: ${values.time}`);
     if (values.pickup) lines.push(`${t(locale, COPY.pickup)}: ${values.pickup}`);
@@ -173,6 +179,9 @@ export function BookingForm({ locale }: { locale: Locale }) {
           <textarea name="notes" rows={3} className={field} />
         </Field>
       </div>
+
+      {/* Set by a fleet card's "Book this car" link, visible in the message. */}
+      <input type="hidden" name="vehicle" ref={vehicleRef} />
 
       {/* Honeypot. Hidden from people, tempting to bots. */}
       <input
