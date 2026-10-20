@@ -32,7 +32,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     environment: production
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - name: Check confirmation
         run: |
@@ -70,7 +70,10 @@ jobs:
           "
 
       - name: Empty and remove wp-content
-        timeout-minutes: 15
+        # wp-content/uploads can hold thousands of files and FTP deletes them
+        # one at a time; a 15-minute cap cut it off mid-way. This step resumes
+        # where the last run stopped because deletes are idempotent.
+        timeout-minutes: 60
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -85,7 +88,7 @@ jobs:
             set ssl:check-hostname no;
             set net:timeout 20;
             set net:max-retries 2;
-            set mirror:parallel-transfer-count 8;
+            set mirror:parallel-transfer-count 16;
             set mirror:use-pget-n 1;
             cd '$FTP_REMOTE_DIR';
             mirror --reverse --delete --verbose /tmp/empty wp-content;
@@ -94,7 +97,7 @@ jobs:
           "
 
       - name: Empty and remove wp-includes
-        timeout-minutes: 15
+        timeout-minutes: 20
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -109,7 +112,7 @@ jobs:
             set ssl:check-hostname no;
             set net:timeout 20;
             set net:max-retries 2;
-            set mirror:parallel-transfer-count 8;
+            set mirror:parallel-transfer-count 16;
             cd '$FTP_REMOTE_DIR';
             mirror --reverse --delete --verbose /tmp/empty wp-includes;
             rmdir wp-includes;
