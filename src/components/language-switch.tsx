@@ -25,7 +25,7 @@ export function LanguageSwitch({ locale }: { locale: Locale }) {
       hrefLang={other}
       aria-label={t(locale, COPY.switchTo)}
       title={t(locale, COPY.switchTo)}
-      className="border-border text-muted hover:text-fg hover:bg-surface flex size-9 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition active:scale-95"
+      className="border-border text-muted hover:text-fg hover:bg-surface flex size-11 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition active:scale-95"
     >
       <span aria-hidden="true">{other === "bn" ? "বাং" : "EN"}</span>
     </a>

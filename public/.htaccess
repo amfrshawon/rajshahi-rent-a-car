@@ -7,35 +7,38 @@ DirectoryIndex index.html
 # Next.js writes 404.html at the export root.
 ErrorDocument 404 /404.html
 
-<IfModule mod_headers.c>
-  # Hashed build assets can never change under the same name.
-  <FilesMatch "\.(js|css|woff2|avif|webp|jpg|jpeg|png|svg|ico)$">
-    Header set Cache-Control "public, max-age=31536000, immutable"
-  </FilesMatch>
+# Header rules are deliberately NOT wrapped in <IfModule mod_headers.c>.
+# On this LiteSpeed host the wrapper never matched, so the whole block was
+# skipped and the site sent none of the cache or security headers. LiteSpeed
+# supports `Header` directly, so the directives run unwrapped instead.
 
-  # HTML must revalidate, otherwise a deploy is invisible to repeat visitors.
-  <FilesMatch "\.html$">
-    Header set Cache-Control "public, max-age=0, must-revalidate"
-  </FilesMatch>
+# Hashed build assets can never change under the same name.
+<FilesMatch "\.(js|css|woff2|avif|webp|jpg|jpeg|png|svg|ico)$">
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
 
-  # Next emits OG images with no file extension, so the server would guess the
-  # wrong type and Facebook/WhatsApp would reject the image. Force it.
-  <FilesMatch "^opengraph-image-[A-Za-z0-9_-]+$">
-    Header set Cache-Control "public, max-age=31536000, immutable"
-  </FilesMatch>
+# HTML must revalidate, otherwise a deploy is invisible to repeat visitors.
+<FilesMatch "\.html$">
+  Header set Cache-Control "public, max-age=0, must-revalidate"
+</FilesMatch>
 
-  Header always set X-Content-Type-Options "nosniff"
-  Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  Header always set X-Frame-Options "SAMEORIGIN"
+# Next emits OG images with no file extension, so the server would guess the
+# wrong type and Facebook/WhatsApp would reject the image. Force it.
+<FilesMatch "^opengraph-image-[A-Za-z0-9_-]+$">
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
 
-  # dev.rajshahirentacar.bd is a public staging copy of the live site. It
-  # must never enter the search index, or it competes with the real domain.
-  # Scoped by Host so this same file serves production without the header.
-  # (noindex via header, not robots.txt — robots.txt would block crawling
-  # and hide the noindex signal from crawlers entirely.)
-  SetEnvIfNoCase Host ^dev\. IS_DEV_HOST
-  Header always set X-Robots-Tag "noindex, nofollow" env=IS_DEV_HOST
-</IfModule>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Frame-Options "SAMEORIGIN"
+
+# dev.rajshahirentacar.bd is a public staging copy of the live site. It
+# must never enter the search index, or it competes with the real domain.
+# Scoped by Host so this same file serves production without the header.
+# (noindex via header, not robots.txt — robots.txt would block crawling
+# and hide the noindex signal from crawlers entirely.)
+SetEnvIfNoCase Host ^dev\. IS_DEV_HOST
+Header always set X-Robots-Tag "noindex, nofollow" env=IS_DEV_HOST
 
 <FilesMatch "^opengraph-image-[A-Za-z0-9_-]+$">
   ForceType image/png

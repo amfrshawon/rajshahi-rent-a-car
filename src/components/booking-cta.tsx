@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRightIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, t } from "@/lib/locale";
@@ -16,8 +16,9 @@ const COPY = {
 } as const;
 
 /**
- * Closing band shared by the inner pages — the same deep-green call-to-action
- * treatment the home page ends on, so the site closes on one voice.
+ * Closing band shared by the inner pages. White button on the green panel for
+ * the call (the panel is already green, so a green button would vanish), then
+ * the WhatsApp action, then the form.
  */
 export function BookingCta({ locale }: { locale: Locale }) {
   const waText = encodeURIComponent(
@@ -29,35 +30,29 @@ export function BookingCta({ locale }: { locale: Locale }) {
 
   return (
     <section className="bg-brand text-brand-fg">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-6 px-4 py-12 md:px-6 md:py-14">
-        <div className="reveal">
-          <h2 className="text-2xl font-semibold md:text-3xl">
-            {t(locale, COPY.title)}
-          </h2>
-          <p className="mt-2 max-w-xl opacity-85">{t(locale, COPY.lead)}</p>
+      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-5 px-4 py-10 md:px-6 md:py-12">
+        <div>
+          <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.title)}</h2>
+          <p className="mt-2 max-w-xl opacity-90">{t(locale, COPY.lead)}</p>
         </div>
 
-        <div className="reveal flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3">
           <a
             href={`tel:${SITE.phone}`}
-            className="press inline-flex min-h-12 items-center gap-2 rounded-xl bg-white px-6 font-semibold text-black transition hover:brightness-95"
+            className="bg-bg text-brand inline-flex min-h-12 items-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98]"
           >
             <PhoneIcon className="size-5" />
             {t(locale, COPY.call)}
           </a>
-          <a
-            href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-            className="press inline-flex min-h-12 items-center gap-2 rounded-xl bg-white/10 px-6 font-semibold ring-1 ring-white/40 backdrop-blur transition hover:bg-white/20"
-          >
+          <a href={`https://wa.me/${SITE.whatsapp}?text=${waText}`} className="btn-whatsapp">
             <WhatsAppIcon className="size-5" />
             {t(locale, COPY.whatsapp)}
           </a>
           <Link
             href={route(locale, "contact")}
-            className="press inline-flex min-h-12 items-center gap-2 rounded-xl px-6 font-semibold underline-offset-4 transition hover:underline"
+            className="inline-flex min-h-12 items-center gap-2 px-2 font-semibold underline underline-offset-4"
           >
             {t(locale, COPY.book)}
-            <ArrowRightIcon className="size-4" />
           </Link>
         </div>
       </div>

@@ -63,6 +63,15 @@ export function WhatsAppIcon(props: { className?: string }) {
   );
 }
 
+export function MailIcon(props: { className?: string }) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3.5 7 8.7 6 8.7-6" />
+    </svg>
+  );
+}
+
 export function AmbulanceIcon(props: { className?: string }) {
   return (
     <svg {...base} {...props}>
