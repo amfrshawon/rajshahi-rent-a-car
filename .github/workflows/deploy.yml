@@ -16,6 +16,11 @@ on:
         default: dev
         type: choice
         options: [dev, production]
+      clean_slate:
+        description: Delete every file in the target directory before uploading
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -91,6 +96,10 @@ jobs:
           # document root, `production` the live one. A same-named secret at
           # environment level wins over the repo level.
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          # Only for recovering a document root that was emptied or left in a
+          # half-uploaded state: the action's own file list goes stale and a
+          # 553 lands on the first file whose parent folder is missing.
+          dangerous-clean-slate: ${{ inputs.clean_slate || false }}
           # Never touch a WordPress install sharing this account.
           exclude: |
             **/.git*

@@ -119,6 +119,31 @@ jobs:
             bye
           "
 
+      # Belt and braces: if a directory is still there (FTP deletes one file at
+      # a time and uploads can be enormous), deny every path inside it at the
+      # server. A deny rule is instant and does not need the files to be gone.
+      - name: Neutralise any surviving wp-* directory
+        if: always()
+        timeout-minutes: 5
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
+          printf 'Require all denied\n' > /tmp/deny.htaccess
+          lftp --env-password -u "$FTP_USERNAME" "$FTP_HOST" -e "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set ssl:check-hostname no;
+            cd '$FTP_REMOTE_DIR';
+            put /tmp/deny.htaccess -o wp-content/.htaccess;
+            put /tmp/deny.htaccess -o wp-includes/.htaccess;
+            put /tmp/deny.htaccess -o wp-admin/.htaccess;
+            bye
+          "
+
       - name: Report what is left
         if: always()
         env:
