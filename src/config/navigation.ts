@@ -20,4 +20,12 @@ export const NAV: readonly NavItem[] = [
 export const FOOTER_NAV: readonly NavItem[] = [
   { key: "about", label: { bn: "আমাদের সম্পর্কে", en: "About us" } },
   { key: "faq", label: { bn: "সাধারণ জিজ্ঞাসা", en: "FAQ" } },
+  // Landing pages. Linked from the footer so they are not orphans: they carry
+  // the long-tail searches (Dhaka, microbus, ambulance near RMCH).
+  { key: "dhaka", label: { bn: "রাজশাহী–ঢাকা ভাড়া", en: "Rajshahi–Dhaka rental" } },
+  { key: "microbus", label: { bn: "মাইক্রোবাস ভাড়া", en: "Microbus rental" } },
+  {
+    key: "ambulanceRmch",
+    label: { bn: "মেডিকেল এলাকার অ্যাম্বুলেন্স", en: "Ambulance near RMCH" },
+  },
 ];

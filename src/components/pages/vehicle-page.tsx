@@ -93,7 +93,7 @@ export function VehiclePage({ locale, vehicle }: { locale: Locale; vehicle: Vehi
                 {i === crumbs.length - 1 ? (
                   <span aria-current="page">{crumb.name}</span>
                 ) : (
-                  <Link href={crumb.path} className="hover:text-fg inline-flex min-h-11 items-center">
+                  <Link href={crumb.path} className="hover:text-fg -mx-2 inline-flex min-h-11 min-w-11 items-center justify-center px-2">
                     {crumb.name}
                   </Link>
                 )}

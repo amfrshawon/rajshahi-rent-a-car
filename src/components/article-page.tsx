@@ -45,9 +45,9 @@ export async function ArticlePage({ locale, article, showBackToBlog = true }: {
       <JsonLd data={breadcrumbSchema(locale, crumbs)} />
       <div className="article-layout mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-10">
         <nav aria-label={copy("পথ নির্দেশনা", "Breadcrumb")} className="text-muted mb-6 flex items-center gap-3 text-sm">
-          <Link className="inline-flex min-h-11 items-center hover:underline" href={route(locale, "home")}>{copy("হোম", "Home")}</Link>
+          <Link className="-mx-2 inline-flex min-h-11 min-w-11 items-center justify-center px-2 hover:underline" href={route(locale, "home")}>{copy("হোম", "Home")}</Link>
           <span aria-hidden="true">/</span>
-          <Link className="inline-flex min-h-11 items-center hover:underline" href={route(locale, "blog")}>{copy("ভ্রমণ ও গাড়ি ভাড়ার গাইড", "Travel & rental guides")}</Link>
+          <Link className="-mx-2 inline-flex min-h-11 min-w-11 items-center justify-center px-2 hover:underline" href={route(locale, "blog")}>{copy("ভ্রমণ ও গাড়ি ভাড়ার গাইড", "Travel & rental guides")}</Link>
         </nav>
         <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
           <article className="min-w-0">

@@ -338,7 +338,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   <div className="p-4">
                     <div className="flex items-baseline justify-between gap-3">
                       <h3 className="text-lg font-bold">
-                        <Link href={vehicleRoute(locale, v.slug)} className="hover:text-leaf">
+                        <Link href={vehicleRoute(locale, v.slug)} className="hover:text-leaf inline-flex min-h-11 items-center">
                           {v.name}
                         </Link>
                       </h3>

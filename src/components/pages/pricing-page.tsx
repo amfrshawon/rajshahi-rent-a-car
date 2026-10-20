@@ -43,7 +43,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
 
       <section className="mx-auto w-full max-w-4xl px-4 py-8 md:py-12">
         {/* A table, because this is tabular data — no card around it. */}
-        <div className="tile overflow-x-auto">
+        <div className="tile overflow-x-auto" tabIndex={0} role="region" aria-label={t(locale, { bn: "ভাড়ার তালিকা", en: "Price list" })}>
           <table className="w-full border-collapse text-left">
             <thead className="bg-surface border-border border-b">
               <tr>
