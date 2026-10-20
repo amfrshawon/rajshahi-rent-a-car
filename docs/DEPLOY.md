@@ -148,14 +148,47 @@ the repo — so cutover is a straight replacement:
 2. Run the production deploy.
 3. Verify all 27 legacy URLs return 200 on the live domain.
 4. Submit the new sitemap in Search Console and watch coverage for two weeks.
-5. The old WordPress install (still on the account until now) can be
-   archived or deleted once the static site is confirmed live.
+5. Delete WordPress **before** the static site is live only if you are happy
+   to take the domain down; otherwise delete it afterwards (see below).
+
+### Removing WordPress completely
+
+The static build now owns `public_html`. Delete the old install like this:
+
+1. cPanel → **WordPress Manager by Softaculous** → the install → **Remove**,
+   ticking *remove directory* and *remove database*. This is the only route
+   that removes the files and the database in one step, server-side.
+2. If it is not listed there: **File Manager** → `public_html` → Settings →
+   *Show hidden files* → select `wp-admin`, `wp-content`, `wp-includes`,
+   `wp-config.php`, `wp-config-sample.php`, `wp-login.php`, `wp-activate.php`,
+   `xmlrpc.php`, `.user.ini` → **Delete**.
+3. **MySQL Databases** → drop the WordPress database and its user.
+4. Check `/wp-login.php`, `/wp-content/` and `/wp-includes/` all return 404.
+
+File Manager deletion is server-side and instant. The GitHub cleanup workflow
+(`.github/workflows/cleanup-wordpress.yml`) exists as a fallback, but FTP
+removes one file at a time and `wp-content/uploads` can hold thousands of
+files — it will time out. Use it for the loose root files only, and use the
+workflow's deny-all `.htaccess` fallback if a directory has to stay for a
+while.
+
+> **Never delete `public_html`.** It is the document root, not just a folder
+> of WordPress files: deleting it takes the static site down too.
+
+### Recovering an emptied or half-uploaded document root
+
+If `public_html` was removed or a deploy was interrupted, run the production
+workflow with **clean_slate: true** (Actions → *Build and deploy* → Run
+workflow → target `production` → clean slate). That wipes the target
+directory first, then uploads a complete copy. Without it, the FTP action
+reuses a stale file list and can fail with `553 Can't open that file`.
 
 ## Notes
 
 - `public/.htaccess` ships with the export: it sets the 404 document,
   immutable caching for hashed assets, revalidation for HTML, compression,
   security headers and an HTTPS redirect.
-- The deploy excludes `wp-admin`, `wp-content` and `wp-includes` so a
-  misconfigured remote directory cannot delete a WordPress install.
+- The deploy still excludes `wp-admin`, `wp-content` and `wp-includes`, so a
+  stray WordPress directory on another environment cannot be deleted by a
+  deploy.
 - There is no ISR. A content edit goes live on the next push to `main`.
