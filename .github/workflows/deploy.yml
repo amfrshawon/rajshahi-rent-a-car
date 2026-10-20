@@ -48,6 +48,9 @@ jobs:
         env:
           NEXT_PUBLIC_IS_PREVIEW: ${{ github.event_name == 'push' || inputs.target != 'production' }}
 
+      - name: Verify every blog page
+        run: npm run verify:blog
+
       - uses: actions/upload-artifact@v4
         with:
           name: site

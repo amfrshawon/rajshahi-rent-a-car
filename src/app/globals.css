@@ -504,3 +504,13 @@ html {
 ::view-transition-new(root) {
   animation-duration: 190ms;
 }
+
+/* Article reading stays comfortable while desktop space supports trip planning. */
+.article-prose { max-width: 70ch; font-size: 1.0625rem; overflow-wrap: anywhere; }
+.article-prose :is(h2, h3) { scroll-margin-top: 6rem; }
+.article-prose > :first-child { margin-top: 0; }
+.article-contents summary::marker { color: var(--leaf); }
+.article-layout { overflow-wrap: break-word; }
+@media (min-width: 768px) {
+  .article-prose { font-size: 1.125rem; }
+}
