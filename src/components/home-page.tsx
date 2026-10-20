@@ -2,9 +2,11 @@ import Link from "next/link";
 import {
   AmbulanceIcon,
   ArrowRightIcon,
+  ChecklistIcon,
   PhoneIcon,
   WhatsAppIcon,
 } from "@/components/icons";
+import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { Photo } from "@/components/photo";
 import { route } from "@/config/routes";
@@ -15,7 +17,7 @@ import { type Locale, formatTaka, localeDigits, t } from "@/lib/locale";
 
 const COPY = {
   eyebrow: { bn: "রাজশাহী · ২৪ ঘণ্টা · ড্রাইভারসহ", en: "Rajshahi · 24 hours · With driver" },
-  headline: { bn: "এক কলে গাড়ি দরজায়।", en: "One call, a car at your door." },
+  headline: { bn: "এক কলে বুকিং, ড্রাইভারসহ গাড়ি।", en: "One call to book, a car with a driver." },
   support: {
     bn: "শহরে, বিমানবন্দরে কিংবা ঢাকায় — ভাড়া আগেই জানিয়ে দিই।",
     en: "Across the city, to the airport, or Dhaka — the fare agreed up front.",
@@ -61,12 +63,110 @@ const COPY = {
     en: "One call confirms the car and the driver — Dhaka–Rajshahi and beyond.",
   },
   guides: { bn: "ভ্রমণ গাইড পড়ুন", en: "Read the travel guides" },
+  fareLine: {
+    bn: "শহরের বাইরের ভাড়া ফোনে নিশ্চিত করা হয় — কোনো লুকানো চার্জ নেই।",
+    en: "Outstation fares are quoted by phone — no hidden charges.",
+  },
+
+  standardTitle: { bn: "আমাদের স্ট্যান্ডার্ড", en: "Our standard" },
+  standardLead: {
+    bn: "যা সবসময় একই থাকে — গাড়ি, ড্রাইভার আর ভাড়ার নিয়ম।",
+    en: "What is the same on every trip — the car, the driver, the fare.",
+  },
+  standard: [
+    { bn: "সব গাড়ি এসি ও ড্রাইভারসহ", en: "Every car is air-conditioned, with a driver" },
+    { bn: "অভিজ্ঞ ড্রাইভার", en: "An experienced driver" },
+    { bn: "ভাড়া আগেই ঠিক করা", en: "The fare agreed before you travel" },
+    { bn: "কোনো লুকানো চার্জ নেই", en: "No hidden charges" },
+    { bn: "২৪ ঘণ্টা ফোন ও হোয়াটসঅ্যাপ", en: "Phone and WhatsApp, 24 hours" },
+    { bn: "বিকাশ, নগদ, রকেট, উপায়, বাংলা QR, ব্যাংক", en: "bKash, Nagad, Rocket, Upay, Bangla QR, bank" },
+  ] as const,
+
+  ambulanceTitle: { bn: "অ্যাম্বুলেন্স — আলাদা জরুরি সেবা", en: "Ambulance — a separate emergency service" },
+  ambulanceLead: {
+    bn: "রাজশাহী মেডিকেল এলাকায় অবস্থান। প্রশিক্ষিত স্টাফসহ রোগী পরিবহন, ২৪ ঘণ্টা।",
+    en: "Based in the Rajshahi Medical area. Patient transport with trained staff, 24 hours.",
+  },
+  ambulanceCta: { bn: "অ্যাম্বুলেন্সের বিস্তারিত", en: "Ambulance details" },
+
+  packagesTitle: { bn: "প্যাকেজ", en: "Packages" },
+  packagesLead: {
+    bn: "যাত্রা আগেই ঠিক থাকলে বুকিংও সহজ।",
+    en: "Easier booking when the trip is already planned.",
+  },
+  packages: [
+    { bn: "শহরে একদিন", en: "A day in the city", note: { bn: "প্রাইভেট কার, ৪ আসন", en: "Sedan, 4 seats" } },
+    { bn: "বিমানবন্দর ও স্টেশন", en: "Airport & station", note: { bn: "ফ্লাইট/ট্রেনের সময় অনুযায়ী", en: "Timed to your flight or train" } },
+    { bn: "বিয়ের গাড়ি", en: "Wedding car", note: { bn: "আগে থেকে বুকিং", en: "Booked ahead" } },
+    { bn: "পুঠিয়া একদিনের ট্রিপ", en: "Puthia day trip", note: { bn: "৩২ কিমি · প্রায় ৫০ মিনিট", en: "32 km · about 50 minutes" } },
+  ] as const,
+
+  corporateTitle: { bn: "কোম্পানি ও মাসিক ভাড়া", en: "Corporate & monthly" },
+  corporateLead: {
+    bn: "কোম্পানি, এনজিও, প্রজেক্ট বা মাসিক ভাড়ার জন্য ফোনে জানান — প্রয়োজনের কথা শুনে ভাড়া জানানো হয়।",
+    en: "For companies, NGOs, projects or monthly hire, call us — we quote after hearing what you need.",
+  },
+  corporateCta: { bn: "ফোনে জানান", en: "Call to discuss" },
+
+  faqTitle: { bn: "সাধারণ প্রশ্ন", en: "Common questions" },
+  faqAll: { bn: "সব প্রশ্ন", en: "All questions" },
+
+  areaTitle: { bn: "যেখানে সেবা দিই", en: "Where we serve" },
+  areaLead: {
+    bn: "রাজশাহী শহর ও বিভাগজুড়ে, ঢাকাসহ দেশের যেকোনো জেলায়।",
+    en: "Rajshahi city and across the division, to Dhaka and any district.",
+  },
+  area: {
+    bn: ["রাজশাহী শহর", "রাজশাহী মেডিকেল এলাকা", "নাটোর", "চাঁপাইনবাবগঞ্জ", "নওগাঁ", "ঢাকা"],
+    en: ["Rajshahi city", "Rajshahi Medical area", "Natore", "Chapainawabganj", "Naogaon", "Dhaka"],
+  },
 } as const;
+
+const HOMEPAGE_FAQS = [
+  {
+    q: { bn: "কীভাবে গাড়ি বুক করবো?", en: "How do I book a car?" },
+    a: {
+      bn: `সরাসরি ${SITE.phoneDisplay.bn} নম্বরে কল করুন, হোয়াটসঅ্যাপে মেসেজ দিন, অথবা ওয়েবসাইটের বুকিং ফর্ম পূরণ করুন। দিনরাত ২৪ ঘণ্টা যোগাযোগ করা যায়।`,
+      en: `Call ${SITE.phoneDisplay.en}, message us on WhatsApp, or fill in the booking form on this site. We answer 24 hours a day.`,
+    },
+  },
+  {
+    q: { bn: "কী কী গাড়ি পাওয়া যায়?", en: "Which vehicles are available?" },
+    a: {
+      bn: "টয়োটা প্রিমিও ও এক্সিও (প্রাইভেট কার, ৪ আসন) এবং টয়োটা হাইএস (মাইক্রোবাস, ১৫ আসন)। সবগুলোই এসি।",
+      en: "Toyota Premio and Axio sedans (4 seats) and a Toyota Hiace microbus (15 seats). All are air-conditioned.",
+    },
+  },
+  {
+    q: { bn: "ড্রাইভার কি সাথে থাকে?", en: "Does the car come with a driver?" },
+    a: {
+      bn: "হ্যাঁ, সব গাড়ি অভিজ্ঞ ড্রাইভারসহ ভাড়া দেওয়া হয়।",
+      en: "Yes. Every vehicle is rented with an experienced driver.",
+    },
+  },
+  {
+    q: { bn: "ভাড়া কত?", en: "What are the rates?" },
+    a: {
+      bn: "শহরের ভেতরে দৈনিক ভাড়া গাড়ি অনুযায়ী ৳৪,০০০ থেকে ৳৮,০০০। শহরের বাইরের ভাড়া দূরত্ব অনুযায়ী ফোনে জানানো হয়।",
+      en: "Day rates within the city run from ৳4,000 to ৳8,000 depending on the car. Outstation fares are quoted by distance over the phone.",
+    },
+  },
+] as const;
 
 export async function HomePage({ locale }: { locale: Locale }) {
   const hero = FLEET[0];
   const contact = route(locale, "contact");
   const articles = await listArticles(locale);
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: HOMEPAGE_FAQS.map((item) => ({
+      "@type": "Question",
+      name: t(locale, item.q),
+      acceptedAnswer: { "@type": "Answer", text: t(locale, item.a) },
+    })),
+  };
 
   const waText = encodeURIComponent(
     t(locale, { bn: "আসসালামু আলাইকুম, আমি গাড়ি ভাড়া নিতে চাই।", en: "Hello, I would like to rent a car." }),
@@ -186,9 +286,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   <span className="text-muted block text-sm">{t(locale, r.note)}</span>
                 </span>
                 <span className="tnum text-leaf shrink-0 text-right text-lg font-semibold">
-                  {r.km === null ? (
-                    <span className="text-muted text-sm font-normal">{t(locale, COPY.verify)}</span>
-                  ) : (
+                  {r.km === null ? null : (
                     <>
                       {localeDigits(locale, r.km)} {t(locale, COPY.km)}
                       {r.minutes ? (
@@ -204,6 +302,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           ))}
         </ul>
         <p className="text-muted mt-3 text-sm">{t(locale, COPY.routesNote)}</p>
+        <p className="text-muted mt-1 text-sm">{t(locale, COPY.fareLine)}</p>
       </section>
 
       {/* -------------------------------------------------------------- Fleet */}
@@ -261,6 +360,93 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
+
+      {/* --------------------------------------------------- Our standard */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+        <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.standardTitle)}</h2>
+        <p className="text-muted mt-1">{t(locale, COPY.standardLead)}</p>
+        <ul className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+          {COPY.standard.map((item) => (
+            <li key={item.en} className="flex items-start gap-2.5">
+              <ChecklistIcon className="text-leaf mt-0.5 size-5 shrink-0" />
+              <span className="font-medium">{t(locale, item)}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ------------------------------------------------------- Packages */}
+      <section className="bg-surface border-border border-y">
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.packagesTitle)}</h2>
+              <p className="text-muted mt-1">{t(locale, COPY.packagesLead)}</p>
+            </div>
+          </div>
+          <ul className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {COPY.packages.map((pkg, i) => {
+              const href = [route(locale, "pricing"), route(locale, "pickup"), route(locale, "wedding"), route(locale, "tours")][i];
+              return (
+                <li key={pkg.en}>
+                  <Link
+                    href={href}
+                    className="tile flex h-full flex-col justify-between gap-3 p-4"
+                  >
+                    <span>
+                      <span className="block font-bold">{t(locale, { bn: pkg.bn, en: pkg.en })}</span>
+                      <span className="text-muted mt-1 block text-sm">{t(locale, pkg.note)}</span>
+                    </span>
+                    <ArrowRightIcon className="text-leaf size-4" />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------ Ambulance */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+        <div className="border-pin/30 bg-pin/5 rounded-xl border p-5 md:p-7">
+          <div className="flex flex-wrap items-start justify-between gap-5">
+            <div className="max-w-xl">
+              <h2 className="flex items-center gap-2 text-2xl font-bold md:text-3xl">
+                <AmbulanceIcon className="text-pin size-6 shrink-0" />
+                {t(locale, COPY.ambulanceTitle)}
+              </h2>
+              <p className="text-muted mt-2">{t(locale, COPY.ambulanceLead)}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <a href={`tel:${SITE.phone}`} className="bg-pin inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-6 font-semibold text-white transition active:scale-[0.98]">
+                <PhoneIcon className="size-5" />
+                {t(locale, SITE.phoneDisplay)}
+              </a>
+              <Link href={route(locale, "ambulance")} className="border-border inline-flex min-h-12 items-center gap-2 rounded-lg border px-5 font-semibold">
+                {t(locale, COPY.ambulanceCta)}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------ Corporate */}
+      <section className="bg-brand text-brand-fg">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-5 px-4 py-8 md:px-6 md:py-10">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.corporateTitle)}</h2>
+            <p className="mt-2 opacity-90">{t(locale, COPY.corporateLead)}</p>
+          </div>
+          <a
+            href={`tel:${SITE.phone}`}
+            className="bg-bg text-leaf inline-flex min-h-12 items-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98]"
+          >
+            <PhoneIcon className="size-5" />
+            {t(locale, COPY.corporateCta)}
+          </a>
+        </div>
+      </section>
+
       {/* -------------------------------------------------- How booking works */}
       <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
         <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.stepsTitle)}</h2>
@@ -275,6 +461,47 @@ export async function HomePage({ locale }: { locale: Locale }) {
           ))}
         </ol>
       </section>
+
+
+      {/* ------------------------------------------------------------- FAQ */}
+      <section className="bg-surface border-border border-y">
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.faqTitle)}</h2>
+            <Link href={route(locale, "faq")} className="text-leaf inline-flex min-h-11 items-center gap-1.5 font-semibold">
+              {t(locale, COPY.faqAll)}
+              <ArrowRightIcon className="size-4" />
+            </Link>
+          </div>
+          <ul className="mt-4 divide-y divide-border border-border border-y">
+            {HOMEPAGE_FAQS.map((item) => (
+              <li key={item.q.en} className="py-3">
+                <details className="group">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 font-semibold">
+                    {t(locale, item.q)}
+                    <span aria-hidden="true" className="text-leaf text-xl leading-none group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="text-muted mt-1 max-w-3xl">{t(locale, item.a)}</p>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- Service area */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-7 md:px-6 md:py-10">
+        <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.areaTitle)}</h2>
+        <p className="text-muted mt-1">{t(locale, COPY.areaLead)}</p>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {COPY.area[locale].map((area) => (
+            <li key={area} className="border-border bg-surface rounded-full border px-3.5 py-1.5 text-sm font-medium">
+              {area}
+            </li>
+          ))}
+        </ul>
+      </section>
+      <JsonLd data={faqSchema} />
 
       {/* ------------------------------------------------------- Closing strip */}
       <section className="bg-brand text-brand-fg">
