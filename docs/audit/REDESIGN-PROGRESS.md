@@ -74,9 +74,13 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
    the route board.)
 6. **Logo** — the header now loads `logo-device.webp`, **6.8 KB** (was a
    216 KB PNG). The car-and-pin mark only, with the Bangla name as live text.
-7. **Server headers** — the `<IfModule mod_headers.c>` wrapper never matched on
-   LiteSpeed, so the whole block was skipped. The `Header` directives now run
-   unwrapped. Needs `curl -I` confirmation after deploy.
+7. **Server headers** — the `.htaccess` was never reaching the server:
+   `actions/upload-artifact` excludes dotfiles by default, so every deploy
+   shipped the site without it. The artifact now includes hidden files, and
+   `curl -I` against the staging vhost confirms the security headers, the dev
+   `noindex`, one-year immutable asset caching, HTML revalidation and 403
+   directory listings. The `<IfModule mod_headers.c>` wrapper is also gone, so
+   the `Header` directives run unwrapped.
 8. **First-screen animation** — `.rise` / `.rise-move` removed from the CSS and
    from every first-screen use (hero, page headers, article/archive heads).
 9. **Tap targets & labels** — footer phone/email and nav links are ≥44 px; the

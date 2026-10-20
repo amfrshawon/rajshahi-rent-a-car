@@ -53,6 +53,9 @@ jobs:
           name: site
           path: out/
           retention-days: 7
+          # out/.htaccess carries the cache, security and noindex rules.
+          # Without this the artifact silently drops every dotfile.
+          include-hidden-files: true
 
   deploy:
     needs: build
