@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { HashCleanup } from "@/components/hash-cleanup";
 import { IS_PREVIEW } from "@/config/deploy";
 import { bangla, latin } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
@@ -29,6 +30,7 @@ export function RootHtml({ locale, children }: { locale: Locale; children: React
           <meta name="robots" content="noindex, nofollow" />
         ) : null}
         {children}
+        <HashCleanup />
       </body>
     </html>
   );

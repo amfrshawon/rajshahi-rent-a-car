@@ -77,8 +77,14 @@ export async function HomePage({ locale }: { locale: Locale }) {
       {/* ------------------------------------------------------------- Hero */}
       <section className="bg-brand text-brand-fg">
         <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-5 md:px-6 md:pt-12 md:pb-10">
-          <div className="grid gap-6 lg:grid-cols-2 lg:items-center lg:gap-10">
-            <div>
+          {/*
+            Phones read top to bottom: promise, then "where to?", then the car.
+            The photo used to sit between the buttons and the trip tiles, which
+            pushed the tiles below the fold on 360x640 and 320x568 screens. On
+            desktop the photo returns to the right-hand column.
+          */}
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-7">
+            <div className="lg:col-start-1 lg:row-start-1 lg:self-center">
               <p className="flex items-center gap-2 text-sm font-semibold opacity-90">
                 <span aria-hidden="true" className="bg-pin size-2 rounded-full" />
                 {t(locale, COPY.eyebrow)}
@@ -108,8 +114,41 @@ export async function HomePage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
+            {/* Trip tiles and the ambulance row. */}
+            <div className="lg:col-span-2 lg:row-start-2">
+              <h2 className="sr-only">{t(locale, COPY.whereTitle)}</h2>
+              <p className="text-lg font-bold">{t(locale, COPY.whereTitle)}</p>
+              <ul className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+                {TRIP_TYPES.map((trip) => (
+                  <li key={trip.key}>
+                    <a
+                      href={`${contact}?trip=${trip.key}#booking`}
+                      className="bg-bg text-fg flex h-full flex-col gap-1 rounded-lg p-3 transition active:scale-[0.98]"
+                    >
+                      <span className="font-semibold">{t(locale, trip.label)}</span>
+                      <span className="text-muted text-[13px]">{t(locale, trip.note)}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Ambulance — the one red-outlined row, a direct call. It sits on
+                  its own white ground: the pin red is only 4.96:1 on white, and
+                  would fail on the green panel. */}
+              <a
+                href={`tel:${SITE.phone}`}
+                className="border-pin bg-bg text-pin mt-3 flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 font-semibold"
+              >
+                <span className="flex items-center gap-2">
+                  <AmbulanceIcon className="size-5" />
+                  {t(locale, COPY.ambulance)}
+                </span>
+                <span className="text-[13px] font-semibold">{t(locale, COPY.ambulanceNote)}</span>
+              </a>
+            </div>
+
             {/* Full colour — the car is the subject, not a backdrop. */}
-            <div className="relative overflow-hidden rounded-lg">
+            <div className="relative order-last overflow-hidden rounded-lg lg:order-none lg:col-start-2 lg:row-start-1 lg:self-center">
               <Photo
                 name={hero.photo.name}
                 width={hero.photo.width}
@@ -119,42 +158,13 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 priority
                 className="aspect-[16/10] w-full object-cover"
               />
-              <span className="text-fg absolute bottom-3 left-3 rounded bg-white/95 px-2.5 py-1 text-xs font-semibold">
-                <span aria-hidden="true" className="text-pin">★</span> {t(locale, COPY.proof)}
-              </span>
+              {GOOGLE_RATING.count >= 10 ? (
+                <span className="text-fg absolute bottom-3 left-3 rounded bg-white/95 px-2.5 py-1 text-[13px] font-semibold">
+                  <span aria-hidden="true" className="text-pin">★</span> {t(locale, COPY.proof)}
+                </span>
+              ) : null}
             </div>
           </div>
-
-          {/* Trip tiles */}
-          <h2 className="sr-only">{t(locale, COPY.whereTitle)}</h2>
-          <p className="mt-7 text-lg font-bold">{t(locale, COPY.whereTitle)}</p>
-          <ul className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
-            {TRIP_TYPES.map((trip) => (
-              <li key={trip.key}>
-                <a
-                  href={`${contact}?trip=${trip.key}#booking`}
-                  className="bg-bg text-fg flex h-full flex-col gap-1 rounded-lg p-3 transition active:scale-[0.98]"
-                >
-                  <span className="font-semibold">{t(locale, trip.label)}</span>
-                  <span className="text-muted text-xs">{t(locale, trip.note)}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          {/* Ambulance — the one red-outlined row, a direct call. It sits on
-              its own white ground: the pin red is only 4.96:1 on white, and
-              would fail on the green panel. */}
-          <a
-            href={`tel:${SITE.phone}`}
-            className="border-pin bg-bg text-pin mt-3 flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 font-semibold"
-          >
-            <span className="flex items-center gap-2">
-              <AmbulanceIcon className="size-5" />
-              {t(locale, COPY.ambulance)}
-            </span>
-            <span className="text-xs font-semibold">{t(locale, COPY.ambulanceNote)}</span>
-          </a>
         </div>
       </section>
 
@@ -182,8 +192,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
                     <>
                       {localeDigits(locale, r.km)} {t(locale, COPY.km)}
                       {r.minutes ? (
-                        <small className="text-muted block text-xs font-normal">
-                          {t(locale, COPY.minutes)} {localeDigits(locale, r.minutes)}
+                        <small className="text-muted block text-[13px] font-normal">
+                          {localeDigits(locale, r.minutes)} {t(locale, COPY.minutes)}
                         </small>
                       ) : null}
                     </>
@@ -238,7 +248,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                       {formatTaka(locale, v.seats)} {t(locale, COPY.seats)} · {t(locale, v.transmission)}
                     </p>
                     <a
-                      href={`${contact}?trip=city&destination=${encodeURIComponent(v.name)}#booking`}
+                      href={`${contact}?trip=city&vehicle=${encodeURIComponent(v.name)}#booking`}
                       className="btn-primary mt-4 w-full"
                     >
                       {t(locale, COPY.book)}

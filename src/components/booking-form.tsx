@@ -122,7 +122,7 @@ export function BookingForm({ locale }: { locale: Locale }) {
   }
 
   const field =
-    "border-border bg-surface-raised text-fg w-full rounded-lg border px-3 py-2.5 text-base";
+    "border-border bg-surface-raised text-fg min-h-11 w-full rounded-lg border px-3 py-2.5 text-base";
 
   return (
     <form onSubmit={handleSubmit} noValidate className="grid gap-4 sm:grid-cols-2">

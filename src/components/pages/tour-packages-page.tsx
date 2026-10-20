@@ -49,7 +49,7 @@ export function TourPackagesPage({ locale }: { locale: Locale }) {
               <p className="text-muted mt-2">{t(locale, d.blurb)}</p>
               <a
                 href={`${contact}?destination=${encodeURIComponent(t(locale, d.name))}#booking`}
-                className="text-leaf mt-3 inline-flex items-center gap-1.5 text-sm font-semibold"
+                className="text-leaf mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold"
               >
                 {t(locale, COPY.book)}
                 <ArrowRightIcon className="size-4" />

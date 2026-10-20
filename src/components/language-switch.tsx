@@ -16,7 +16,13 @@ const COPY = {
  * A full page load is correct here — the two locales are separate root
  * layouts, so this is a document switch, not a client navigation.
  */
-export function LanguageSwitch({ locale }: { locale: Locale }) {
+export function LanguageSwitch({
+  locale,
+  className = "",
+}: {
+  locale: Locale;
+  className?: string;
+}) {
   const other: Locale = locale === "bn" ? "en" : "bn";
 
   return (
@@ -25,9 +31,24 @@ export function LanguageSwitch({ locale }: { locale: Locale }) {
       hrefLang={other}
       aria-label={t(locale, COPY.switchTo)}
       title={t(locale, COPY.switchTo)}
-      className="border-border text-muted hover:text-fg hover:bg-surface flex size-11 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition active:scale-95"
+      className={`border-border text-muted hover:text-fg hover:bg-surface flex size-11 shrink-0 items-center justify-center rounded-full border text-[13px] font-semibold transition active:scale-95 ${className}`}
     >
       <span aria-hidden="true">{other === "bn" ? "বাং" : "EN"}</span>
+    </a>
+  );
+}
+
+/** Full-width row for the mobile menu, used where the header has no room for the round switch. */
+export function LanguageMenuItem({ locale }: { locale: Locale }) {
+  const other: Locale = locale === "bn" ? "en" : "bn";
+
+  return (
+    <a
+      href={href(localePath(other, "/"))}
+      hrefLang={other}
+      className="text-fg hover:bg-surface active:bg-surface flex min-h-11 items-center rounded-lg px-3 text-sm"
+    >
+      {t(locale, COPY.switchTo)}
     </a>
   );
 }

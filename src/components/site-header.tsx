@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CallButton } from "@/components/call-button";
-import { LanguageSwitch } from "@/components/language-switch";
+import { LanguageMenuItem, LanguageSwitch } from "@/components/language-switch";
 import { NAV } from "@/config/navigation";
 import { asset } from "@/config/deploy";
 import { route } from "@/config/routes";
@@ -64,7 +64,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               valuable action on the site. */}
           <CallButton locale={locale} />
 
-          <LanguageSwitch locale={locale} />
+          <LanguageSwitch locale={locale} className="max-[374px]:hidden" />
 
           {/*
             The menu lives inside the header row as a dropdown rather than in a
@@ -104,6 +104,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
                     </Link>
                   </li>
                 ))}
+                <li className="border-border mt-1 border-t pt-1 min-[375px]:hidden">
+                  <LanguageMenuItem locale={locale} />
+                </li>
               </ul>
             </nav>
           </details>

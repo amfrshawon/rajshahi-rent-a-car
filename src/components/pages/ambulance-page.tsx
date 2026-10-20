@@ -167,7 +167,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
   };
 
   return (
-    <PageShell locale={locale}>
+    <PageShell locale={locale} mobileAction="ambulance">
       <JsonLd data={schema} />
 
       {/* ------------------------------------------------- Emergency hero */}
