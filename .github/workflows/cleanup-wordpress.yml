@@ -1,8 +1,20 @@
 name: Remove WordPress leftovers
 
 # One-off cleanup after the static cutover. The production-scoped FTP account
-# is rooted at public_html, where the static site now lives, so only the
-# WordPress paths are removed.
+# is rooted at public_html, where the static site now lives.
+#
+# The first version of this workflow ran `lftp rm -rf wp-content` in a single
+# command and hung: FTP has no recursive delete, so lftp walks the whole tree
+# one file at a time and gives no output while it does. wp-content/uploads can
+# hold thousands of files. This version:
+#   1. deletes the loose root files first (seconds),
+#   2. empties each big directory with `mirror --reverse --delete` from an
+#      empty local folder, which lftp can parallelise,
+#   3. caps every step with a timeout and logs what it is doing.
+#
+# If a directory still cannot be removed over FTP, use cPanel -> File Manager:
+# select wp-content and wp-includes and Delete (that runs server-side and is
+# instant), then drop the WordPress database in MySQL Databases.
 
 on:
   workflow_dispatch:
@@ -12,10 +24,15 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: cleanup-wordpress
+  cancel-in-progress: false
+
 jobs:
   cleanup:
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 45
     steps:
       - name: Check confirmation
         run: |
@@ -24,22 +41,95 @@ jobs:
             exit 1
           fi
 
-      - name: Delete WordPress over FTPS
+      - name: Install lftp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Delete loose WordPress files
+        timeout-minutes: 8
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq lftp
+          lftp --env-password -u "$FTP_USERNAME" "$FTP_HOST" -e "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set ssl:check-hostname no;
+            set net:timeout 20;
+            set net:max-retries 2;
+            cd '$FTP_REMOTE_DIR';
+            rm -f wp-config.php wp-login.php wp-settings.php wp-load.php wp-blog-header.php;
+            rm -f wp-cron.php wp-comments-post.php wp-links-opml.php wp-mail.php wp-signup.php;
+            rm -f wp-trackback.php xmlrpc.php index.php readme.html license.txt .user.ini;
+            ls;
+            bye
+          "
+
+      - name: Empty and remove wp-content
+        timeout-minutes: 15
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
+          mkdir -p /tmp/empty
+          lftp --env-password -u "$FTP_USERNAME" "$FTP_HOST" -e "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set ssl:check-hostname no;
+            set net:timeout 20;
+            set net:max-retries 2;
+            set mirror:parallel-transfer-count 8;
+            set mirror:use-pget-n 1;
+            cd '$FTP_REMOTE_DIR';
+            mirror --reverse --delete --verbose /tmp/empty wp-content;
+            rmdir wp-content;
+            bye
+          "
+
+      - name: Empty and remove wp-includes
+        timeout-minutes: 15
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
+          mkdir -p /tmp/empty
+          lftp --env-password -u "$FTP_USERNAME" "$FTP_HOST" -e "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set ssl:check-hostname no;
+            set net:timeout 20;
+            set net:max-retries 2;
+            set mirror:parallel-transfer-count 8;
+            cd '$FTP_REMOTE_DIR';
+            mirror --reverse --delete --verbose /tmp/empty wp-includes;
+            rmdir wp-includes;
+            bye
+          "
+
+      - name: Report what is left
+        if: always()
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
           lftp --env-password -u "$FTP_USERNAME" "$FTP_HOST" -e "
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ssl:verify-certificate no;
             set ssl:check-hostname no;
             cd '$FTP_REMOTE_DIR';
-            rm -rf wp-admin wp-content wp-includes;
-            rm -f wp-*.php index.php xmlrpc.php readme.html license.txt .user.ini;
+            cls -1 | grep -i '^wp-' || echo 'no wp-* entries left';
             bye
           "
