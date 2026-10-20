@@ -158,9 +158,9 @@
   --shadow-card: var(--card-shadow);
   --shadow-lift: var(--lift-shadow);
 
-  /* Latin runs inside Bangla text fall through to Anek Latin — the two share a
-     design, so the seam is invisible. */
-  --font-bn: var(--font-bangla), var(--font-latin), "Noto Sans Bengali", sans-serif;
+  /* Keep Latin runs inside Bangla text on the same Anek face as English. */
+  --font-bn:
+    var(--font-latin), var(--font-bangla), "Hind Siliguri", "Noto Sans Bengali", sans-serif;
   --font-en: var(--font-latin), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -205,6 +205,7 @@ h1, h2, h3, h4 {
    (it breaks conjuncts). Latin gets the width axis for display. */
 html[lang="bn"] :is(h1, h2, h3, h4) {
   line-height: 1.5;
+  font-weight: 600;
   letter-spacing: 0;
 }
 

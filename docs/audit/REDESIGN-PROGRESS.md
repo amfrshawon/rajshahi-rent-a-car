@@ -101,13 +101,14 @@ If assets or hot reload fail when opened from the phone, add the LAN origin to
 - **`?destination=` prefill uses a ref, not state**, to avoid a
   React `set-state-in-effect` lint error and keep the value out of a render
   cascade.
-- **The width axis is on Anek Latin only, not Anek Bangla.** next/font/google
-  can only request an axis as a *range*; the Bengali width-axis file is
-  **437 KB** and the weight-only Bengali variable is **152 KB**, either of which
-  breaks the 150 KB preload budget on its own. Greeking Bangla display by
-  weight instead keeps it at 111 KB. The Latin width axis is cheap (~100 KB,
-  loaded lazily). The whole family still carries the design; only the Bangla
-  width axis is dropped, and the reason is measured, not estimated.
+- **English width styling uses Anek Latin only.** Its width axis remains
+  available for English display and number roles; it is not applied to Bangla.
+- **Bangla font update (2026-10-20).** Hind Siliguri 400/600 now replaces Anek
+  Bangla throughout the site. Anek Latin remains the English face and is first
+  in the Bangla font stack for Latin runs. The build emits 40,224-byte and
+  39,644-byte preloaded Bengali subsets (79,868 bytes total, about 78 KiB),
+  below the 150 KB mobile budget. The Open Graph renderer continues to use
+  Hind Siliguri with its existing checked token list.
 - **Amber, mint and pink are retired.** The primary CTA is Padma green; the
   logo's pin red is used only for pins, live status and emergency; section
   grounds are Mist. `--accent` now resolves to the primary so any un-migrated
@@ -197,7 +198,8 @@ Audit reference (measured from outside BD, same build): Home 84 / LCP 4.5 s /
 ### Phase 2
 
 - **Preloaded fonts: 111 KB** (Anek Bangla 400 = 55 KB, Anek Bangla 700 =
-  56 KB). Was 242 KB across three files. Target ≤ 150 KB met.
+  56 KB) at the original Phase 2 measurement. Was 242 KB across three files.
+  Target ≤ 150 KB met.
 - **Anek Latin width axis:** ~101 KB, loaded on demand (not preloaded).
 - **Bengali width-axis variable:** 437 KB — rejected (measured, see Decisions).
 - **Contrast (computed, not eyeballed):** Leaf `#1D7A4E` on white 5.32:1, on

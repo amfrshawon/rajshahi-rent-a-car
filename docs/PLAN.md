@@ -114,7 +114,7 @@ GitHub  ──push──▶  GitHub Actions
 | Content | WordPress REST at build time + Polylang for bn/en pairing |
 | Bookings | Node app under cPanel Node.js Selector → MySQL → email + WhatsApp deep link |
 | Images | Pre-generated responsive AVIF/WebP via sharp |
-| Fonts | Hind Siliguri (Bangla) + Inter (Latin), subset, preloaded, `font-display: swap` |
+| Fonts | Hind Siliguri (Bangla) + Anek Latin (English), script-subsetted, `font-display: swap` |
 
 `trailingSlash: true` is mandatory — every legacy URL ends in `/`, and it makes
 the export emit `route/index.html`, which is what static hosting needs.
@@ -162,15 +162,14 @@ typeface by Jacob Thomas, copyright held exclusively by Prothom Alo, with
 "Shurjo" registered as Thomas's trademark. Sites offering it as a free
 download are redistributing it without authorisation. It is not usable here.
 
-**Anek Bangla** (Ek Type, SIL OFL) is the closest freely licensed match and is
-what the site uses — contemporary squarish forms in the same editorial
-register. It costs 199.6 KB of preloaded font per page against 125.3 KB for
-Hind Siliguri; Noto Sans Bengali sits between at 152.7 KB if the bytes matter
-more than the look.
+**Hind Siliguri** is the Bangla face throughout the site. The Bengali subset
+loads only the 400 body and 600 heading weights; the English Anek Latin face
+remains unchanged and is loaded on demand. This keeps the Bangla preloads
+within the 150 KB mobile budget while avoiding unused Latin font data.
 
-The OG image is the exception: satori renders "শুরু" as "শবু" in Anek Bangla,
-so that image stays on Hind Siliguri, whose output has been checked glyph by
-glyph.
+The Open Graph image also uses Hind Siliguri. Its Bangla tokens have been
+checked for Satori's shaping limitations; keep that separate loading path
+because ImageResponse cannot reuse the browser's `next/font` asset directly.
 
 ## 6. Design direction
 
@@ -180,7 +179,7 @@ glyph.
   three-field booking widget (গাড়ি / তারিখ / ফোন) — not a nine-field form.
 - Fleet cards use CSS scroll-snap, not a JavaScript carousel.
 - Trust block: ২৪/৭, ড্রাইভারসহ, ফিক্সড রেট, ইনস্যুরেন্স, plus existing Google reviews.
-- Bangla typography treated properly: Hind Siliguri, line-height ~1.75 (Bangla
+- Bangla typography treated properly: Hind Siliguri 400/600, line-height ~1.75 (Bangla
   needs more than Latin), correct conjunct rendering, no font synthesis.
 - Dark mode; full `prefers-reduced-motion` support.
 - WCAG AA contrast, 44px tap targets, visible focus, semantic landmarks,
@@ -212,7 +211,7 @@ way materially below this; not worth it for the gain here.
 
 Fonts were the fixable half and went from 231 KB to 125 KB preloaded:
 
-- dropped Hind Siliguri's Latin subset — Latin runs fall through to Inter
+- dropped Hind Siliguri's Latin subset — Latin runs fall through to Anek Latin
 - dropped the 500 weight (unused) and 700 (headings render at 600 by design;
   Hind Siliguri's bold is too heavy for Bangla at heading sizes anyway)
 

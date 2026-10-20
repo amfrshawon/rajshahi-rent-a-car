@@ -162,7 +162,8 @@ along without asking you. Keep these sections:
    breaks conjuncts). Body line-height at least 1.6. Use Bangla digits in
    Bangla copy.
 10. **OG images:** satori misshapes some Bangla; "শুরু" renders as "শবু" in
-    Anek Bangla. If you touch `src/lib/og.tsx`, render the PNG and look at it.
+    Anek Bangla. The site now also uses Hind Siliguri; if you touch
+    `src/lib/og.tsx`, render the PNG and look at it.
 11. **Credentials:** never ask for, enter or store passwords, FTP details or
     tokens. Deployment beyond pushing your branch is the owner's job.
 
@@ -228,9 +229,9 @@ Build the foundation before touching page layouts, so every page change after
 this draws on it.
 
 1. **Colour tokens** in `src/app/globals.css` (5.2).
-2. **Typography:** the Anek superfamily and type roles in `src/lib/fonts.ts`
-   and `globals.css` (5.3). Measure the font payload against the budget
-   before moving on.
+2. **Typography:** Hind Siliguri for Bangla and the existing Anek Latin face
+   for English in `src/lib/fonts.ts` and `globals.css` (5.3). Measure the font
+   payload against the budget before moving on.
 3. **Shared pieces:** buttons, the trip-type tile, section and page-header
    layouts, the site header, the footer and the sticky mobile bar.
 4. **Retire** the patterns in 5.4 at the component level, so they are not
@@ -309,19 +310,22 @@ themes, plus the WhatsApp ink against its surfaces.
 
 ### 5.3 Typography
 
-- **Anek Bangla + Anek Latin.** Both are OFL and share a design, and both have
-  a width axis (75–125) and weight (100–800). Drop Inter.
+- **Hind Siliguri for Bangla; retain Anek Latin for English.** Load the Bengali
+  subset at 400 for body and 600 for headings. Keep only the Bengali subset on
+  Hind Siliguri, and keep total preloaded font bytes at or below 150 KB on
+  mobile. Do not apply Anek's width-axis styling to Bangla. English retains its
+  existing Anek Latin face and width-axis behavior.
 - **Roles:**
-  - Display: width 125, weight 760–780
-  - Reading: width 100, weight 400–420
-  - Numbers and labels: width 75, weight 600–650, `tabular-nums`
+  - English display: width 125, weight 760–780
+  - English reading: width 100, weight 400–420
+  - English numbers and labels: width 75, weight 600–650, `tabular-nums`
+  - Bangla body/headings: Hind Siliguri 400/600, with loose line-height and no
+    letter-spacing or width-axis stretch.
 - In `next/font/google`, use `axes: ['wdth']`. Per the Next 16 font docs,
   only weight is included by default to keep files small, so adding width
   will grow the file. **Measure it.**
-- **Budget:** 150 KB or less of preloaded font on mobile (it is 242 KB across
-  three files today). If the width axis breaks the budget, preload only the
-  reading weight and load display widths without preload, or subset with
-  `next/font/local`.
+- **Budget:** 150 KB or less of preloaded font on mobile (the original baseline
+  was 242 KB across three files). Measure the actual generated font payload.
 
 ### 5.4 Remove these patterns
 

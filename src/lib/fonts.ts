@@ -1,27 +1,11 @@
-import { Anek_Bangla, Anek_Latin } from "next/font/google";
+import { Anek_Latin, Hind_Siliguri } from "next/font/google";
 
 /**
- * One family, used with range: Anek Bangla + Anek Latin (both Ek Type, SIL
- * Open Font License). They share a design, so Latin runs inside Bangla text do
- * not change voice. Inter is gone.
- *
- * WHY BANGLA LOADS TWO STATIC WEIGHTS
- *
- * next/font/google coalesces a weight array on a variable family into a single
- * variable file: the Bengali variable is 152 KB, which on its own is over the
- * 150 KB preload budget once Latin is added. Asking for one weight at a time
- * yields the static instances instead — 55 KB (400) and 54 KB (700) — so
- * Bangla loads both explicitly and stays inside budget.
- *
- * WHY THE WIDTH AXIS IS ON LATIN, WITHOUT PRELOAD
- *
- * Anek Bangla with its width axis is a 437 KB file. The Latin subset with the
- * width axis is ~100 KB — affordable, but not worth preloading on a Bangla
- * page where almost nothing is Latin. Latin is preloaded off and arrives only
- * when a Latin glyph is actually rendered; English pages, which are all Latin,
- * pay it once. All measurements are in docs/audit/REDESIGN-PROGRESS.md.
+ * Hind Siliguri is used for every Bangla page. Load only the Bengali subset
+ * and the 400/600 static weights needed for body and heading text to stay
+ * within the mobile preload budget.
  */
-export const bangla = Anek_Bangla({
+export const bangla = Hind_Siliguri({
   variable: "--font-bangla",
   subsets: ["bengali"],
   weight: "400",
@@ -29,10 +13,10 @@ export const bangla = Anek_Bangla({
   preload: true,
 });
 
-export const banglaBold = Anek_Bangla({
-  variable: "--font-bangla-bold",
+export const banglaSemibold = Hind_Siliguri({
+  variable: "--font-bangla-semibold",
   subsets: ["bengali"],
-  weight: "700",
+  weight: "600",
   display: "swap",
   preload: true,
 });
