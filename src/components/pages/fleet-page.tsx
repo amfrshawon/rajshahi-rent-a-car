@@ -1,9 +1,10 @@
+import Link from "next/link";
 import { BookingCta } from "@/components/booking-cta";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { Photo } from "@/components/photo";
-import { route } from "@/config/routes";
+import { route, vehicleRoute } from "@/config/routes";
 import { FLEET } from "@/config/site";
 import { formatTaka, type Locale, t } from "@/lib/locale";
 import { fleetSchema } from "@/lib/schema";
@@ -32,7 +33,7 @@ export function FleetPage({ locale }: { locale: Locale }) {
         <div className="grid gap-8 md:grid-cols-3">
           {FLEET.map((v) => (
             <article key={v.slug}>
-              <div className="tile overflow-hidden">
+              <Link href={vehicleRoute(locale, v.slug)} className="tile block overflow-hidden">
                 <Photo
                   name={v.photo.name}
                   width={v.photo.width}
@@ -41,10 +42,14 @@ export function FleetPage({ locale }: { locale: Locale }) {
                   sizes="(min-width: 768px) 360px, 92vw"
                   className="aspect-[16/10] w-full object-cover"
                 />
-              </div>
+              </Link>
 
               <div className="mt-3 flex items-baseline justify-between gap-3">
-                <h2 className="text-xl font-bold">{v.name}</h2>
+                <h2 className="text-xl font-bold">
+                  <Link href={vehicleRoute(locale, v.slug)} className="hover:text-leaf inline-flex min-h-11 items-center">
+                    {v.name}
+                  </Link>
+                </h2>
                 <p className="text-leaf tnum text-xl font-bold whitespace-nowrap">
                   ৳{formatTaka(locale, v.pricePerDay)}
                   <span className="text-muted text-sm font-normal"> {t(locale, COPY.perDay)}</span>

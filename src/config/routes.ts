@@ -43,6 +43,23 @@ export const ROUTES = {
     ascii: "/airport-station-pickup/",
   },
 
+  // New landing pages — long-tail searches, content written from existing facts.
+  dhaka: {
+    bn: "/রাজশাহী-ঢাকা-গাড়ি-ভাড়া/",
+    en: "/en/rajshahi-dhaka-car-rental/",
+    ascii: "/rajshahi-dhaka-car-rental/",
+  },
+  microbus: {
+    bn: "/মাইক্রোবাস-ভাড়া-রাজশাহী/",
+    en: "/en/microbus-rental-rajshahi/",
+    ascii: "/microbus-rental-rajshahi/",
+  },
+  ambulanceRmch: {
+    bn: "/রাজশাহী-মেডিকেল-অ্যাম্বুলেন্স/",
+    en: "/en/ambulance-near-rajshahi-medical/",
+    ascii: "/ambulance-near-rajshahi-medical/",
+  },
+
   // Legacy — indexed, must not change.
   blog: { bn: "/blog/", en: "/en/blog/" },
   ambulance: { bn: "/ambulance-service/", en: "/en/ambulance-service/" },
@@ -54,4 +71,13 @@ export function route(locale: Locale, key: RouteKey): string {
   const def: RouteDef = ROUTES[key];
   if (locale === "en") return def.en;
   return process.env.NODE_ENV === "development" ? (def.ascii ?? def.bn) : def.bn;
+}
+
+/**
+ * Vehicle detail pages sit under the fleet route, so they move with the
+ * Bangla directory rename in scripts/localise-slugs.mts. The leaf stays ASCII
+ * on purpose: the car model is the same in both locales.
+ */
+export function vehicleRoute(locale: Locale, slug: string): string {
+  return `${route(locale, "fleet")}${slug}/`;
 }

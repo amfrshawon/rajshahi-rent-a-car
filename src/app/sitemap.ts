@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { ROUTES } from "@/config/routes";
-import { SITE } from "@/config/site";
+import { FLEET, SITE } from "@/config/site";
+import { vehicleRoute } from "@/config/routes";
 import { getAllPosts } from "@/lib/posts";
 
 /**
@@ -20,6 +21,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const entries: Entry[] = Object.values(ROUTES).map((r) => ({ bn: r.bn, en: r.en }));
   // Category and tag archives are noindex (thin), so they stay out of the sitemap.
+
+  for (const vehicle of FLEET) {
+    entries.push({ bn: vehicleRoute("bn", vehicle.slug), en: vehicleRoute("en", vehicle.slug) });
+  }
 
   for (const post of posts) {
     entries.push({

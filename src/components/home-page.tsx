@@ -9,7 +9,7 @@ import {
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { Photo } from "@/components/photo";
-import { route } from "@/config/routes";
+import { route, vehicleRoute } from "@/config/routes";
 import { FLEET, SITE } from "@/config/site";
 import { GOOGLE_RATING, ROUTE_BOARD, TRIP_TYPES } from "@/config/trips";
 import { listArticles } from "@/lib/content";
@@ -337,7 +337,11 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   />
                   <div className="p-4">
                     <div className="flex items-baseline justify-between gap-3">
-                      <h3 className="text-lg font-bold">{v.name}</h3>
+                      <h3 className="text-lg font-bold">
+                        <Link href={vehicleRoute(locale, v.slug)} className="hover:text-leaf">
+                          {v.name}
+                        </Link>
+                      </h3>
                       <p className="tnum text-leaf text-xl font-bold whitespace-nowrap">
                         ৳{formatTaka(locale, v.pricePerDay)}
                         <span className="text-muted text-sm font-normal">/{locale === "bn" ? "দিন" : "day"}</span>
