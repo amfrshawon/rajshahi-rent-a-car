@@ -20,10 +20,18 @@ export const bookingSchema = z.object({
     .max(120),
   phone,
   vehicle: z.string().trim().max(80).optional().or(z.literal("")),
+  tripType: z.enum(["city", "outside", "airport", "wedding"]).optional().or(z.literal("")),
   // z.string().date() checks calendar validity, not just the shape — a
   // regex-passing impossible date like 2026-99-99 would otherwise reach MySQL
   // strict mode and surface as a 500 instead of a field error.
   date: z.string().trim().date().optional().or(z.literal("")),
+  time: z
+    .string()
+    .trim()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, { message: "সঠিক সময় দিন / Enter a valid time" })
+    .optional()
+    .or(z.literal("")),
+  pickup: z.string().trim().max(200).optional().or(z.literal("")),
   destination: z.string().trim().max(200).optional().or(z.literal("")),
   notes: z.string().trim().max(2000).optional().or(z.literal("")),
   locale: z.enum(["bn", "en"]).default("bn"),

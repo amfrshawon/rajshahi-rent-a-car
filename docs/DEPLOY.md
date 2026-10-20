@@ -4,8 +4,18 @@ The site is a static export built in GitHub Actions and uploaded over FTPS to
 ExonHost shared hosting (LiteSpeed, Dhaka/BDIX). Nothing is built on the
 server — the plan has 700 MB of RAM, and `next build` needs far more.
 
-Staging deploys automatically on every push to `main`. **Production is manual
-only**, because the apex still serves the live WordPress site until cutover.
+## Branch model
+
+| Branch | Deploys to | How |
+| --- | --- | --- |
+| `dev` | **dev.rajshahirentacar.bd** (environment `dev`) | Automatically on every push |
+| `main` | **rajshahirentacar.bd** (environment `production`) | Manual: Actions → *Build and deploy* → Run workflow → `production` |
+
+Working flow: push to `dev`, check the dev site, then open a PR
+`dev` → `main` (or merge directly) when a change is ready for the live
+domain. Production can be made automatic after cutover by adding
+`refs/heads/main` to the deploy job's push condition. A GitHub Pages preview
+of `dev` also builds on every push (noindex).
 
 ---
 
@@ -29,47 +39,51 @@ account can reach everything, so it must never go into CI.
 Note the exact **Login** value cPanel shows — it is usually
 `something@rajshahirentacar.bd`, not the short username.
 
-## 2. Create the staging subdomain
+## 2. Create the dev subdomain
 
-cPanel → **Domains → Domains → Create A New Domain**, e.g.
-`new.rajshahirentacar.bd`.
+cPanel → **Domains → Domains → Create A New Domain**: `dev.rajshahirentacar.bd`.
 
-Copy the **document root** cPanel displays. It is typically
-`/home/rajshah5/new.rajshahirentacar.bd` or `/public_html/new`. Use whatever
-it actually shows — that value becomes `FTP_REMOTE_DIR`, relative to the FTP
+Copy the **document root** cPanel displays (typically
+`/home/rajshah5/dev.rajshahirentacar.bd` or `/public_html/dev`). That value
+becomes the `dev` environment's `FTP_REMOTE_DIR`, relative to the FTP
 account's own home.
 
 ## 3. Configure GitHub
 
 Repository → **Settings**.
 
-**Secrets and variables → Actions → Secrets** — add:
+**Secrets and variables → Actions → Secrets** (repository level) — add:
 
 | Secret | Value |
 | --- | --- |
 | `FTP_HOST` | `bd25.exonhost.com` |
 | `FTP_USERNAME` | the dedicated FTP login from step 1 |
 | `FTP_PASSWORD` | that account's password |
-| `FTP_REMOTE_DIR` | document root from step 2, with a trailing slash |
 
-You paste these into GitHub directly. They are write-only once saved and are
-masked in logs.
+**Environment secrets** — the two environments (`dev`, `production`) already
+exist. Open each under **Environments** and add an environment-scoped secret
+`FTP_REMOTE_DIR`:
 
-**Secrets and variables → Actions → Variables** — add:
+| Environment | `FTP_REMOTE_DIR` |
+| --- | --- |
+| `dev` | the dev subdomain's document root, with a trailing slash |
+| `production` | `public_html/` (after cutover; before then leave it unset so a mistaken run cannot touch the live domain) |
+
+On `production`, also add yourself as a **required reviewer** — a deploy to
+the live domain should always need an explicit approval.
+
+**Variables** — add the master switch, set last:
 
 | Variable | Value |
 | --- | --- |
-| `FTP_CONFIGURED` | `true` — set this last. The deploy job is skipped until it is, so pushes do not fail while the secrets are still missing. |
-
-**Environments** — create `staging` and `production`. On `production`, add
-yourself as a **required reviewer** so a deploy to the live domain always
-needs an explicit approval.
+| `FTP_CONFIGURED` | `true` — the deploy job is skipped until this exists, so pushes do not fail while the secrets are still missing. |
 
 ## 4. Deploy
 
-- **Staging** — push to `main`, or run the workflow with target `staging`.
-- **Production** — Actions → *Build and deploy* → **Run workflow** →
-  target `production`. Only do this after cutover (§6).
+- **Dev** — push to `dev`. Live at `https://dev.rajshahirentacar.bd` within
+  a couple of minutes, plus the GitHub Pages preview.
+- **Production** — merge `dev` → `main`, then Actions → *Build and deploy* →
+  **Run workflow** → target `production`. Only do this after cutover (§6).
 
 The build fails, and nothing uploads, if any of the 27 legacy URLs is missing
 from the export. That check is `scripts/verify-legacy-routes.mts`.

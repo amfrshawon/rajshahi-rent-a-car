@@ -1,5 +1,5 @@
 import { BookingForm } from "@/components/booking-form";
-import { ClockIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { WhatsAppIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { SITE } from "@/config/site";
@@ -37,6 +37,15 @@ const PAYMENTS = [
   { bn: "ব্যাংক ট্রান্সফার", en: "Bank transfer" },
 ] as const;
 
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="border-border grid gap-1 border-b py-3 sm:grid-cols-[8rem_1fr] sm:gap-4">
+      <dt className="text-muted text-sm">{label}</dt>
+      <dd className="min-w-0">{children}</dd>
+    </div>
+  );
+}
+
 export function ContactPage({ locale }: { locale: Locale }) {
   const waText = encodeURIComponent(
     t(locale, {
@@ -49,58 +58,33 @@ export function ContactPage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       <PageHeader title={t(locale, COPY.title)} lead={t(locale, COPY.lead)} />
 
-      <section className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 md:px-6 lg:grid-cols-[1fr_1.3fr] md:py-16">
-        <div className="reveal">
-          <div className="grid gap-4">
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <PhoneIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.phone)}</p>
-                <p className="mt-0.5 text-lg font-semibold">
-                  <a href={`tel:${SITE.phone}`} className="hover:text-brand">
-                    {t(locale, SITE.phoneDisplay)}
-                  </a>
-                </p>
-              </div>
-            </div>
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <MapPinIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.office)}</p>
-                <p className="mt-0.5">{t(locale, SITE.address)}</p>
-              </div>
-            </div>
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <ClockIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.hours)}</p>
-                <p className="mt-0.5">{t(locale, SITE.hours)}</p>
-              </div>
-            </div>
-            <div className="border-border bg-surface-raised shadow-card flex items-start gap-4 rounded-2xl border p-5">
-              <span className="bg-brand-soft text-brand mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl">
-                <WhatsAppIcon className="size-5" />
-              </span>
-              <div>
-                <p className="text-muted text-sm">{t(locale, COPY.email)}</p>
-                <p className="mt-0.5">
-                  <a href={`mailto:${SITE.email}`} className="hover:text-brand">
-                    {SITE.email}
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
+      <section className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[1fr_1.3fr]">
+        <div>
+          {/* Real contact methods as a plain list — no icon cards. */}
+          <dl className="border-border border-t">
+            <Row label={t(locale, COPY.phone)}>
+              <a
+                href={`tel:${SITE.phone}`}
+                className="text-leaf inline-flex min-h-11 items-center font-semibold"
+              >
+                {t(locale, SITE.phoneDisplay)}
+              </a>
+            </Row>
+            <Row label={t(locale, COPY.email)}>
+              <a
+                href={`mailto:${SITE.email}`}
+                className="text-leaf inline-flex min-h-11 items-center"
+              >
+                {SITE.email}
+              </a>
+            </Row>
+            <Row label={t(locale, COPY.office)}>{t(locale, SITE.address)}</Row>
+            <Row label={t(locale, COPY.hours)}>{t(locale, SITE.hours)}</Row>
+          </dl>
 
           <a
             href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-            className="press bg-whatsapp mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-6 font-semibold text-black transition hover:brightness-95"
+            className="btn-whatsapp mt-4 w-full"
           >
             <WhatsAppIcon className="size-5" />
             {t(locale, COPY.whatsapp)}
@@ -108,27 +92,21 @@ export function ContactPage({ locale }: { locale: Locale }) {
 
           {/*
             Bangla QR is the Bangladesh Bank unified QR standard — one merchant
-            QR payable from every MFS app and banking app. Channels are named
-            as chips so a customer recognises their own without reading.
+            QR payable from every MFS app and banking app.
           */}
-          <div className="border-border bg-surface-raised shadow-card mt-4 rounded-2xl border p-5">
-            <h2 className="font-semibold">{t(locale, COPY.payTitle)}</h2>
+          <div className="border-border mt-6 border-t pt-4">
+            <h2 className="font-bold">{t(locale, COPY.payTitle)}</h2>
             <p className="text-muted mt-1 text-sm">{t(locale, COPY.payLead)}</p>
-            <ul className="mt-3 flex flex-wrap gap-2">
+            <ul className="text-muted mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm">
               {PAYMENTS.map((p) => (
-                <li
-                  key={p.en}
-                  className="border-border bg-surface text-muted rounded-full border px-3 py-1 text-sm"
-                >
-                  {t(locale, p)}
-                </li>
+                <li key={p.en}>{t(locale, p)}</li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div id="booking" className="reveal scroll-mt-24">
-          <h2 className="text-2xl font-semibold">{t(locale, COPY.formTitle)}</h2>
+        <div id="booking" className="scroll-mt-24">
+          <h2 className="text-2xl font-bold">{t(locale, COPY.formTitle)}</h2>
           <p className="text-muted mt-1">{t(locale, COPY.formLead)}</p>
           <div className="mt-5">
             <BookingForm locale={locale} />

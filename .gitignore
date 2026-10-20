@@ -48,4 +48,6 @@ next-env.d.ts
 *.local
 /api/node_modules/
 /api/.env
+!api/.env.example
 .zcode/
+.commandcode/

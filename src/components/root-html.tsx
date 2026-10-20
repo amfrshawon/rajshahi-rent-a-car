@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { bangla, latin } from "@/lib/fonts";
+import { IS_PREVIEW } from "@/config/deploy";
+import { bangla, banglaSemibold, latin } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
 
 /**
@@ -18,9 +19,15 @@ export function RootHtml({ locale, children }: { locale: Locale; children: React
   return (
     <html
       lang={locale}
-      className={`${bangla.variable} ${latin.variable} h-full antialiased`}
+      className={`${bangla.variable} ${banglaSemibold.variable} ${latin.variable} h-full antialiased`}
     >
       <body className="bg-bg text-fg flex min-h-full flex-col pb-action-bar md:pb-0">
+        {/* Non-production copies (dev site, Pages preview) carry a noindex
+            meta.robots in addition to the disallow-all robots.txt — the meta
+            keeps working even where .htaccess headers are unavailable. */}
+        {IS_PREVIEW ? (
+          <meta name="robots" content="noindex, nofollow" />
+        ) : null}
         {children}
       </body>
     </html>
