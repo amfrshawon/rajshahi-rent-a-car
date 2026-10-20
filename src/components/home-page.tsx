@@ -36,11 +36,6 @@ const COPY = {
 
   routesKicker: { bn: "ড্রাইভারসহ, ভাড়া আগেই জানা", en: "With a driver, fare agreed first" },
   routesTitle: { bn: "রাজশাহী থেকে", en: "From Rajshahi" },
-  routesNote: {
-    bn: "গন্তব্যে চাপ দিলে বুকিং খুলবে, গন্তব্য আগেই বসানো থাকবে।",
-    en: "Tap a destination to open booking with it filled in.",
-  },
-  verify: { bn: "যাচাই করুন", en: "to confirm" },
   minutes: { bn: "মিনিট", en: "min" },
   km: { bn: "কিমি", en: "km" },
 
@@ -176,27 +171,27 @@ export async function HomePage({ locale }: { locale: Locale }) {
     <PageShell locale={locale}>
       {/* ------------------------------------------------------------- Hero */}
       <section className="bg-brand text-brand-fg">
-        <div className="mx-auto w-full max-w-6xl px-4 pt-6 pb-5 md:px-6 md:pt-12 md:pb-10">
+        <div className="mx-auto w-full max-w-6xl px-4 pt-4 pb-4 md:px-6 md:pt-10 md:pb-8">
           {/*
             Phones read top to bottom: promise, then "where to?", then the car.
             The photo used to sit between the buttons and the trip tiles, which
             pushed the tiles below the fold on 360x640 and 320x568 screens. On
             desktop the photo returns to the right-hand column.
           */}
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-7">
+          <div className="grid gap-4 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-6">
             <div className="lg:col-start-1 lg:row-start-1 lg:self-center">
               <p className="flex items-center gap-2 text-sm font-semibold opacity-90">
                 <span aria-hidden="true" className="bg-pin size-2 rounded-full" />
                 {t(locale, COPY.eyebrow)}
               </p>
-              <h1 className="mt-3 text-4xl leading-tight font-bold md:text-6xl">
+              <h1 className="mt-2 text-4xl leading-tight font-bold md:text-6xl">
                 {t(locale, COPY.headline)}
               </h1>
-              <p className="mt-3 max-w-md text-base opacity-90 md:text-lg">
+              <p className="mt-2 max-w-md text-base opacity-90 md:text-lg">
                 {t(locale, COPY.support)}
               </p>
 
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div className="mt-4 flex flex-wrap gap-2.5">
                 <a
                   href={`tel:${SITE.phone}`}
                   className="bg-bg text-leaf inline-flex min-h-12 items-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98]"
@@ -218,12 +213,12 @@ export async function HomePage({ locale }: { locale: Locale }) {
             <div className="lg:col-span-2 lg:row-start-2">
               <h2 className="sr-only">{t(locale, COPY.whereTitle)}</h2>
               <p className="text-lg font-bold">{t(locale, COPY.whereTitle)}</p>
-              <ul className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+              <ul className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-4">
                 {TRIP_TYPES.map((trip) => (
                   <li key={trip.key}>
                     <a
                       href={`${contact}?trip=${trip.key}#booking`}
-                      className="bg-bg text-fg flex h-full flex-col gap-1 rounded-lg p-3 transition active:scale-[0.98]"
+                      className="bg-bg text-fg flex h-full flex-col gap-0.5 rounded-lg p-2.5 transition active:scale-[0.98]"
                     >
                       <span className="font-semibold">{t(locale, trip.label)}</span>
                       <span className="text-muted text-[13px]">{t(locale, trip.note)}</span>
@@ -237,7 +232,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   would fail on the green panel. */}
               <a
                 href={`tel:${SITE.phone}`}
-                className="border-pin bg-bg text-pin mt-3 flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 font-semibold"
+                className="border-pin bg-bg text-pin mt-2 flex min-h-11 items-center justify-between gap-3 rounded-lg border px-3 py-2 font-semibold"
               >
                 <span className="flex items-center gap-2">
                   <AmbulanceIcon className="size-5" />
@@ -256,7 +251,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 alt={t(locale, COPY.heroAlt)}
                 sizes="(min-width: 1024px) 560px, 92vw"
                 priority
-                className="aspect-[16/10] w-full object-cover"
+                className="aspect-[16/9] w-full object-cover"
               />
               {GOOGLE_RATING.count >= 10 ? (
                 <span className="text-fg absolute bottom-3 left-3 rounded bg-white/95 px-2.5 py-1 text-[13px] font-semibold">
@@ -269,16 +264,16 @@ export async function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* -------------------------------------------------------- Route board */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+      <section className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10">
         <p className="eyebrow">{t(locale, COPY.routesKicker)}</p>
-        <h2 className="mt-1 text-3xl font-bold md:text-4xl">{t(locale, COPY.routesTitle)}</h2>
+        <h2 className="mt-1 text-2xl font-bold md:text-4xl">{t(locale, COPY.routesTitle)}</h2>
 
-        <ul className="mt-6 border-t border-border">
+        <ul className="mt-4 border-t border-border">
           {ROUTE_BOARD.map((r) => (
             <li key={r.to.en} className="border-border border-b">
               <a
                 href={`${contact}?destination=${encodeURIComponent(t(locale, r.to))}#booking`}
-                className="flex min-h-12 items-center gap-3 py-2.5 transition active:bg-surface"
+                className="flex min-h-11 items-center gap-3 py-2 transition active:bg-surface"
               >
                 <span aria-hidden="true" className="bg-pin size-2.5 shrink-0 rounded-full" />
                 <span className="min-w-0 flex-1">
@@ -301,16 +296,15 @@ export async function HomePage({ locale }: { locale: Locale }) {
             </li>
           ))}
         </ul>
-        <p className="text-muted mt-3 text-sm">{t(locale, COPY.routesNote)}</p>
-        <p className="text-muted mt-1 text-sm">{t(locale, COPY.fareLine)}</p>
+        <p className="text-muted mt-2 text-sm">{t(locale, COPY.fareLine)}</p>
       </section>
 
       {/* -------------------------------------------------------------- Fleet */}
       <section className="bg-surface border-border border-y">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+        <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.fleetTitle)}</h2>
+              <h2 className="text-2xl font-bold md:text-4xl">{t(locale, COPY.fleetTitle)}</h2>
               <p className="text-muted mt-1">{t(locale, COPY.fleetLead)}</p>
             </div>
             <Link href={route(locale, "fleet")} className="text-leaf inline-flex min-h-11 items-center gap-1.5 font-semibold">
@@ -322,7 +316,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <ul
             tabIndex={0}
             aria-label={t(locale, COPY.fleetTitle)}
-            className="no-scrollbar -mx-4 mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0"
+            className="no-scrollbar -mx-4 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0"
           >
             {FLEET.map((v) => (
               <li key={v.slug} className="w-[80%] shrink-0 snap-start sm:w-auto">
@@ -333,9 +327,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
                     height={v.photo.height}
                     alt={v.name}
                     sizes="(min-width: 640px) 340px, 80vw"
-                    className="aspect-[16/10] w-full object-cover"
+                    className="aspect-[16/9] w-full object-cover"
                   />
-                  <div className="p-4">
+                  <div className="p-3">
                     <div className="flex items-baseline justify-between gap-3">
                       <h3 className="text-lg font-bold">
                         <Link href={vehicleRoute(locale, v.slug)} className="hover:text-leaf inline-flex min-h-11 items-center">
@@ -352,7 +346,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                     </p>
                     <a
                       href={`${contact}?trip=city&vehicle=${encodeURIComponent(v.name)}#booking`}
-                      className="btn-primary mt-4 w-full"
+                      className="btn-primary mt-3 w-full"
                     >
                       {t(locale, COPY.book)}
                     </a>
@@ -366,13 +360,13 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
 
       {/* --------------------------------------------------- Our standard */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
-        <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.standardTitle)}</h2>
-        <p className="text-muted mt-1">{t(locale, COPY.standardLead)}</p>
-        <ul className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10">
+        <h2 className="text-2xl font-bold md:text-4xl">{t(locale, COPY.standardTitle)}</h2>
+        <p className="text-muted mt-1 text-sm">{t(locale, COPY.standardLead)}</p>
+        <ul className="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
           {COPY.standard.map((item) => (
-            <li key={item.en} className="flex items-start gap-2.5">
-              <ChecklistIcon className="text-leaf mt-0.5 size-5 shrink-0" />
+            <li key={item.en} className="flex items-start gap-2">
+              <ChecklistIcon className="text-leaf mt-0.5 size-4 shrink-0" />
               <span className="font-medium">{t(locale, item)}</span>
             </li>
           ))}
@@ -381,27 +375,27 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
       {/* ------------------------------------------------------- Packages */}
       <section className="bg-surface border-border border-y">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+        <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.packagesTitle)}</h2>
-              <p className="text-muted mt-1">{t(locale, COPY.packagesLead)}</p>
+              <h2 className="text-2xl font-bold md:text-4xl">{t(locale, COPY.packagesTitle)}</h2>
+              <p className="text-muted mt-1 text-sm">{t(locale, COPY.packagesLead)}</p>
             </div>
           </div>
-          <ul className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <ul className="mt-3 grid grid-cols-2 gap-x-4 border-t border-border">
             {COPY.packages.map((pkg, i) => {
               const href = [route(locale, "pricing"), route(locale, "pickup"), route(locale, "wedding"), route(locale, "tours")][i];
               return (
-                <li key={pkg.en}>
+                <li key={pkg.en} className="border-border border-b">
                   <Link
                     href={href}
-                    className="tile flex h-full flex-col justify-between gap-3 p-4"
+                    className="flex min-h-11 items-center justify-between gap-2 py-1.5"
                   >
-                    <span>
-                      <span className="block font-bold">{t(locale, { bn: pkg.bn, en: pkg.en })}</span>
-                      <span className="text-muted mt-1 block text-sm">{t(locale, pkg.note)}</span>
+                    <span className="min-w-0">
+                      <span className="block font-semibold">{t(locale, { bn: pkg.bn, en: pkg.en })}</span>
+                      <span className="text-muted block text-[13px]">{t(locale, pkg.note)}</span>
                     </span>
-                    <ArrowRightIcon className="text-leaf size-4" />
+                    <ArrowRightIcon className="text-leaf size-4 shrink-0" />
                   </Link>
                 </li>
               );
@@ -411,22 +405,22 @@ export async function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* ------------------------------------------------------ Ambulance */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
-        <div className="border-pin/30 bg-pin/5 rounded-xl border p-5 md:p-7">
-          <div className="flex flex-wrap items-start justify-between gap-5">
+      <section className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10">
+        <div className="border-pin/30 bg-pin/5 rounded-lg border p-4 md:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="max-w-xl">
-              <h2 className="flex items-center gap-2 text-2xl font-bold md:text-3xl">
-                <AmbulanceIcon className="text-pin size-6 shrink-0" />
+              <h2 className="flex items-center gap-2 text-xl font-bold md:text-2xl">
+                <AmbulanceIcon className="text-pin size-5 shrink-0" />
                 {t(locale, COPY.ambulanceTitle)}
               </h2>
-              <p className="text-muted mt-2">{t(locale, COPY.ambulanceLead)}</p>
+              <p className="text-muted mt-1 text-sm">{t(locale, COPY.ambulanceLead)}</p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <a href={`tel:${SITE.phone}`} className="bg-pin inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-6 font-semibold text-white transition active:scale-[0.98]">
-                <PhoneIcon className="size-5" />
+            <div className="flex flex-wrap items-center gap-2">
+              <a href={`tel:${SITE.phone}`} className="bg-pin inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white transition active:scale-[0.98]">
+                <PhoneIcon className="size-4" />
                 {t(locale, SITE.phoneDisplay)}
               </a>
-              <Link href={route(locale, "ambulance")} className="border-border inline-flex min-h-12 items-center gap-2 rounded-lg border px-5 font-semibold">
+              <Link href={route(locale, "ambulance")} className="border-border inline-flex min-h-11 items-center gap-2 rounded-lg border px-4 text-sm font-semibold">
                 {t(locale, COPY.ambulanceCta)}
               </Link>
             </div>
@@ -436,31 +430,31 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
       {/* ------------------------------------------------------ Corporate */}
       <section className="bg-brand text-brand-fg">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-5 px-4 py-8 md:px-6 md:py-10">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 md:px-6 md:py-8">
           <div className="max-w-2xl">
-            <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.corporateTitle)}</h2>
-            <p className="mt-2 opacity-90">{t(locale, COPY.corporateLead)}</p>
+            <h2 className="text-xl font-bold md:text-2xl">{t(locale, COPY.corporateTitle)}</h2>
+            <p className="mt-1 text-sm opacity-90">{t(locale, COPY.corporateLead)}</p>
           </div>
           <a
             href={`tel:${SITE.phone}`}
-            className="bg-bg text-leaf inline-flex min-h-12 items-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98]"
+            className="bg-bg text-leaf inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition active:scale-[0.98]"
           >
-            <PhoneIcon className="size-5" />
+            <PhoneIcon className="size-4" />
             {t(locale, COPY.corporateCta)}
           </a>
         </div>
       </section>
 
       {/* -------------------------------------------------- How booking works */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
-        <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.stepsTitle)}</h2>
-        <ol className="mt-6 grid gap-4 sm:grid-cols-3">
+      <section className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10">
+        <h2 className="text-2xl font-bold md:text-4xl">{t(locale, COPY.stepsTitle)}</h2>
+        <ol className="mt-3 grid gap-1.5 sm:grid-cols-3 sm:gap-3">
           {COPY.steps.map((step, index) => (
-            <li key={step.en} className="flex items-start gap-3">
-              <span className="tnum bg-brand text-brand-fg flex size-8 shrink-0 items-center justify-center rounded-full font-bold">
+            <li key={step.en} className="flex items-center gap-2">
+              <span className="tnum bg-brand text-brand-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-bold">
                 {localeDigits(locale, index + 1)}
               </span>
-              <p className="pt-1 font-medium">{t(locale, step)}</p>
+              <p className="text-sm leading-snug font-medium">{t(locale, step)}</p>
             </li>
           ))}
         </ol>
@@ -469,23 +463,23 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
       {/* ------------------------------------------------------------- FAQ */}
       <section className="bg-surface border-border border-y">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-14">
+        <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10">
           <div className="flex flex-wrap items-end justify-between gap-3">
-            <h2 className="text-3xl font-bold md:text-4xl">{t(locale, COPY.faqTitle)}</h2>
+            <h2 className="text-2xl font-bold md:text-4xl">{t(locale, COPY.faqTitle)}</h2>
             <Link href={route(locale, "faq")} className="text-leaf inline-flex min-h-11 items-center gap-1.5 font-semibold">
               {t(locale, COPY.faqAll)}
               <ArrowRightIcon className="size-4" />
             </Link>
           </div>
-          <ul className="mt-4 divide-y divide-border border-border border-y">
+          <ul className="mt-3 divide-y divide-border border-border border-y">
             {HOMEPAGE_FAQS.map((item) => (
-              <li key={item.q.en} className="py-3">
+              <li key={item.q.en} className="py-1">
                 <details className="group">
                   <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 font-semibold">
                     {t(locale, item.q)}
                     <span aria-hidden="true" className="text-leaf text-xl leading-none group-open:rotate-45">+</span>
                   </summary>
-                  <p className="text-muted mt-1 max-w-3xl">{t(locale, item.a)}</p>
+                  <p className="text-muted mt-1 max-w-3xl text-sm">{t(locale, item.a)}</p>
                 </details>
               </li>
             ))}
@@ -494,30 +488,39 @@ export async function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* ------------------------------------------------------- Service area */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-7 md:px-6 md:py-10">
-        <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.areaTitle)}</h2>
-        <p className="text-muted mt-1">{t(locale, COPY.areaLead)}</p>
-        <ul className="mt-4 flex flex-wrap gap-2">
+      <section className="mx-auto w-full max-w-6xl px-4 py-5 md:px-6 md:py-8">
+        <h2 className="text-xl font-bold md:text-3xl">{t(locale, COPY.areaTitle)}</h2>
+        <p className="text-muted mt-1 text-sm">{t(locale, COPY.areaLead)}</p>
+        <ul className="mt-3 flex flex-wrap gap-1.5">
           {COPY.area[locale].map((area) => (
-            <li key={area} className="border-border bg-surface rounded-full border px-3.5 py-1.5 text-sm font-medium">
+            <li key={area} className="border-border bg-surface rounded-full border px-3 py-1 text-[13px] font-medium">
               {area}
             </li>
           ))}
         </ul>
+        {articles.length > 0 ? (
+          <Link
+            href={route(locale, "blog")}
+            className="text-leaf mt-2 inline-flex min-h-11 items-center gap-1.5 font-semibold"
+          >
+            {t(locale, COPY.guides)}
+            <ArrowRightIcon className="size-4" />
+          </Link>
+        ) : null}
       </section>
       <JsonLd data={faqSchema} />
 
       {/* ------------------------------------------------------- Closing strip */}
       <section className="bg-brand text-brand-fg">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-5 px-4 py-10 md:px-6 md:py-12">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-7 md:px-6 md:py-9">
           <div>
-            <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.ctaTitle)}</h2>
-            <p className="mt-2 max-w-xl opacity-90">{t(locale, COPY.ctaLead)}</p>
+            <h2 className="text-xl font-bold md:text-3xl">{t(locale, COPY.ctaTitle)}</h2>
+            <p className="mt-1 max-w-xl text-sm opacity-90">{t(locale, COPY.ctaLead)}</p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             <a
               href={`tel:${SITE.phone}`}
-              className="bg-bg text-leaf inline-flex min-h-12 items-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98]"
+              className="bg-bg text-leaf inline-flex min-h-11 items-center gap-2 rounded-lg px-5 text-sm font-semibold transition active:scale-[0.98]"
             >
               <PhoneIcon className="size-5" />
               {t(locale, SITE.phoneDisplay)}
@@ -529,19 +532,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
           </div>
         </div>
       </section>
-
-      {/* Blog: one link, not a card grid. */}
-      {articles.length > 0 ? (
-        <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6">
-          <Link
-            href={route(locale, "blog")}
-            className="text-leaf inline-flex min-h-11 items-center gap-1.5 font-semibold"
-          >
-            {t(locale, COPY.guides)}
-            <ArrowRightIcon className="size-4" />
-          </Link>
-        </div>
-      ) : null}
     </PageShell>
   );
 }
