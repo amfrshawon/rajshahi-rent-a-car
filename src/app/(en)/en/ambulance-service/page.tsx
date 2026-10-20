@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { AmbulancePage } from "@/components/pages/ambulance-page";
 
 export const metadata: Metadata = {
+  ...social("en", "/en/ambulance-service/"),
   title: "Ambulance Service in Rajshahi — 24 Hours",
   description: "24-hour emergency ambulance service in Rajshahi. Based at Rajshahi Medical, with patient transport across Rajshahi and nationwide.",
   alternates: {

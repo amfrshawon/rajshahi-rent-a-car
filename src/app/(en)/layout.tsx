@@ -4,9 +4,11 @@ import "../globals.css";
 import { RootHtml } from "@/components/root-html";
 import { IS_PREVIEW } from "@/config/deploy";
 import { SITE } from "@/config/site";
+import { social } from "@/lib/metadata";
 
 /** English root layout. Every English route lives under /en/. */
 export const metadata: Metadata = {
+  ...social("en", "/en/"),
   metadataBase: new URL(SITE.url),
   title: {
     default: "Rajshahi Rent A Car — Car Rental with Driver, 24/7",

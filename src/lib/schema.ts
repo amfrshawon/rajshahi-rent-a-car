@@ -10,7 +10,7 @@
  * Add these once confirmed (docs/PLAN.md §12).
  */
 
-import { FLEET, SITE } from "@/config/site";
+import { FLEET, PROFILE, SITE } from "@/config/site";
 import type { Article } from "@/lib/content";
 import { type Locale, localePath, t } from "@/lib/locale";
 
@@ -45,7 +45,9 @@ export function businessSchema(locale: Locale) {
     // Google's local-business logo comes from these two fields.
     logo,
     image: logo,
-    sameAs: [GOOGLE_BUSINESS_PROFILE],
+    sameAs: [GOOGLE_BUSINESS_PROFILE, ...(PROFILE.facebookUrl ? [PROFILE.facebookUrl] : [])],
+    ...(PROFILE.geo ? { geo: { "@type": "GeoCoordinates", ...PROFILE.geo } } : {}),
+    ...(PROFILE.mapUrl ? { hasMap: PROFILE.mapUrl } : {}),
     address: {
       "@type": "PostalAddress",
       streetAddress: locale === "bn" ? "কাদিরগঞ্জ, গ্রেটার রোড" : "Kadirgonj Greater Road",

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { AmbulancePage } from "@/components/pages/ambulance-page";
 
 export const metadata: Metadata = {
+  ...social("bn", "/ambulance-service/"),
   title: "অ্যাম্বুলেন্স সার্ভিস — রাজশাহী, ২৪ ঘণ্টা",
   description: "রাজশাহীতে ২৪ ঘণ্টা জরুরি অ্যাম্বুলেন্স সেবা। রাজশাহী মেডিকেল এলাকায় অবস্থান, রাজশাহী ও সারা দেশে রোগী পরিবহন।",
   alternates: {

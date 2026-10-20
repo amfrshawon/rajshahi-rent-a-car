@@ -71,3 +71,13 @@ export const FLEET: readonly Vehicle[] = [
     photo: { name: "toyota-hiace", width: 700, height: 525 },
   },
 ];
+
+/**
+ * Facts the owner has not supplied yet. Schema emits each field only when set;
+ * never fill these with guesses (docs/design/OWNER-TODO.md).
+ */
+export const PROFILE: {
+  geo?: { latitude: number; longitude: number };
+  mapUrl?: string;
+  facebookUrl?: string;
+} = {};

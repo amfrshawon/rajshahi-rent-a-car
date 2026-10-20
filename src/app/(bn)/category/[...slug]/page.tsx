@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social, trimDescription } from "@/lib/metadata";
 import { notFound } from "next/navigation";
 import { ArchivePage } from "@/components/archive-page";
 import { getCategoryArchive, getCategoryPathSegments } from "@/lib/content";
+import { ARCHIVE_DESC } from "@/lib/metadata";
 import { localePath } from "@/lib/locale";
 
 type Params = { params: Promise<{ slug: string[] }> };
@@ -18,7 +20,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const path = `/category/${slug.join("/")}/`;
   return {
     title: archive.title,
-    description: archive.description || undefined,
+    description: trimDescription(archive.description || ARCHIVE_DESC["bn"](archive.title, archive.articles.length)),
+    robots: { index: false, follow: true },
+    ...social("bn", localePath("bn", path)),
     alternates: {
       canonical: localePath("bn", path),
       languages: { bn: path, en: `/en${path}`, "x-default": path },

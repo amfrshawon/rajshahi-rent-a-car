@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { FaqPage } from "@/components/pages/faq-page";
 
 export const metadata: Metadata = {
+  ...social("en", "/en/faq/"),
   title: "FAQ",
   description: "Common questions about car rental, rates, drivers and our ambulance service.",
   alternates: {

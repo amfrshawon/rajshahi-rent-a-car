@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { FleetPage } from "@/components/pages/fleet-page";
 
 export const metadata: Metadata = {
+  ...social("bn", "/গাড়িবহর/"),
   title: "আমাদের গাড়িবহর",
   description: "রাজশাহীতে ভাড়ার জন্য প্রিমিও, এক্সিও ও হাইএস — এসি গাড়ি, অভিজ্ঞ ড্রাইভারসহ।",
   alternates: {

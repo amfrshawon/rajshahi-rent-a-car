@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
-import { getCategoryPathSegments, getTagSlugs } from "@/lib/content";
 import { getAllPosts } from "@/lib/posts";
 
 /**
@@ -18,10 +17,9 @@ type Entry = { bn: string; en: string; lastModified?: string };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getAllPosts();
-  const categorySegments = await getCategoryPathSegments();
-  const tagSlugs = await getTagSlugs();
 
   const entries: Entry[] = Object.values(ROUTES).map((r) => ({ bn: r.bn, en: r.en }));
+  // Category and tag archives are noindex (thin), so they stay out of the sitemap.
 
   for (const post of posts) {
     entries.push({
@@ -30,25 +28,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: `${post.modifiedGmt}Z`,
     });
   }
-  for (const segments of categorySegments) {
-    const path = `/category/${segments.join("/")}/`;
-    entries.push({ bn: path, en: `/en${path}` });
-  }
-  for (const slug of tagSlugs) {
-    const path = `/tag/${slug}/`;
-    entries.push({ bn: path, en: `/en${path}` });
-  }
 
-  return entries.map(({ bn, en, lastModified }) => {
+  return entries.flatMap(({ bn, en, lastModified }) => {
     const bnUrl = new URL(bn, SITE.url).toString();
     const enUrl = new URL(en, SITE.url).toString();
+    const alternates = { languages: { bn: bnUrl, en: enUrl, "x-default": bnUrl } };
+    const isHome = bn === "/";
 
-    return {
-      url: bnUrl,
+    return [bnUrl, enUrl].map((url) => ({
+      url,
       lastModified,
-      changeFrequency: bn === "/" ? ("weekly" as const) : ("monthly" as const),
-      priority: bn === "/" ? 1 : 0.7,
-      alternates: { languages: { bn: bnUrl, en: enUrl, "x-default": bnUrl } },
-    };
+      changeFrequency: isHome ? ("weekly" as const) : ("monthly" as const),
+      priority: isHome ? 1 : 0.7,
+      alternates,
+    }));
   });
 }

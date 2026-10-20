@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { PickupPage } from "@/components/pages/pickup-page";
 import { ROUTES } from "@/config/routes";
 
 export const metadata: Metadata = {
+  ...social("bn", ROUTES.pickup.bn),
   title: "এয়ারপোর্ট ও স্টেশন পিকআপ-ড্রপ — রাজশাহী",
   description:
     "শাহ মখদুম বিমানবন্দর ও রাজশাহী রেলওয়ে স্টেশনে ২৪ ঘণ্টা পিকআপ-ড্রপ। ফ্লাইট/ট্রেনের সময় জানান — নির্ধারিত সময়ে ড্রাইভার হাজির।",

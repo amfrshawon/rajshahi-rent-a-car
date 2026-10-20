@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { WeddingCarPage } from "@/components/pages/wedding-car-page";
 
 export const metadata: Metadata = {
+  ...social("en", "/en/wedding-car/"),
   title: "Wedding Car Hire",
   description: "A sedan for the couple and a microbus for guests — wedding car hire in Rajshahi.",
   alternates: {

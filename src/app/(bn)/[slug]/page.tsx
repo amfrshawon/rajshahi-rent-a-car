@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { social, trimDescription } from "@/lib/metadata";
 import { notFound } from "next/navigation";
 import { ArticlePage } from "@/components/article-page";
 import { getArticle } from "@/lib/content";
@@ -22,7 +23,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
   return {
     title: article.title,
-    description: article.excerpt,
+    description: trimDescription(article.excerpt),
+    ...social("bn", localePath("bn", `/${slug}/`), "article"),
     alternates: {
       canonical: localePath("bn", `/${slug}/`),
       languages: {

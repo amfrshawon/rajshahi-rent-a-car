@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { AboutPage } from "@/components/pages/about-page";
 
 export const metadata: Metadata = {
+  ...social("en", "/en/about/"),
   title: "About Us",
   description: "A rent-a-car service based in Kadirgonj, Rajshahi, serving locals and visitors alike.",
   alternates: {

@@ -4,12 +4,14 @@ import "../globals.css";
 import { RootHtml } from "@/components/root-html";
 import { IS_PREVIEW } from "@/config/deploy";
 import { SITE } from "@/config/site";
+import { social } from "@/lib/metadata";
 
 /**
  * Bangla root layout. Bangla is the default locale and is served at the
  * original WordPress URLs — see src/config/legacy-routes.ts.
  */
 export const metadata: Metadata = {
+  ...social("bn", "/"),
   metadataBase: new URL(SITE.url),
   title: {
     default: "রাজশাহী রেন্ট এ কার — ড্রাইভারসহ গাড়ি ভাড়া, ২৪/৭",

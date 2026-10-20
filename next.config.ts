@@ -15,6 +15,10 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   output: "export",
+
+  // Two root layouts (bn/en) leave no shared layout for the 404, so the
+  // branded 404 is a standalone page. See src/app/global-not-found.tsx.
+  experimental: { globalNotFound: true },
   trailingSlash: true,
 
   // No Node image optimizer exists in an export; responsive images are

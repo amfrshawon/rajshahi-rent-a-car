@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { FleetPage } from "@/components/pages/fleet-page";
 
 export const metadata: Metadata = {
+  ...social("en", "/en/fleet/"),
   title: "Our Fleet",
   description: "Premio, Axio and Hiace available for hire in Rajshahi — air-conditioned, with a driver.",
   alternates: {

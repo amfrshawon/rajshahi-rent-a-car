@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { WeddingCarPage } from "@/components/pages/wedding-car-page";
 
 export const metadata: Metadata = {
+  ...social("bn", "/বিয়ের-গাড়ি/"),
   title: "বিয়ের জন্য গাড়ি ভাড়া",
   description: "বর-কনের প্রাইভেট কার ও অতিথিদের মাইক্রোবাস — রাজশাহীতে বিয়ের গাড়ি ভাড়া।",
   alternates: {

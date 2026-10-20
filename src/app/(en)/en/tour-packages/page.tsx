@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { TourPackagesPage } from "@/components/pages/tour-packages-page";
 
 export const metadata: Metadata = {
+  ...social("en", "/en/tour-packages/"),
   title: "Tour Packages",
   description: "Day trips to Puthia, Bagha, Natore and around Rajshahi, with vehicle and driver.",
   alternates: {

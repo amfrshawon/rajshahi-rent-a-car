@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { TourPackagesPage } from "@/components/pages/tour-packages-page";
 
 export const metadata: Metadata = {
+  ...social("bn", "/ট্যুর-প্যাকেজ/"),
   title: "ট্যুর প্যাকেজ",
   description: "পুঠিয়া, বাঘা, নাটোরসহ রাজশাহীর আশেপাশে একদিনের ভ্রমণ, গাড়ি ও ড্রাইভারসহ।",
   alternates: {

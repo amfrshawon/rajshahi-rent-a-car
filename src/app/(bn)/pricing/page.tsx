@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { social } from "@/lib/metadata";
 import { PricingPage } from "@/components/pages/pricing-page";
 
 export const metadata: Metadata = {
+  ...social("bn", "/ভাড়ার-তালিকা/"),
   title: "ভাড়ার তালিকা",
   description: "রাজশাহীতে গাড়ি ভাড়ার দৈনিক রেট। ফিক্সড রেট, কোনো লুকানো খরচ নেই।",
   alternates: {
