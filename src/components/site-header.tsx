@@ -52,7 +52,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             <Link
               key={item.key}
               href={route(locale, item.key)}
-              className="text-muted hover:text-fg inline-flex min-h-11 items-center text-sm font-medium whitespace-nowrap"
+              className="text-muted hover:text-fg inline-flex min-h-11 min-w-11 items-center justify-center text-sm font-medium whitespace-nowrap"
             >
               {t(locale, item.label)}
             </Link>
