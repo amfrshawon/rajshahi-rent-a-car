@@ -10,7 +10,8 @@
     "build:only": "next build",
     "verify:routes": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-legacy-routes.mts",
     "images": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-images.mts",
-    "slugs": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/localise-slugs.mts"
+    "slugs": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/localise-slugs.mts",
+    "verify:blog": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-blog.mts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

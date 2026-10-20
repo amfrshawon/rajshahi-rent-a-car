@@ -57,6 +57,19 @@ export async function listArticles(locale: Locale): Promise<ArticleSummary[]> {
   return (await getAllPosts()).map((p) => resolveSummary(locale, p));
 }
 
+/** Prefer shared topics; evergreen guides fill any remaining slots. */
+export async function relatedArticles(locale: Locale, slug: string): Promise<ArticleSummary[]> {
+  const posts = await getAllPosts();
+  const current = posts.find((post) => post.slug === slug);
+  const score = (post: Post) =>
+    post.categories.filter((category) => current?.categories.includes(category)).length;
+  return posts
+    .filter((post) => post.slug !== slug && !post.categories.includes("promotions-offers"))
+    .sort((a, b) => score(b) - score(a) || b.date.localeCompare(a.date))
+    .slice(0, 3)
+    .map((post) => resolveSummary(locale, post));
+}
+
 export async function getArticle(
   locale: Locale,
   slug: string,

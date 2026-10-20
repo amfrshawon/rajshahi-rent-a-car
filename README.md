@@ -69,3 +69,5 @@ Posts live in `src/content/posts/<slug>/`. `index.md` is the English article;
 `bn.md` carries the Bangla title/excerpt (and body, once translated) in its
 frontmatter. Category and tag names live in `src/content/taxonomy.ts`. Commit
 the change, push, and CI rebuilds the site — there is no CMS to log into.
+
+Blog design and maintenance: [design handoff](docs/design/BLOG-HANDOFF.md).
