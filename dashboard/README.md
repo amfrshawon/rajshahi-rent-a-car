@@ -3,8 +3,13 @@
 A dispatch system for Rajshahi Rent A Car. The owner takes calls, partner
 drivers take the trips, and the owner earns a fixed commission per trip.
 
-**Status (2026-10-20): planning only.** No code exists yet. The detailed
-design review (screens, edge cases) happens at the start of Milestone 1.
+**Status (2026-11-24): M0 scaffold in place.** `dashboard/app` (Next.js 16 +
+Supabase client) and `dashboard/supabase` (CLI config; migrations from M1)
+exist, with a separate `dashboard-ci.yml` workflow. Still open for M0: the
+Supabase project itself (owner's account, Singapore region, `pg_cron` on)
+and a local `supabase db reset` (needs Docker). The detailed design review
+(screens, edge cases) happens at the start of Milestone 1 — see
+[06-ambulance-build-plan.md](docs/06-ambulance-build-plan.md).
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.
@@ -48,8 +53,8 @@ not depend on the dashboard.
 ```
 dashboard/
   docs/          ← these planning documents
-  app/           ← Next.js web app: owner dashboard + driver screens   (M1)
-  supabase/      ← database migrations, policies, edge functions       (M1)
+  app/           ← Next.js web app: owner dashboard + driver screens   (scaffolded in M0; screens from M1)
+  supabase/      ← database migrations, policies, edge functions       (config in M0; schema from M1)
   driver-android/← Capacitor wrapper of the driver screens             (M5)
   call-logger/   ← small Android app for the owner's phone             (M6)
 ```

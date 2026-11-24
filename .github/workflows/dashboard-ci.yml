@@ -1,0 +1,45 @@
+name: Dashboard CI
+
+# The dispatch dashboard (dashboard/) is built separately from the static
+# website: the website workflows ignore dashboard/** paths. This job lints,
+# type-checks and builds the app. Database tests run here too once the M1
+# migrations exist in dashboard/supabase/migrations.
+
+on:
+  push:
+    branches: [dashboard-plan, dev, main]
+    paths: ["dashboard/**"]
+  pull_request:
+    paths: ["dashboard/**"]
+
+concurrency:
+  group: dashboard-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard/app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: dashboard/app/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npx tsc --noEmit
+
+      # The M0 check page is force-dynamic, so no Supabase environment is
+      # needed at build time.
+      - run: npm run build
+
+      # M1: database tests run here (supabase db start + pgTAP) once
+      # migrations exist in dashboard/supabase/migrations.

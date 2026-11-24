@@ -8,6 +8,7 @@ name: Build and deploy
 on:
   push:
     branches: [dev, main]
+    paths-ignore: ["dashboard/**"]
   workflow_dispatch:
     inputs:
       target:
