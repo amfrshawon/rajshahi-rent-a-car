@@ -4,6 +4,7 @@ import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { Photo } from "@/components/photo";
+import { WhenNear } from "@/components/when-near";
 import { route } from "@/config/routes";
 import { FLEET } from "@/config/site";
 import { bookingHref } from "@/config/trips";
@@ -34,15 +35,30 @@ export function FleetPage({ locale }: { locale: Locale }) {
       <ul className="wrap grid gap-16 pb-20 md:gap-24 md:pb-28">
         {FLEET.map((v, i) => (
           <li key={v.slug} className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
-            <Photo
-              name={v.photo.name}
-              width={v.photo.width}
-              height={v.photo.height}
-              alt={v.name}
-              sizes="(min-width: 768px) 50vw, 100vw"
-              priority={i === 0}
-              className="aspect-[3/2] h-auto w-full rounded-lg object-cover"
-            />
+            {/* The first car is the page's largest image and loads at once;
+                the others wait until they near the screen. */}
+            {i === 0 ? (
+              <Photo
+                name={v.photo.name}
+                width={v.photo.width}
+                height={v.photo.height}
+                alt={v.name}
+                sizes="(min-width: 768px) 50vw, 100vw"
+                priority
+                className="aspect-[3/2] h-auto w-full rounded-lg object-cover"
+              />
+            ) : (
+              <WhenNear className="bg-line aspect-[3/2] overflow-hidden rounded-lg">
+                <Photo
+                  name={v.photo.name}
+                  width={v.photo.width}
+                  height={v.photo.height}
+                  alt={v.name}
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="h-full w-full object-cover"
+                />
+              </WhenNear>
+            )}
             <div>
               <h2 className="text-section">{v.name}</h2>
               <p className="mt-3">

@@ -4,6 +4,7 @@ import { SectionHead } from "@/components/page-header";
 import { PageShell } from "@/components/page-shell";
 import { Photo } from "@/components/photo";
 import { Placeholder } from "@/components/placeholder";
+import { WhenNear } from "@/components/when-near";
 import { route } from "@/config/routes";
 import { FLEET, SITE } from "@/config/site";
 import { ROUTE_BOARD, TRIPS, type TripKey, bookingHref } from "@/config/trips";
@@ -236,14 +237,9 @@ export function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* ------------------------------------------------------------ Fleet
-          Rendered only as it nears the screen, so its photos are not
-          fetched during the first paint, when they would compete with the
-          fonts. The reserved height is the section's real height on a
-          phone, so the page does not jump. */}
-      <section
-        aria-labelledby="fleet"
-        className="bg-mist section-y [contain-intrinsic-size:auto_660px] [content-visibility:auto]"
-      >
+          The photos load as they near the screen (WhenNear), so they are
+          not fetched during the first paint. */}
+      <section aria-labelledby="fleet" className="bg-mist section-y">
         <div className="wrap">
           <SectionHead
             id="fleet"
@@ -260,14 +256,16 @@ export function HomePage({ locale }: { locale: Locale }) {
           <ul className="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0">
             {FLEET.map((v) => (
               <li key={v.slug} className="w-[80%] shrink-0 snap-start sm:w-[45%] md:w-auto">
-                <Photo
-                  name={v.photo.name}
-                  width={v.photo.width}
-                  height={v.photo.height}
-                  alt={v.name}
-                  sizes="(min-width: 768px) 33vw, 80vw"
-                  className="aspect-[3/2] h-auto w-full rounded-lg object-cover"
-                />
+                <WhenNear className="bg-line aspect-[3/2] overflow-hidden rounded-lg">
+                  <Photo
+                    name={v.photo.name}
+                    width={v.photo.width}
+                    height={v.photo.height}
+                    alt={v.name}
+                    sizes="(min-width: 768px) 33vw, 80vw"
+                    className="h-full w-full object-cover"
+                  />
+                </WhenNear>
                 <h3 className="mt-4 text-xl md:text-2xl">{v.name}</h3>
                 <p className="text-ink-soft text-sm md:text-base">
                   {t(locale, v.type)} · {localeDigits(locale, v.seats)} {t(locale, COPY.seats)}
