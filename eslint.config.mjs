@@ -24,6 +24,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The dispatch dashboard is a separate Next app with its own lint and
+    // typecheck (dashboard-ci.yml).
+    "dashboard/**",
   ]),
 ]);
 
