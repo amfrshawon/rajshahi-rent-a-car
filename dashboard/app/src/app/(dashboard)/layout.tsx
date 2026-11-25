@@ -3,6 +3,7 @@ import { requireOwner } from "@/lib/auth";
 import { signOut } from "./actions";
 
 const NAV = [
+  { href: "/calls", label: "কল", en: "Calls" },
   { href: "/drivers", label: "ড্রাইভার", en: "Drivers" },
   { href: "/fares", label: "ভাড়ার তালিকা", en: "Fares" },
   { href: "/settings", label: "সেটিংস", en: "Settings" },

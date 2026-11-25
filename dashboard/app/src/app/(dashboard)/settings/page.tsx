@@ -38,7 +38,7 @@ export default async function SettingsPage({
 
   const { data: settings } = await supabase
     .from("settings")
-    .select("due_limit, accept_timeout_sec, start_timeout_sec, phone_hide_after_hours")
+    .select("due_limit, accept_timeout_sec, start_timeout_sec, phone_hide_after_hours, call_logger_key")
     .eq("id", true)
     .single();
 
@@ -81,6 +81,21 @@ export default async function SettingsPage({
             <span className="text-xs text-zinc-500">{field.hint}</span>
           </label>
         ))}
+        <label className="flex flex-col gap-1">
+          <span className="text-sm font-medium text-zinc-800">
+            কল লগার কী / Call-logger key
+          </span>
+          <input
+            name="call_logger_key"
+            required
+            minLength={16}
+            defaultValue={settings?.call_logger_key ?? ""}
+            className="w-full max-w-md rounded-lg border border-zinc-300 px-3 py-2 font-mono text-sm text-zinc-900"
+          />
+          <span className="text-xs text-zinc-500">
+            MacroDroid এই কী দিয়ে কল পাঠাবে। The phone sends this key with every call.
+          </span>
+        </label>
         <div>
           <button
             type="submit"

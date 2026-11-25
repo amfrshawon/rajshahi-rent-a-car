@@ -47,6 +47,25 @@ the whole system works in week one.
     duration and the system time. Set `direction` to `incoming` or `missed`
     per macro.
 
+**Wired up 2026-11-25** — the function is deployed and tested. Exact values:
+
+- URL: `https://jqxycbdvsednzhwhocub.supabase.co/functions/v1/ingest-call`
+- Header: `x-device-key: <the call-logger key from Settings → সেটিংস>`
+- Body (Content-Type `application/json`, "Call Ended" macro):
+
+  ```json
+  {"number":"{call_number}","direction":"incoming","started_at":"{system_time}","duration_sec":{call_duration},"event":"ended"}
+  ```
+
+- Body for the "Call Missed" macro: same, with `"direction":"missed"` and
+  `"duration_sec":0`.
+- Body for the future ringing pop-up: add `"event":"ringing"` (stored only for
+  the pop-up, not as a call row).
+
+MacroDroid's magic-text names differ slightly between versions; pick them from
+the variable picker rather than typing them by hand. The function answers
+`{"ok":true}` on success, `{"error":"bad_key"}` (403) if the key is wrong.
+
 **Limits:** no ringing pop-up, no offline queue (a call made with no data
 connection is lost), and some phones stop MacroDroid in the background.
 

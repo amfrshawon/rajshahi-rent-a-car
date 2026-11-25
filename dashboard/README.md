@@ -3,13 +3,14 @@
 A dispatch system for Rajshahi Rent A Car. The owner takes calls, partner
 drivers take the trips, and the owner earns a fixed commission per trip.
 
-**Status (2026-11-25): M1 owner screens in place.** Supabase project live
-(Singapore); schema, RLS and the acceptance tests applied and passing;
-owner login (email + password); Drivers screen (add, approve, suspend,
-document photos), Fares screen (bands + preset places) and Settings screen,
-all in Bangla + English, verified in a real browser (`npm run smoke`).
-Real fare amounts from the owner are still pending — the seeded bands are
-marked "set these". Next: M2, the call inbox.
+**Status (2026-11-25): M2 call inbox done.** Owner screens (login, Drivers,
+Fares, Settings) verified in a real browser. The Calls inbox shows every
+call live over Realtime (missed calls flagged and sorted first, caller trip
+history, No-trip reasons, manual calls). The `ingest-call` Edge Function is
+deployed and tested (device key, Zod validation, number normalisation,
+duplicate-safe). Owner side: install MacroDroid and paste the key — steps
+with exact values are in [05-call-logging.md](docs/05-call-logging.md). Real
+fare amounts still pending. Next: M3, trips and dispatch.
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.
