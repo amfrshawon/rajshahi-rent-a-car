@@ -1,315 +1,251 @@
-import {
-  AmbulanceIcon,
-  BoltIcon,
-  ChecklistIcon,
-  ClockIcon,
-  MapPinIcon,
-  PhoneIcon,
-  ShieldIcon,
-  WhatsAppIcon,
-} from "@/components/icons";
+import Image from "next/image";
+import { ClockIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
+import { asset } from "@/config/deploy";
 import { SITE } from "@/config/site";
 import { type Locale, localeDigits, t } from "@/lib/locale";
 
-/*
- * Facts here come from the owner's Google Business Profile ("Rajshahi
- * Ambulance Service", Rajshahi 6200, open 24 hours, 5.0 from 2 reviews, based
- * at Rajshahi Medical) and from the claims already published on the existing
- * page: advanced life support equipment, trained medical professionals,
- * nationwide coverage, a response-time commitment, licensed and insured.
- *
- * The response-time figure is the owner's own published commitment, carried
- * over verbatim. Nothing medical is asserted beyond what they already state.
- *
- * The 5.0 rating is shown visually and credited to Google, but deliberately
- * NOT emitted as aggregateRating markup: self-serving review markup about your
- * own business breaks Google's structured-data guidelines.
- */
-
-const COPY = {
-  eyebrow: { bn: "২৪ ঘণ্টা জরুরি সেবা", en: "24-hour emergency service" },
-  title: { bn: "রাজশাহী অ্যাম্বুলেন্স সার্ভিস", en: "Rajshahi Ambulance Service" },
-  lead: {
-    bn: "জরুরি মুহূর্তে দ্রুত ও নির্ভরযোগ্য অ্যাম্বুলেন্স। রাজশাহী মেডিকেল এলাকায় অবস্থান — রাজশাহী শহর থেকে সারা দেশে রোগী পরিবহন।",
-    en: "Fast, dependable emergency transport. Based at Rajshahi Medical, serving Rajshahi city and the whole country.",
-  },
-  callNow: { bn: "এখনই কল করুন", en: "Call now" },
-  callAria: {
-    bn: "জরুরি অ্যাম্বুলেন্সের জন্য কল করুন",
-    en: "Call for an emergency ambulance",
-  },
-  whatsapp: { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" },
-  alwaysOpen: { bn: "সবসময় খোলা", en: "Always open" },
-  responseTime: { bn: "১৫ মিনিটের মধ্যে", en: "Under 15 minutes" },
-  responseLabel: { bn: "সাড়া দেওয়ার সময়", en: "Response time" },
-  nationwide: { bn: "সারা দেশে", en: "Nationwide" },
-  nationwideLabel: { bn: "রোগী পরিবহন", en: "Patient transport" },
-  provideTitle: { bn: "আমরা যা দিই", en: "What we provide" },
-  callReadyTitle: { bn: "কল করার সময় যা বলবেন", en: "What to tell us when you call" },
-  callReadyLead: {
-    bn: "এই তথ্যগুলো হাতে থাকলে অ্যাম্বুলেন্স পাঠাতে সবচেয়ে কম সময় লাগে।",
-    en: "Having these ready gets an ambulance moving in the shortest time.",
-  },
-  coverageTitle: { bn: "কোথায় কোথায় সেবা", en: "Where we serve" },
-  ratingTitle: { bn: "গ্রাহকদের রেটিং", en: "Customer rating" },
-  ratingBody: {
-    bn: "গুগল বিজনেস প্রোফাইলে ৫.০ রেটিং, ২টি রিভিউ।",
-    en: "Rated 5.0 on our Google Business Profile, from 2 reviews.",
-  },
-  viewOnGoogle: { bn: "গুগলে দেখুন", en: "View on Google" },
-  licensed: {
-    bn: "লাইসেন্সপ্রাপ্ত ও ইনস্যুরেন্স করা — রাজশাহী ও তার বাইরে সেবা",
-    en: "Licensed and insured — serving Rajshahi and beyond",
-  },
-  bottomTitle: { bn: "জরুরি প্রয়োজন?", en: "Need one now?" },
-  bottomLead: {
-    bn: "দিন হোক বা রাত, সরাসরি কল করুন। লাইন সবসময় খোলা।",
-    en: "Day or night, call directly. The line is always open.",
-  },
-} as const;
-
-const PROVIDE = [
-  {
-    Icon: AmbulanceIcon,
-    title: { bn: "অ্যাডভান্সড লাইফ সাপোর্ট", en: "Advanced life support" },
-    body: {
-      bn: "জরুরি চিকিৎসার সরঞ্জামসহ সজ্জিত অ্যাম্বুলেন্স।",
-      en: "Ambulances equipped with advanced life support equipment.",
-    },
-  },
-  {
-    Icon: ShieldIcon,
-    title: { bn: "প্রশিক্ষিত মেডিকেল স্টাফ", en: "Trained medical staff" },
-    body: {
-      bn: "রোগী পরিবহনে অভিজ্ঞ ও প্রশিক্ষিত কর্মী সঙ্গে থাকেন।",
-      en: "Trained professionals accompany the patient in transit.",
-    },
-  },
-  {
-    Icon: BoltIcon,
-    title: { bn: "দ্রুত সাড়া", en: "Quick response" },
-    body: {
-      bn: "কল পাওয়ার পর দ্রুততম সময়ে অ্যাম্বুলেন্স রওনা দেয়।",
-      en: "An ambulance is dispatched as soon as the call comes in.",
-    },
-  },
-  {
-    Icon: MapPinIcon,
-    title: { bn: "রাজশাহী ও সারা দেশ", en: "Rajshahi and nationwide" },
-    body: {
-      bn: "শহরের ভেতরে, বিভাগজুড়ে এবং ঢাকাসহ যেকোনো জেলায়।",
-      en: "Within the city, across the division, and to any district including Dhaka.",
-    },
-  },
-] as const;
-
-const CALL_READY = [
-  {
-    bn: "রোগী এখন কোথায় আছেন — বাসা, হাসপাতাল বা নিকটবর্তী পরিচিত জায়গার নাম",
-    en: "Where the patient is now — home, hospital, or a nearby landmark",
-  },
-  {
-    bn: "রোগীর অবস্থা সংক্ষেপে — কী হয়েছে, বয়স, হাঁটতে পারছেন কি না",
-    en: "The patient's condition in brief — what happened, age, whether they can walk",
-  },
-  {
-    bn: "কোথায় নিয়ে যেতে হবে — হাসপাতালের নাম বা ঠিকানা",
-    en: "Where they need to go — hospital name or address",
-  },
-  {
-    bn: "আপনার যোগাযোগের নম্বর, যাতে ড্রাইভার সরাসরি কথা বলতে পারেন",
-    en: "Your contact number, so the driver can reach you directly",
-  },
-] as const;
-
-const COVERAGE = [
-  { bn: "রাজশাহী শহর ও রাজশাহী মেডিকেল এলাকা", en: "Rajshahi city and the Rajshahi Medical area" },
-  { bn: "রাজশাহী বিভাগের জেলাগুলো — নাটোর, চাঁপাইনবাবগঞ্জ, নওগাঁ", en: "Districts across Rajshahi division — Natore, Chapainawabganj, Naogaon" },
-  { bn: "ঢাকাসহ দেশের যেকোনো জেলায় দূরপাল্লার পরিবহন", en: "Long-distance transfers to Dhaka and any district in the country" },
-] as const;
-
 const GBP_URL = "https://share.google/52MSxbL6RCxlZ1huf";
 
-export function AmbulancePage({ locale }: { locale: Locale }) {
-  const waText = encodeURIComponent(
-    t(locale, {
-      bn: "জরুরি অ্যাম্বুলেন্স দরকার।",
-      en: "I need an emergency ambulance.",
-    }),
-  );
+const SERVICES = [
+  {
+    title: { bn: "এসি অ্যাম্বুলেন্স", en: "AC ambulance" },
+    body: { bn: "শীতাতপ নিয়ন্ত্রিত গাড়িতে রোগী পরিবহন। বুকিংয়ের সময় এসি গাড়ির প্রাপ্যতা জেনে নিন।", en: "Patient transport in an air-conditioned vehicle. Ask dispatch to confirm availability for your trip." },
+  },
+  {
+    title: { bn: "নন-এসি অ্যাম্বুলেন্স", en: "Non-AC ambulance" },
+    body: { bn: "এসি ছাড়া রোগী পরিবহনের ব্যবস্থা। গন্তব্য জানিয়ে গাড়ির প্রাপ্যতা ও ভাড়া জেনে নিন।", en: "Patient transport in a vehicle without air conditioning. Share your destination to confirm availability and fare." },
+  },
+  {
+    title: { bn: "অক্সিজেনসহ অ্যাম্বুলেন্স", en: "Ambulance with oxygen support" },
+    body: { bn: "যাত্রার জন্য অক্সিজেন দরকার হলে বুকিংয়ের সময় জানিয়ে অক্সিজেনসহ গাড়ির প্রাপ্যতা নিশ্চিত করুন।", en: "If oxygen is needed during the trip, tell dispatch when booking so they can confirm an equipped vehicle." },
+  },
+];
 
+const BOOKING_STEPS = [
+  { bn: "রোগীকে কোথা থেকে নিতে হবে, সেই ঠিকানা ও কাছের পরিচিত স্থান জানান।", en: "Give the pickup address and a nearby landmark." },
+  { bn: "গন্তব্যের ঠিকানা বা হাসপাতালের নাম এবং এসি, নন-এসি বা অক্সিজেনের প্রয়োজন জানান।", en: "Give the destination or receiving hospital and say if you need AC, non-AC, or oxygen support." },
+  { bn: "গাড়ির প্রাপ্যতা, পৌঁছানোর আনুমানিক সময় এবং মোট ভাড়া ফোনে নিশ্চিত করুন।", en: "Confirm the available vehicle, estimated pickup time, and total fare by phone." },
+];
+
+const FARE_DETAILS = [
+  { bn: "পিকআপের ঠিকানা ও গন্তব্য", en: "Pickup address and destination" },
+  { bn: "এসি বা নন-এসি গাড়ির প্রয়োজন", en: "AC or non-AC vehicle preference" },
+  { bn: "অক্সিজেন বা বিশেষ কোনো ব্যবস্থার প্রয়োজন", en: "Oxygen or other arrangements to confirm" },
+];
+
+const QUESTIONS = [
+  {
+    question: { bn: "রাজশাহী অ্যাম্বুলেন্স সার্ভিসের ফোন নম্বর কত?", en: "What is the Rajshahi Ambulance Service phone number?" },
+    answer: { bn: "বুকিং ও গাড়ির প্রাপ্যতা জানতে ০১৭১৪-৪২৪২৪১ নম্বরে ফোন করুন। ডিসপ্যাচ ২৪ ঘণ্টা চালু।", en: "Call 01714-424241 for booking and vehicle availability. Dispatch is available 24 hours a day." },
+  },
+  {
+    question: { bn: "রাজশাহী মেডিকেল এলাকা থেকে রোগী নেওয়া যাবে?", en: "Can you pick up a patient near Rajshahi Medical?" },
+    answer: { bn: "হ্যাঁ। রাজশাহী মেডিকেল এলাকাসহ শহরের বিভিন্ন ঠিকানা থেকে রোগী নেওয়ার ব্যবস্থা আছে। ফোনে হাসপাতালের নাম বা নির্দিষ্ট পিকআপ ঠিকানা জানান।", en: "Yes. We arrange pickup in the Rajshahi Medical area and elsewhere in the city. Give dispatch the hospital name or exact pickup address." },
+  },
+  {
+    question: { bn: "রাজশাহী থেকে ঢাকা অ্যাম্বুলেন্সের ভাড়া কীভাবে জানব?", en: "How do I get a fare for a Rajshahi to Dhaka ambulance?" },
+    answer: { bn: "পিকআপের ঠিকানা, ঢাকার গন্তব্য এবং কী ধরনের অ্যাম্বুলেন্স বা সরঞ্জাম দরকার, তা ফোনে জানান। বুকিংয়ের আগে মোট ভাড়া নিশ্চিত করুন।", en: "Call with your Rajshahi pickup point, Dhaka destination, and vehicle or equipment requirements. Confirm the total fare before booking." },
+  },
+  {
+    question: { bn: "রাজশাহী থেকে ঢাকার বাইরে রোগী পরিবহন করা হয়?", en: "Can I arrange a transfer from Rajshahi to a district other than Dhaka?" },
+    answer: { bn: "হ্যাঁ। রাজশাহী থেকে বাংলাদেশের যেকোনো জেলায় রোগী পরিবহনের ব্যবস্থা আছে। আপনার রুট ও গাড়ির প্রাপ্যতা ফোনে নিশ্চিত করুন।", en: "Yes. We arrange patient transfers from Rajshahi to destinations across Bangladesh. Call to confirm your route and vehicle availability." },
+  },
+  {
+    question: { bn: "অক্সিজেনসহ অ্যাম্বুলেন্স কীভাবে বুক করব?", en: "How do I book an ambulance with oxygen support?" },
+    answer: { bn: "বুকিংয়ের সময় অক্সিজেনের প্রয়োজন জানিয়ে দিন। আপনার যাত্রার জন্য অক্সিজেনসহ গাড়ি পাওয়া যাবে কি না, ডিসপ্যাচ থেকে নিশ্চিত করুন।", en: "Tell dispatch that you need oxygen support when you call. Ask them to confirm an equipped vehicle is available for your trip." },
+  },
+  {
+    question: { bn: "রাতে বা আগে থেকে অ্যাম্বুলেন্স বুক করা যাবে?", en: "Can I book at night or arrange a pickup in advance?" },
+    answer: { bn: "ডিসপ্যাচ ২৪ ঘণ্টা চালু। নির্দিষ্ট সময়ে গাড়ি দরকার হলে তারিখ, সময় ও পিকআপের ঠিকানা জানিয়ে আগে ফোন করুন।", en: "Dispatch is available 24/7. If you need a pickup at a specific time, call ahead with the date, time, and pickup address." },
+  },
+];
+
+const PAGE_LINKS = [
+  { id: "ambulance-options", label: { bn: "গাড়ির ধরন", en: "Vehicle options" } },
+  { id: "booking-details", label: { bn: "বুকিং", en: "How to book" } },
+  { id: "transfer-routes", label: { bn: "সেবার এলাকা", en: "Transfer routes" } },
+  { id: "fare-quote", label: { bn: "ভাড়া", en: "Fare quote" } },
+  { id: "booking-questions", label: { bn: "সাধারণ প্রশ্ন", en: "FAQ" } },
+];
+
+export function AmbulancePage({ locale }: { locale: Locale }) {
+  const bn = locale === "bn";
+  const name = "Rajshahi Ambulance Service";
+  const phone = t(locale, SITE.phoneDisplay);
+  const tel = `tel:${SITE.phone}`;
+  const url = new URL(bn ? "/ambulance-service/" : "/en/ambulance-service/", SITE.url).href;
   const schema = {
     "@context": "https://schema.org",
     "@type": "EmergencyService",
-    name: t(locale, COPY.title),
-    url: new URL(locale === "bn" ? "/ambulance-service/" : "/en/ambulance-service/", SITE.url).toString(),
+    "@id": new URL("/ambulance-service/#business", SITE.url).href,
+    name,
+    alternateName: "রাজশাহী অ্যাম্বুলেন্স সার্ভিস",
+    url: new URL("/ambulance-service/", SITE.url).href,
+    mainEntityOfPage: url,
     telephone: SITE.phone,
-    inLanguage: locale,
+    image: new URL("/images/ambulance/exterior.webp", SITE.url).href,
     address: {
       "@type": "PostalAddress",
-      addressLocality: locale === "bn" ? "রাজশাহী" : "Rajshahi",
+      streetAddress: "Rajshahi Medical",
+      addressLocality: "Rajshahi",
       postalCode: "6200",
       addressCountry: "BD",
     },
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-      opens: "00:00",
-      closes: "23:59",
-    },
-    areaServed: {
-      "@type": "AdministrativeArea",
-      name: locale === "bn" ? "রাজশাহী ও বাংলাদেশ" : "Rajshahi and Bangladesh",
-    },
+    openingHours: "Mo-Su 00:00-23:59",
+    areaServed: { "@type": "Country", name: "Bangladesh" },
     sameAs: [GBP_URL],
   };
 
   return (
     <PageShell locale={locale} mobileAction="ambulance">
       <JsonLd data={schema} />
-
-      {/* ------------------------------------------------- Emergency hero */}
       <section className="bg-emergency text-emergency-fg">
-        <div className="mx-auto w-full max-w-4xl px-4 py-10 md:py-14">
-          <p className="text-emergency-ink inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-semibold">
-            <span aria-hidden="true" className="bg-emergency size-2 rounded-full" />
-            {t(locale, COPY.eyebrow)}
-          </p>
+        <div className="mx-auto grid max-w-6xl items-center gap-7 px-4 py-8 md:grid-cols-[1fr_0.8fr] md:gap-12 md:px-6 md:py-14">
+          <div>
+            <p className="flex items-center gap-2 text-sm font-semibold">
+              <ClockIcon className="size-5" />
+              {bn ? "২৪ ঘণ্টা বুকিং ও ডিসপ্যাচ" : "24-hour booking and dispatch"}
+            </p>
+            <h1 className="mt-3 text-3xl font-bold md:text-5xl">{bn ? "রাজশাহী অ্যাম্বুলেন্স সার্ভিস" : "Ambulance Service in Rajshahi"}</h1>
+            <p className="mt-3 max-w-xl text-white md:text-lg">
+              {bn ? "রাজশাহী মেডিকেল এলাকা থেকে এসি, নন-এসি ও অক্সিজেনসহ অ্যাম্বুলেন্স বুক করুন। রাজশাহী শহরে এবং ঢাকাসহ সারা দেশে রোগী পরিবহন।" : "Book an AC, non-AC, or oxygen-equipped ambulance from the Rajshahi Medical area for local trips and patient transfers across Bangladesh, including Dhaka."}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href={tel} className="text-emergency-ink inline-flex min-h-14 items-center gap-3 rounded-lg bg-white px-5 text-xl font-bold">
+                <PhoneIcon className="size-6 shrink-0" />
+                <span className="sr-only">{bn ? "বুকিংয়ের জন্য কল করুন " : "Call to book "}</span>
+                <span dir="ltr">{phone}</span>
+              </a>
+              <a href={`https://wa.me/${SITE.whatsapp}`} className="inline-flex min-h-14 items-center gap-2 rounded-lg border border-white/70 px-4 font-semibold">
+                <WhatsAppIcon className="size-5" />
+                {bn ? "হোয়াটসঅ্যাপ" : "WhatsApp"}
+              </a>
+            </div>
+          </div>
+          <Image
+            src={asset("/images/ambulance/exterior.webp")}
+            alt={bn ? "রাজশাহী অ্যাম্বুলেন্স সার্ভিসের গাড়ির সামনের অংশ" : "Front view of a Rajshahi Ambulance Service vehicle"}
+            width={960}
+            height={1280}
+            preload
+            unoptimized
+            className="aspect-[16/9] w-full rounded-xl object-cover object-[center_66%] md:aspect-[5/4]"
+          />
+        </div>
+      </section>
 
-          <h1 className="mt-4 text-3xl font-bold md:text-5xl">{t(locale, COPY.title)}</h1>
-          <p className="mt-3 max-w-2xl text-white md:text-lg">{t(locale, COPY.lead)}</p>
+      <nav aria-label={bn ? "এই পৃষ্ঠার বিভাগসমূহ" : "On this page"} className="border-border bg-surface border-b">
+        <ul className="mx-auto flex max-w-6xl flex-wrap gap-x-5 px-4 py-1 md:px-6">
+          {PAGE_LINKS.map(({ id, label }) => (
+            <li key={id}>
+              <a href={`#${id}`} className="hover:text-emergency-ink inline-flex min-h-11 items-center text-sm font-semibold underline-offset-4 hover:underline">
+                {t(locale, label)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-          {/*
-            On an emergency page the phone number is the page. It is the first
-            interactive element, sized to be hit without aiming.
-          */}
-          <a
-            href={`tel:${SITE.phone}`}
-            aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
-            className="text-emergency-ink mt-7 flex min-h-16 w-full items-center justify-center gap-3 rounded-lg bg-white px-6 text-2xl font-bold transition active:scale-[0.98] md:text-3xl"
-          >
-            <PhoneIcon className="size-7 shrink-0" />
-            {t(locale, SITE.phoneDisplay)}
-          </a>
+      <section id="ambulance-options" className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-14">
+        <h2 className="text-2xl font-bold md:text-3xl">{bn ? "যে ধরনের অ্যাম্বুলেন্স বুক করতে পারবেন" : "Ambulance options"}</h2>
+        <ul className="mt-5 grid gap-3 md:grid-cols-3">
+          {SERVICES.map(({ title, body }) => (
+            <li key={title.en} className="border-border bg-surface rounded-xl border p-5">
+              <h3 className="text-lg font-bold">{t(locale, title)}</h3>
+              <p className="text-muted mt-2">{t(locale, body)}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-          <div className="mt-3 flex flex-wrap gap-3">
-            <a
-              href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
-              className="text-emergency-ink inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-white px-5 font-semibold transition active:scale-[0.98] sm:flex-none"
-            >
-              <WhatsAppIcon className="size-5" />
-              {t(locale, COPY.whatsapp)}
+      <section id="booking-details" className="border-border bg-surface border-y">
+        <div className="mx-auto grid max-w-6xl gap-7 px-4 py-10 md:grid-cols-2 md:items-center md:gap-12 md:px-6 md:py-14">
+          <div>
+            <h2 className="text-2xl font-bold md:text-3xl">{bn ? "অ্যাম্বুলেন্স বুক করতে যা জানাবেন" : "What to tell dispatch"}</h2>
+            <ol className="mt-5 space-y-4">
+              {BOOKING_STEPS.map((step, index) => (
+                <li key={step.en} className="flex items-start gap-3">
+                  <span aria-hidden="true" className="bg-emergency text-emergency-fg grid size-7 shrink-0 place-items-center rounded-full text-sm font-bold">{localeDigits(locale, index + 1)}</span>
+                  <span>{t(locale, step)}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <figure>
+            <Image
+              src={asset("/images/ambulance/interior.webp")}
+              alt={bn ? "অ্যাম্বুলেন্সের ভেতরে স্ট্রেচার ও পাশের আসন" : "Ambulance interior showing a stretcher and bench seating"}
+              width={960}
+              height={1280}
+              unoptimized
+              className="aspect-[4/3] w-full rounded-xl object-cover object-[center_64%]"
+            />
+            <figcaption className="text-muted mt-2 text-sm">{bn ? "আমাদের একটি অ্যাম্বুলেন্সের ভেতরের দৃশ্য" : "Inside one of our ambulances"}</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="transfer-routes" className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-14">
+        <h2 className="text-2xl font-bold md:text-3xl">{bn ? "হাসপাতাল ও দূরপাল্লায় রোগী পরিবহন" : "Hospital transfers and long-distance trips"}</h2>
+        <div className="mt-5 grid gap-6 md:grid-cols-2">
+          <div>
+            <h3 className="text-lg font-bold">{bn ? "রাজশাহীতে স্থানীয় ও হাসপাতাল ট্রান্সফার" : "Local and hospital-to-hospital transfers"}</h3>
+            <p className="text-muted mt-2">{bn ? "রাজশাহী মেডিকেল এলাকা ও শহরের অন্য ঠিকানা থেকে রোগী নেওয়া হয়। এক হাসপাতাল থেকে অন্য হাসপাতালে নিতে হলে দুটি হাসপাতালের নাম ফোনে জানান।" : "Arrange pickup near Rajshahi Medical or elsewhere in the city. For hospital-to-hospital transfers, tell dispatch the names of both hospitals."}</p>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold">{bn ? "রাজশাহী থেকে ঢাকা ও সারা বাংলাদেশ" : "Rajshahi to Dhaka and across Bangladesh"}</h3>
+            <p className="text-muted mt-2">{bn ? "রাজশাহী থেকে ঢাকাসহ বাংলাদেশের যেকোনো জেলায় রোগী পরিবহনের ব্যবস্থা আছে। যাত্রার আগে গাড়ি, প্রয়োজনীয় সরঞ্জাম ও মোট ভাড়া নিশ্চিত করুন।" : "We arrange patient transfers from Rajshahi to Dhaka and other destinations across Bangladesh. Confirm the vehicle, required equipment, and total fare before departure."}</p>
+          </div>
+        </div>
+        <a href={GBP_URL} className="text-emergency-ink mt-5 inline-flex min-h-11 items-center gap-2 font-semibold underline">
+          <MapPinIcon className="size-5 shrink-0" />
+          {bn ? "গুগল ম্যাপে রাজশাহী অ্যাম্বুলেন্স সার্ভিস দেখুন" : "Find Rajshahi Ambulance Service on Google Maps"}
+        </a>
+      </section>
+
+      <section id="fare-quote" className="mx-auto w-full max-w-6xl px-4 pb-10 md:px-6 md:pb-14">
+        <div className="border-border bg-surface grid gap-6 rounded-xl border p-5 md:grid-cols-2 md:gap-10 md:p-8">
+          <div>
+            <h2 className="text-2xl font-bold md:text-3xl">{bn ? "অ্যাম্বুলেন্সের ভাড়া জেনে নিন" : "Get an ambulance fare quote"}</h2>
+            <p className="text-muted mt-3">
+              {bn ? "রাজশাহী শহরের ভেতরে বা ঢাকাসহ দূরপাল্লার যাত্রার জন্য ফোনে মোট ভাড়া জেনে নিন। বুকিংয়ের আগে কী কী ভাড়ার মধ্যে অন্তর্ভুক্ত, তা নিশ্চিত করুন।" : "Call for a total quote for local trips or longer transfers, including Rajshahi to Dhaka. Before booking, ask what is included in the quoted fare."}
+            </p>
+          </div>
+          <div>
+            <h3 className="font-bold">{bn ? "ভাড়া জানতে যা বলবেন" : "Have these details ready"}</h3>
+            <ul className="text-muted mt-2 list-disc space-y-2 pl-5">
+              {FARE_DETAILS.map((detail) => <li key={detail.en}>{t(locale, detail)}</li>)}
+            </ul>
+            <a href={tel} className="text-emergency-ink mt-3 inline-flex min-h-11 items-center gap-2 font-semibold underline">
+              <PhoneIcon className="size-5 shrink-0" />
+              {bn ? "ভাড়া জানতে কল করুন" : "Call for a quote"}
             </a>
           </div>
         </div>
       </section>
 
-      {/* ------------------------------------------------------ Stats strip */}
-      <section className="border-border bg-surface border-b">
-        <div className="mx-auto grid w-full max-w-4xl grid-cols-3 divide-x divide-[color:var(--border)] px-4">
-          {[
-            { Icon: ClockIcon, value: "২৪/৭", valueEn: "24/7", label: COPY.alwaysOpen },
-            { Icon: BoltIcon, value: COPY.responseTime.bn, valueEn: COPY.responseTime.en, label: COPY.responseLabel },
-            { Icon: MapPinIcon, value: COPY.nationwide.bn, valueEn: COPY.nationwide.en, label: COPY.nationwideLabel },
-          ].map(({ Icon, value, valueEn, label }) => (
-            <div key={valueEn} className="flex flex-col items-center gap-1 px-2 py-5 text-center">
-              <Icon className="text-emergency-ink size-5" />
-              <span className="text-sm font-semibold sm:text-base">
-                {locale === "bn" ? value : valueEn}
-              </span>
-              <span className="text-muted text-[13px]">{t(locale, label)}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* --------------------------------------------------------- Provide */}
-      <section className="content-auto mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.provideTitle)}</h2>
-        <ul className="border-border mt-6 border-t">
-          {PROVIDE.map(({ title, body }) => (
-            <li key={title.en} className="border-border border-b py-4">
-              <h3 className="font-bold">{t(locale, title)}</h3>
-              <p className="text-muted mt-1 text-sm">{t(locale, body)}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* ------------------------------------------------------ Call ready */}
-      <section className="content-auto bg-surface border-border border-y">
-        <div className="mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-          <h2 className="flex items-center gap-3 text-2xl font-semibold md:text-3xl">
-            <ChecklistIcon className="text-emergency-ink size-7 shrink-0" />
-            {t(locale, COPY.callReadyTitle)}
-          </h2>
-          <p className="text-muted mt-2">{t(locale, COPY.callReadyLead)}</p>
-
-          <ol className="border-border mt-6 border-t">
-            {CALL_READY.map((item, index) => (
-              <li
-                key={item.en}
-                className="border-border flex items-start gap-3 border-b py-3"
-              >
-                <span className="bg-emergency text-emergency-fg flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-                  {localeDigits(locale, index + 1)}
-                </span>
-                <span className="pt-0.5">{t(locale, item)}</span>
-              </li>
+      <section id="booking-questions" className="border-border bg-surface border-y">
+        <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-14">
+          <h2 className="text-2xl font-bold md:text-3xl">{bn ? "অ্যাম্বুলেন্স বুকিংয়ের সাধারণ প্রশ্ন" : "Ambulance booking questions"}</h2>
+          <dl className="mt-5 grid gap-5 md:grid-cols-2">
+            {QUESTIONS.map(({ question, answer }) => (
+              <div key={question.en} className="border-border border-t pt-4">
+                <dt className="font-bold">{t(locale, question)}</dt>
+                <dd className="text-muted mt-2">{t(locale, answer)}</dd>
+              </div>
             ))}
-          </ol>
+          </dl>
         </div>
       </section>
 
-      {/* -------------------------------------------------------- Coverage */}
-      <section className="content-auto mx-auto w-full max-w-4xl px-4 py-12 md:py-16">
-        <h2 className="text-2xl font-semibold md:text-3xl">{t(locale, COPY.coverageTitle)}</h2>
-        <ul className="mt-6 space-y-3">
-          {COVERAGE.map((c) => (
-            <li key={c.en} className="flex items-start gap-3">
-              <MapPinIcon className="text-emergency-ink mt-0.5 size-5 shrink-0" />
-              <span>{t(locale, c)}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="border-border mt-8 border-t pt-4">
-          <h3 className="font-bold">{t(locale, COPY.ratingTitle)}</h3>
-          <p className="mt-1 flex items-center gap-2">
-            <span aria-hidden="true" className="text-leaf">★★★★★</span>
-            <span className="text-muted text-sm">{t(locale, COPY.ratingBody)}</span>
-          </p>
-          <a
-            href={GBP_URL}
-            rel="noopener"
-            className="text-leaf mt-2 inline-flex min-h-11 items-center font-semibold hover:underline"
-          >
-            {t(locale, COPY.viewOnGoogle)} →
-          </a>
-        </div>
-
-        <p className="text-muted mt-6 flex items-center gap-2 text-sm">
-          <ShieldIcon className="size-4 shrink-0" />
-          {t(locale, COPY.licensed)}
-        </p>
-      </section>
-
-      {/* -------------------------------------------------------- Last CTA */}
-      <section className="bg-emergency text-emergency-fg">
-        <div className="mx-auto w-full max-w-4xl px-4 py-12 text-center">
-          <h2 className="text-2xl font-bold md:text-3xl">{t(locale, COPY.bottomTitle)}</h2>
-          <p className="mt-2 text-white">{t(locale, COPY.bottomLead)}</p>
-          <a
-            href={`tel:${SITE.phone}`}
-            aria-label={`${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.callAria)}`}
-            className="text-emergency-ink mt-6 inline-flex min-h-14 items-center justify-center gap-3 rounded-lg bg-white px-8 text-xl font-bold transition active:scale-[0.98]"
-          >
-            <PhoneIcon className="size-6" />
-            {t(locale, SITE.phoneDisplay)}
-          </a>
-        </div>
+      <section className="bg-emergency text-emergency-fg px-4 py-9 text-center">
+        <h2 className="text-2xl font-bold">{bn ? "গাড়ির প্রাপ্যতা ও ভাড়া জানতে কল করুন" : "Call to confirm availability and fare"}</h2>
+        <a href={tel} className="text-emergency-ink mt-4 inline-flex min-h-14 items-center gap-3 rounded-lg bg-white px-6 text-xl font-bold">
+          <PhoneIcon className="size-6" />
+          <span dir="ltr">{phone}</span>
+        </a>
       </section>
     </PageShell>
   );

@@ -4,8 +4,8 @@ import { AmbulancePage } from "@/components/pages/ambulance-page";
 
 export const metadata: Metadata = {
   ...social("en", "/en/ambulance-service/"),
-  title: "Ambulance Service in Rajshahi — 24 Hours",
-  description: "24-hour emergency ambulance service in Rajshahi. Based at Rajshahi Medical, with patient transport across Rajshahi and nationwide.",
+  title: "Ambulance Service in Rajshahi — 24/7 Booking",
+  description: "Call 01714-424241 for 24/7 ambulance booking in Rajshahi. AC, non-AC, oxygen support, hospital transfers, and trips from Rajshahi to Dhaka and across Bangladesh.",
   alternates: {
     canonical: "/en/ambulance-service/",
     languages: {

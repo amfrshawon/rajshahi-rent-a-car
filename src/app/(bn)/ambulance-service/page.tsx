@@ -4,8 +4,8 @@ import { AmbulancePage } from "@/components/pages/ambulance-page";
 
 export const metadata: Metadata = {
   ...social("bn", "/ambulance-service/"),
-  title: "অ্যাম্বুলেন্স সার্ভিস — রাজশাহী, ২৪ ঘণ্টা",
-  description: "রাজশাহীতে ২৪ ঘণ্টা জরুরি অ্যাম্বুলেন্স সেবা। রাজশাহী মেডিকেল এলাকায় অবস্থান, রাজশাহী ও সারা দেশে রোগী পরিবহন।",
+  title: "রাজশাহী অ্যাম্বুলেন্স সার্ভিস — ২৪ ঘণ্টা বুকিং",
+  description: "রাজশাহী মেডিকেল এলাকা থেকে এসি, নন-এসি ও অক্সিজেনসহ অ্যাম্বুলেন্স। রাজশাহী থেকে ঢাকা ও সারা দেশে রোগী পরিবহন। ২৪ ঘণ্টা বুকিং ০১৭১৪-৪২৪২৪১।",
   alternates: {
     canonical: "/ambulance-service/",
     languages: {
