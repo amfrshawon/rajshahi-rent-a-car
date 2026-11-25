@@ -3,14 +3,15 @@
 A dispatch system for Rajshahi Rent A Car. The owner takes calls, partner
 drivers take the trips, and the owner earns a fixed commission per trip.
 
-**Status (2026-11-25): M2 call inbox done.** Owner screens (login, Drivers,
-Fares, Settings) verified in a real browser. The Calls inbox shows every
-call live over Realtime (missed calls flagged and sorted first, caller trip
-history, No-trip reasons, manual calls). The `ingest-call` Edge Function is
-deployed and tested (device key, Zod validation, number normalisation,
-duplicate-safe). Owner side: install MacroDroid and paste the key — steps
-with exact values are in [05-call-logging.md](docs/05-call-logging.md). Real
-fare amounts still pending. Next: M3, trips and dispatch.
+**Status (2026-11-25): M3 dispatch done.** Trips are created from the calls
+inbox or blank, dispatched to every eligible driver, and walked through the
+board (Dispatching → Accepted → On the way → Arrived → On board → Done).
+Driver web screens in Bangla with the duty switch, accept, status flow and
+arrival location. The first-to-accept race is proven (10 parallel accepts →
+exactly 1 winner, 9 already_taken), `pg_cron` timeouts run every 15 s, and
+every state change lands in `trip_events`. A full end-to-end browser test
+(owner dispatches → driver completes → board shows done) is `npm run
+smoke:trip`. Next: M4, commission and money.
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.

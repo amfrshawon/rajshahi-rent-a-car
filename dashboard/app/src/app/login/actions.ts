@@ -10,9 +10,15 @@ export async function signIn(formData: FormData) {
   if (!email || !password) redirect("/login?error=missing");
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if (error) redirect("/login?error=invalid");
+  if (error || !data.user) redirect("/login?error=invalid");
 
-  redirect("/drivers");
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .single();
+
+  redirect(profile?.role === "driver" ? "/driver" : "/drivers");
 }

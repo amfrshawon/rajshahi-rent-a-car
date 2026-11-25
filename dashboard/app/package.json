@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "smoke": "node scripts/smoke-m1.mjs",
-    "smoke:calls": "node scripts/smoke-m2.mjs"
+    "smoke:calls": "node scripts/smoke-m2.mjs",
+    "smoke:trip": "node scripts/smoke-m3.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
