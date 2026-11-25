@@ -104,6 +104,18 @@ export async function createTrip(formData: FormData) {
   });
   if (dispatchError) redirect("/trips?error=dispatch");
 
+  // Best-effort push to the eligible drivers' phones (M5). Without Firebase
+  // secrets the function answers firebase_not_configured and nothing happens.
+  const pushUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/dispatch-push`;
+  await fetch(pushUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""}`,
+    },
+    body: JSON.stringify({ trip_id: trip.id }),
+  }).catch(() => {});
+
   if (callId) {
     await supabase.from("calls").update({ handled: true }).eq("id", callId);
   }
