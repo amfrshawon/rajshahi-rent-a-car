@@ -4,6 +4,19 @@ This is a first draft, to be confirmed in the Milestone 1 design review.
 Postgres via Supabase. All times are `timestamptz`. Money is whole taka in
 `integer`.
 
+## Design review decisions — 2026-11-25
+
+- **Fare bands:** the owner supplies the real fares and commissions; until
+  then the seeded bands are placeholders with `note = 'set these'`.
+- **Preset places:** RMCH only at launch. Other destinations are typed
+  free-text with a km value; the preset list can grow without a schema change.
+- **Dashboard language:** Bangla with English where clearer.
+- **Driver documents:** NID number, license number and 2 vehicle photos,
+  stored in the private Storage bucket `driver-documents` (owner: all;
+  driver: own folder).
+- **Schema:** applied as `20261125010000_m1_core_schema.sql`; RLS acceptance
+  tests live in `supabase/tests/rls_test.sql` and run in `dashboard-ci.yml`.
+
 ## Tables
 
 ### `profiles`

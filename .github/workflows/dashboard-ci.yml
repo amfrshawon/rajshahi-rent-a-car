@@ -45,5 +45,23 @@ jobs:
       # needed at build time.
       - run: npm run build
 
-      # M1: database tests run here (supabase db start + pgTAP) once
-      # migrations exist in dashboard/supabase/migrations.
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Applies every migration, then supabase/seed.sql (local test users).
+      - run: supabase start
+        working-directory: dashboard
+
+      - run: supabase db reset
+        working-directory: dashboard
+
+      - run: supabase db lint --local
+        working-directory: dashboard
+
+      - run: docker exec -i supabase_db_dashboard psql -U postgres -d postgres -v ON_ERROR_STOP=1 < dashboard/supabase/tests/rls_test.sql
