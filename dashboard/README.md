@@ -3,14 +3,14 @@
 A dispatch system for Rajshahi Rent A Car. The owner takes calls, partner
 drivers take the trips, and the owner earns a fixed commission per trip.
 
-**Status (2026-11-25): M4 money done.** Commission is charged exactly once
-when a trip completes (trigger + unique constraint), the Money screen lists
-every balance highest-unpaid-first with payment and adjustment forms, and the
-driver screen shows the month's trips, fares collected, commission owed, the
-payments made and the "pay to get trips again" banner. Dispatch (M3) is in;
-the money rules have their own SQL test and the end-to-end smoke checks the
-commission entry and the Money screen. Next: M5, the Android driver app and
-push alerts.
+**Status (2026-11-25): M3, M4 and M7 done; M5/M6 code in place, Android
+builds owner-side.** Dispatch, money, reports and CSV export are live and
+covered by SQL tests plus the end-to-end browser smoke. Push plumbing is
+deployed (`eligible_drivers` + the capability-authenticated `dispatch-push`,
+answering `sent:0` until Firebase secrets exist). The Capacitor driver shell
+and the Kotlin call logger are scaffolded; both need a JDK + Android SDK and
+the owner's Firebase project before an APK exists. Owner setup still
+pending: real fares, MacroDroid, Firebase, dashboard hosting.
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.

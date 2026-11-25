@@ -155,6 +155,19 @@ try {
   await owner.getByText(DRIVER_NAME).first().waitFor();
   console.log("money screen shows the driver");
 
+  // --- M7: reports page and CSV export -----------------------------------
+  await owner.goto(`${BASE}/reports`);
+  await owner.getByRole("heading", { name: "রিপোর্ট" }).waitFor();
+  const csv = await owner.request.get(`${BASE}/reports/export?type=trips`);
+  assert(csv.status() === 200, `CSV export answers 200 (got ${csv.status()})`);
+  const csvText = await csv.text();
+  assert(
+    csvText.startsWith("code,status,ambulance_type"),
+    `CSV header expected (got: ${csvText.slice(0, 40)})`,
+  );
+  assert(csvText.includes(code ?? ""), "CSV contains the completed trip");
+  console.log("reports and CSV verified");
+
   console.log("SMOKE M3 PASSED");
 } finally {
   await browser.close();
