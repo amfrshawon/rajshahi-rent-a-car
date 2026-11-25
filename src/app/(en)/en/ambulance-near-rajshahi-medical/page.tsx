@@ -7,7 +7,7 @@ const content = LANDING.ambulanceRmch;
 
 export const metadata: Metadata = {
   title: "Ambulance near Rajshahi Medical College — 24 hours",
-  description: "A 24-hour ambulance based in the Rajshahi Medical area — patient transport with trained staff, across the city and nationwide.",
+  description: "Book an ambulance near Rajshahi Medical 24 hours a day. Confirm the pickup gate or ward, destination, and vehicle availability by phone.",
   ...social("en", content.paths.en),
   alternates: {
     canonical: content.paths.en,

@@ -1,8 +1,10 @@
+import styles from "./ambulance-page.module.css";
 import Image from "next/image";
 import { ClockIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
-import { asset } from "@/config/deploy";
+import { asset, href } from "@/config/deploy";
+import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, localeDigits, t } from "@/lib/locale";
 
@@ -29,10 +31,19 @@ const BOOKING_STEPS = [
   { bn: "গাড়ির প্রাপ্যতা, পৌঁছানোর আনুমানিক সময় এবং মোট ভাড়া ফোনে নিশ্চিত করুন।", en: "Confirm the available vehicle, estimated pickup time, and total fare by phone." },
 ];
 
-const FARE_DETAILS = [
-  { bn: "পিকআপের ঠিকানা ও গন্তব্য", en: "Pickup address and destination" },
-  { bn: "এসি বা নন-এসি গাড়ির প্রয়োজন", en: "AC or non-AC vehicle preference" },
-  { bn: "অক্সিজেন বা বিশেষ কোনো ব্যবস্থার প্রয়োজন", en: "Oxygen or other arrangements to confirm" },
+const FARE_ROUTES = [
+  {
+    title: { bn: "রাজশাহী শহরের ভেতরে", en: "Within Rajshahi city" },
+    details: { bn: "পিকআপের ঠিকানা ও গন্তব্য বলুন। এসি বা নন-এসি গাড়ির ভাড়া এবং অপেক্ষার জন্য কোনো অতিরিক্ত চার্জ আছে কি না, জেনে নিন।", en: "Share both addresses. Ask for the AC or non-AC fare and whether waiting would cost extra." },
+  },
+  {
+    title: { bn: "হাসপাতাল থেকে হাসপাতালে", en: "Hospital-to-hospital" },
+    details: { bn: "দুই হাসপাতালের নাম, পিকআপের ওয়ার্ড বা গেট এবং অক্সিজেনের প্রয়োজন জানান। মোট ভাড়ায় কী অন্তর্ভুক্ত, তা জেনে নিন।", en: "Give both hospital names, the pickup ward or gate, and any oxygen requirement. Ask what the total includes." },
+  },
+  {
+    title: { bn: "রাজশাহী থেকে ঢাকা", en: "Rajshahi to Dhaka" },
+    details: { bn: "ঢাকার হাসপাতাল বা ঠিকানা জানান। শুধু যাওয়া নাকি ফেরার ব্যবস্থাও দরকার, তা বলুন। টোল, অপেক্ষা ও অক্সিজেনের খরচ মোট ভাড়ায় আছে কি না, নিশ্চিত করুন।", en: "Give the Dhaka hospital or address and say whether you need a one-way or return trip. Confirm whether tolls, waiting, and oxygen are included." },
+  },
 ];
 
 const QUESTIONS = [
@@ -101,38 +112,41 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
   return (
     <PageShell locale={locale} mobileAction="ambulance">
       <JsonLd data={schema} />
-      <section className="bg-emergency text-emergency-fg">
-        <div className="mx-auto grid max-w-6xl items-center gap-7 px-4 py-8 md:grid-cols-[1fr_0.8fr] md:gap-12 md:px-6 md:py-14">
-          <div>
-            <p className="flex items-center gap-2 text-sm font-semibold">
+      <section className={styles.hero}>
+        <div className="mx-auto grid max-w-6xl items-center gap-7 px-4 py-8 md:grid-cols-[1fr_0.85fr] md:gap-12 md:px-6 md:py-14">
+          <div className={styles.intro}>
+            <p className={styles.hours}>
               <ClockIcon className="size-5" />
               {bn ? "২৪ ঘণ্টা বুকিং ও ডিসপ্যাচ" : "24-hour booking and dispatch"}
             </p>
-            <h1 className="mt-3 text-3xl font-bold md:text-5xl">{bn ? "রাজশাহী অ্যাম্বুলেন্স সার্ভিস" : "Ambulance Service in Rajshahi"}</h1>
-            <p className="mt-3 max-w-xl text-white md:text-lg">
+            <h1 className={styles.title}>{bn ? "রাজশাহী অ্যাম্বুলেন্স সার্ভিস" : "Ambulance Service in Rajshahi"}</h1>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-200 md:text-lg">
               {bn ? "রাজশাহী মেডিকেল এলাকা থেকে এসি, নন-এসি ও অক্সিজেনসহ অ্যাম্বুলেন্স বুক করুন। রাজশাহী শহরে এবং ঢাকাসহ সারা দেশে রোগী পরিবহন।" : "Book an AC, non-AC, or oxygen-equipped ambulance from the Rajshahi Medical area for local trips and patient transfers across Bangladesh, including Dhaka."}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a href={tel} className="text-emergency-ink inline-flex min-h-14 items-center gap-3 rounded-lg bg-white px-5 text-xl font-bold">
+            <div className={styles.actions}>
+              <a href={tel} className={styles.call}>
                 <PhoneIcon className="size-6 shrink-0" />
                 <span className="sr-only">{bn ? "বুকিংয়ের জন্য কল করুন " : "Call to book "}</span>
                 <span dir="ltr">{phone}</span>
               </a>
-              <a href={`https://wa.me/${SITE.whatsapp}`} className="inline-flex min-h-14 items-center gap-2 rounded-lg border border-white/70 px-4 font-semibold">
+              <a href={`https://wa.me/${SITE.whatsapp}`} className={styles.message}>
                 <WhatsAppIcon className="size-5" />
                 {bn ? "হোয়াটসঅ্যাপ" : "WhatsApp"}
               </a>
             </div>
           </div>
-          <Image
-            src={asset("/images/ambulance/exterior.webp")}
-            alt={bn ? "রাজশাহী অ্যাম্বুলেন্স সার্ভিসের গাড়ির সামনের অংশ" : "Front view of a Rajshahi Ambulance Service vehicle"}
-            width={960}
-            height={1280}
-            preload
-            unoptimized
-            className="aspect-[16/9] w-full rounded-xl object-cover object-[center_66%] md:aspect-[5/4]"
-          />
+          <figure className={styles.vehicle}>
+            <Image
+              src={asset("/images/ambulance/exterior.webp")}
+              alt={bn ? "রাজশাহী অ্যাম্বুলেন্স সার্ভিসের গাড়ির সামনের অংশ" : "Front view of a Rajshahi Ambulance Service vehicle"}
+              width={960}
+              height={1280}
+              preload
+              unoptimized
+              className={styles.exterior}
+            />
+            <figcaption className={styles.caption}><MapPinIcon className="size-4" />{bn ? "রাজশাহী মেডিকেল এলাকা" : "Rajshahi Medical area"}</figcaption>
+          </figure>
         </div>
       </section>
 
@@ -148,11 +162,37 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
         </ul>
       </nav>
 
+      <section aria-labelledby="dispatch-summary" className="mx-auto w-full max-w-6xl px-4 pt-8 md:px-6 md:pt-10">
+        <div className={styles.summary}>
+          <h2 id="dispatch-summary" className="text-xl font-bold md:text-2xl">
+            {bn ? "রাজশাহী অ্যাম্বুলেন্স সার্ভিসের ফোন নম্বর" : "Rajshahi Ambulance Service phone number"}
+          </h2>
+          <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <dt className="text-muted text-sm">{bn ? "২৪ ঘণ্টার বুকিং নম্বর" : "24-hour booking line"}</dt>
+              <dd><a href={tel} className="text-emergency-ink inline-flex min-h-11 items-center font-bold underline">{bn ? "০১৭১৪-৪২৪২৪১" : "01714-424241"}</a></dd>
+            </div>
+            <div>
+              <dt className="text-muted text-sm">{bn ? "পিকআপ এলাকা" : "Pickup area"}</dt>
+              <dd className="mt-1 font-semibold">{bn ? "রাজশাহী মেডিকেল এলাকা ও রাজশাহী শহর" : "Rajshahi Medical area and Rajshahi city"}</dd>
+            </div>
+            <div>
+              <dt className="text-muted text-sm">{bn ? "গাড়ির বিকল্প" : "Vehicle options"}</dt>
+              <dd className="mt-1 font-semibold">{bn ? "এসি, নন-এসি ও অক্সিজেনসহ" : "AC, non-AC, and oxygen support"}</dd>
+            </div>
+            <div>
+              <dt className="text-muted text-sm">{bn ? "রোগী পরিবহনের গন্তব্য" : "Transfer destinations"}</dt>
+              <dd className="mt-1 font-semibold">{bn ? "রাজশাহী থেকে ঢাকাসহ সারা বাংলাদেশ" : "From Rajshahi to Dhaka and across Bangladesh"}</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
       <section id="ambulance-options" className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-14">
         <h2 className="text-2xl font-bold md:text-3xl">{bn ? "যে ধরনের অ্যাম্বুলেন্স বুক করতে পারবেন" : "Ambulance options"}</h2>
         <ul className="mt-5 grid gap-3 md:grid-cols-3">
           {SERVICES.map(({ title, body }) => (
-            <li key={title.en} className="border-border bg-surface rounded-xl border p-5">
+            <li key={title.en} className={styles.service}>
               <h3 className="text-lg font-bold">{t(locale, title)}</h3>
               <p className="text-muted mt-2">{t(locale, body)}</p>
             </li>
@@ -199,6 +239,9 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
             <p className="text-muted mt-2">{bn ? "রাজশাহী থেকে ঢাকাসহ বাংলাদেশের যেকোনো জেলায় রোগী পরিবহনের ব্যবস্থা আছে। যাত্রার আগে গাড়ি, প্রয়োজনীয় সরঞ্জাম ও মোট ভাড়া নিশ্চিত করুন।" : "We arrange patient transfers from Rajshahi to Dhaka and other destinations across Bangladesh. Confirm the vehicle, required equipment, and total fare before departure."}</p>
           </div>
         </div>
+        <a href={href(route(locale, "ambulanceRmch"))} className="text-emergency-ink mt-4 flex w-fit min-h-11 items-center font-semibold underline">
+          {bn ? "রাজশাহী মেডিকেল থেকে পিকআপের নির্দেশনা" : "Pickup guide for Rajshahi Medical"}
+        </a>
         <a href={GBP_URL} className="text-emergency-ink mt-5 inline-flex min-h-11 items-center gap-2 font-semibold underline">
           <MapPinIcon className="size-5 shrink-0" />
           {bn ? "গুগল ম্যাপে রাজশাহী অ্যাম্বুলেন্স সার্ভিস দেখুন" : "Find Rajshahi Ambulance Service on Google Maps"}
@@ -206,37 +249,35 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
       </section>
 
       <section id="fare-quote" className="mx-auto w-full max-w-6xl px-4 pb-10 md:px-6 md:pb-14">
-        <div className="border-border bg-surface grid gap-6 rounded-xl border p-5 md:grid-cols-2 md:gap-10 md:p-8">
-          <div>
-            <h2 className="text-2xl font-bold md:text-3xl">{bn ? "অ্যাম্বুলেন্সের ভাড়া জেনে নিন" : "Get an ambulance fare quote"}</h2>
-            <p className="text-muted mt-3">
-              {bn ? "রাজশাহী শহরের ভেতরে বা ঢাকাসহ দূরপাল্লার যাত্রার জন্য ফোনে মোট ভাড়া জেনে নিন। বুকিংয়ের আগে কী কী ভাড়ার মধ্যে অন্তর্ভুক্ত, তা নিশ্চিত করুন।" : "Call for a total quote for local trips or longer transfers, including Rajshahi to Dhaka. Before booking, ask what is included in the quoted fare."}
-            </p>
-          </div>
-          <div>
-            <h3 className="font-bold">{bn ? "ভাড়া জানতে যা বলবেন" : "Have these details ready"}</h3>
-            <ul className="text-muted mt-2 list-disc space-y-2 pl-5">
-              {FARE_DETAILS.map((detail) => <li key={detail.en}>{t(locale, detail)}</li>)}
-            </ul>
-            <a href={tel} className="text-emergency-ink mt-3 inline-flex min-h-11 items-center gap-2 font-semibold underline">
-              <PhoneIcon className="size-5 shrink-0" />
-              {bn ? "ভাড়া জানতে কল করুন" : "Call for a quote"}
-            </a>
-          </div>
+        <div className="border-border bg-surface rounded-xl border p-5 md:p-8">
+          <h2 className="text-2xl font-bold md:text-3xl">{bn ? "রাজশাহী অ্যাম্বুলেন্স ভাড়া কীভাবে জানবেন" : "How to get an ambulance fare in Rajshahi"}</h2>
+          <p className="text-muted mt-3">{bn ? "বুকিংয়ের আগে আপনার রুট, গাড়ির ধরন ও প্রয়োজনীয় ব্যবস্থা জানিয়ে মোট ভাড়া নিশ্চিত করুন।" : "Before booking, share your route, vehicle preference, and requirements to confirm the total fare."}</p>
+          <ul className="mt-5 grid gap-3 md:grid-cols-3">
+            {FARE_ROUTES.map(({ title, details }) => (
+              <li key={title.en} className="border-border bg-bg rounded-lg border p-4">
+                <h3 className="font-bold">{t(locale, title)}</h3>
+                <p className="text-muted mt-2 text-sm">{t(locale, details)}</p>
+              </li>
+            ))}
+          </ul>
+          <a href={tel} className="text-emergency-ink mt-3 inline-flex min-h-11 items-center gap-2 font-semibold underline">
+            <PhoneIcon className="size-5 shrink-0" />
+            {bn ? "ভাড়া জানতে কল করুন" : "Call for a quote"}
+          </a>
         </div>
       </section>
 
       <section id="booking-questions" className="border-border bg-surface border-y">
         <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-14">
           <h2 className="text-2xl font-bold md:text-3xl">{bn ? "অ্যাম্বুলেন্স বুকিংয়ের সাধারণ প্রশ্ন" : "Ambulance booking questions"}</h2>
-          <dl className="mt-5 grid gap-5 md:grid-cols-2">
+          <div className={styles.questions}>
             {QUESTIONS.map(({ question, answer }) => (
-              <div key={question.en} className="border-border border-t pt-4">
-                <dt className="font-bold">{t(locale, question)}</dt>
-                <dd className="text-muted mt-2">{t(locale, answer)}</dd>
-              </div>
+              <details key={question.en}>
+                <summary>{t(locale, question)}</summary>
+                <p>{t(locale, answer)}</p>
+              </details>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 

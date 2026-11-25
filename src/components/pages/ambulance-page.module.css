@@ -1,0 +1,127 @@
+.hero {
+  color: #fff;
+  background: radial-gradient(ellipse at 95% 85%, #254e55, transparent 55%), #10282f;
+}
+.hours, .caption {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 600;
+}
+.hours {
+  color: #a6e8d8;
+  font-size: .9rem;
+}
+.title {
+  margin-top: .85rem;
+  font-size: clamp(2.15rem, 5vw, 4rem);
+  line-height: 1.19;
+  font-weight: 750;
+  text-wrap: balance;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-top: 1.4rem;
+}
+.call, .message {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3.25rem;
+  gap: .5rem;
+  padding: .55rem 1rem;
+  border-radius: .8rem;
+  font-weight: 700;
+}
+.call {
+  color: #0d302a;
+  background: #aff2d7;
+  font-size: 1.18rem;
+}
+.message {
+  border: 1px solid #799195;
+  color: white;
+}
+.vehicle {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #648184;
+  border-radius: 1.4rem;
+  box-shadow: 0 12px 32px #051b233b;
+}
+.exterior {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center 61%;
+}
+.caption {
+  position: absolute;
+  bottom: .75rem;
+  left: .75rem;
+  background: #10282ff2;
+  color: white;
+  border-radius: 2rem;
+  padding: .36rem .75rem;
+  font-size: .82rem;
+}
+.summary, .service {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: clamp(1rem, 2.4vw, 1.8rem);
+}
+.summary { border-inline-start: 4px solid #398170; }
+.service {
+  border-top: 3px solid #398170;
+  box-shadow: 0 4px 16px #14353b09;
+}
+.questions {
+  margin-top: 1.25rem;
+  border-block-start: 1px solid var(--border);
+}
+.questions details { border-bottom: 1px solid var(--border); }
+.questions summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+.questions summary::-webkit-details-marker { display: none; }
+.questions summary::after {
+  content: "";
+  width: .6rem;
+  height: .6rem;
+  flex-shrink: 0;
+  margin-inline-end: .4rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+.questions details[open] summary::after { transform: rotate(225deg); }
+.questions p { max-width: 75ch; padding-bottom: 1rem; color: var(--muted); }
+@media (max-width: 420px) {
+  .actions > a { flex: 1 1 auto; padding-inline: .65rem; }
+}
+@media (min-width: 768px) {
+  .exterior { aspect-ratio: 5 / 4; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .intro { animation: rise .48s ease-out both; }
+  .vehicle { animation: slide .65s ease-out both; }
+  .call { animation: ring 1.35s .55s ease-out 2; }
+  .call, .message, .questions summary::after { transition: transform .18s ease-out; }
+  .actions a:active { transform: scale(.97); }
+}
+@keyframes rise { from { transform: translateY(10px); } }
+@keyframes slide { from { transform: translateY(14px) scale(.98); } }
+@keyframes ring {
+  from { box-shadow: 0 0 0 0 #aff2d75c; }
+  to { box-shadow: 0 0 0 12px #aff2d700; }
+}

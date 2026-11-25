@@ -174,17 +174,17 @@ export const LANDING = {
         },
       },
       {
-        heading: { bn: "প্রশিক্ষিত স্টাফসহ", en: "With trained staff" },
+        heading: { bn: "হাসপাতাল থেকে কোথায় গাড়ি ডাকবেন", en: "Where to meet the ambulance at the hospital" },
         body: {
-          bn: "রোগী পরিবহনে অভিজ্ঞ ও প্রশিক্ষিত কর্মী সঙ্গে থাকেন। জরুরি চিকিৎসার সরঞ্জামসহ সজ্জিত অ্যাম্বুলেন্স পাওয়া যায়।",
-          en: "Staff experienced in patient transport travel with the patient, and the ambulance is equipped for emergency care.",
+          bn: "ফোনে হাসপাতালের নাম, ওয়ার্ড বা বিভাগ এবং যে গেটের কাছে গাড়ি চাইছেন, তা জানান। গেট জানা না থাকলে কাছের পরিচিত স্থান বলুন। ডিসপ্যাচের সঙ্গে পিকআপের জায়গা ঠিক করে নিন।",
+          en: "Give dispatch the hospital name, ward or department, and the gate where you want to meet. If you do not know the gate, share a nearby landmark and agree on a pickup point by phone.",
         },
       },
       {
         heading: { bn: "কল করার সময় যা বলবেন", en: "What to tell us when you call" },
         body: {
-          bn: "রোগী এখন কোথায় আছেন, অবস্থা সংক্ষেপে, কোথায় নিয়ে যেতে হবে এবং আপনার যোগাযোগের নম্বর — এই চারটি তথ্য থাকলে সবচেয়ে কম সময়ে অ্যাম্বুলেন্স পাঠানো যায়।",
-          en: "Where the patient is now, the condition in brief, where they need to go, and a number we can call back — with those four things we can dispatch fastest.",
+          bn: "পিকআপের বিবরণ, গন্তব্য হাসপাতাল বা ঠিকানা এবং আপনার যোগাযোগের নম্বর জানান। এসি বা অক্সিজেন দরকার হলে কলের সময় বলুন। গাড়ির প্রাপ্যতা ও মোট ভাড়া নিশ্চিত করুন।",
+          en: "Share the pickup details, destination hospital or address, and a callback number. Tell dispatch if you need AC or oxygen, and confirm vehicle availability and the total fare.",
         },
       },
     ],
