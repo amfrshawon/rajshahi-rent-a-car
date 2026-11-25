@@ -143,11 +143,27 @@ try {
     assert(names.includes(expected), `event log has ${expected} (has: ${names.join(",")})`);
   }
 
+  // --- M4: commission charged exactly once, visible on the Money screen ---
+  const commissions = await fetch(
+    `${supabaseUrl}/rest/v1/ledger?trip_id=eq.${tripId}&kind=eq.commission&select=amount&limit=5`,
+    { headers },
+  ).then((r) => r.json());
+  assert(commissions.length === 1, `exactly one commission entry (got ${commissions.length})`);
+
+  await owner.goto(`${BASE}/money`);
+  await owner.getByRole("heading", { name: "হিসাব" }).waitFor();
+  await owner.getByText(DRIVER_NAME).first().waitFor();
+  console.log("money screen shows the driver");
+
   console.log("SMOKE M3 PASSED");
 } finally {
   await browser.close();
 
   if (tripId) {
+    await fetch(`${supabaseUrl}/rest/v1/ledger?trip_id=eq.${tripId}`, {
+      method: "DELETE",
+      headers,
+    });
     await fetch(`${supabaseUrl}/rest/v1/trip_events?trip_id=eq.${tripId}`, {
       method: "DELETE",
       headers,
@@ -155,6 +171,10 @@ try {
     await fetch(`${supabaseUrl}/rest/v1/trips?id=eq.${tripId}`, { method: "DELETE", headers });
   }
   if (driverId) {
+    await fetch(`${supabaseUrl}/rest/v1/ledger?driver_id=eq.${driverId}`, {
+      method: "DELETE",
+      headers,
+    });
     await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${driverId}`, {
       method: "DELETE",
       headers,

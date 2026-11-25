@@ -6,6 +6,7 @@ const NAV = [
   { href: "/trips", label: "ট্রিপ", en: "Trips" },
   { href: "/calls", label: "কল", en: "Calls" },
   { href: "/drivers", label: "ড্রাইভার", en: "Drivers" },
+  { href: "/money", label: "হিসাব", en: "Money" },
   { href: "/fares", label: "ভাড়ার তালিকা", en: "Fares" },
   { href: "/settings", label: "সেটিংস", en: "Settings" },
 ];

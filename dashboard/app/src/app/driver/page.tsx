@@ -44,7 +44,11 @@ export default async function DriverPage({
   const { ok, error } = await searchParams;
   const { profile, supabase } = await requireDriver();
 
-  const [{ data: openTrips }, { data: activeTrips }, { data: doneTrips }, { data: places }] =
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+
+  const [{ data: openTrips }, { data: activeTrips }, { data: doneTrips }, { data: places }, { data: myBalance }, { data: dueLimit }, { data: monthTrips }, { data: monthPayments }] =
     await Promise.all([
       supabase
         .from("open_trips_for_driver")
@@ -63,7 +67,27 @@ export default async function DriverPage({
         .order("completed_at", { ascending: false })
         .limit(3),
       supabase.from("places").select("id, name_bn"),
+      supabase.from("driver_balance").select("balance").maybeSingle(),
+      supabase.rpc("current_due_limit"),
+      supabase
+        .from("my_trips")
+        .select("id, fare")
+        .eq("status", "completed")
+        .gte("completed_at", monthStart.toISOString()),
+      supabase
+        .from("ledger")
+        .select("amount")
+        .eq("kind", "payment")
+        .gte("at", monthStart.toISOString()),
     ]);
+
+  const balance = Number(myBalance?.balance ?? 0);
+  const due = Number(dueLimit ?? 0);
+  const faresCollected = (monthTrips ?? []).reduce((sum, trip) => sum + Number(trip.fare), 0);
+  const paymentsMade = (monthPayments ?? []).reduce(
+    (sum, entry) => sum + Math.abs(Number(entry.amount)),
+    0,
+  );
 
   const placeName = new Map((places ?? []).map((p) => [p.id as string, p.name_bn as string]));
   const trip = (activeTrips ?? [])[0];
@@ -145,6 +169,31 @@ export default async function DriverPage({
           </button>
         </label>
       </form>
+
+      {balance > due && due > 0 ? (
+        <p className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800">
+          বকেয়া ৳{balance} — পরিশোধ করলে আবার ট্রিপ পাবেন / You owe ৳{balance}; pay to get trips again.
+        </p>
+      ) : null}
+
+      <section className="grid grid-cols-2 gap-2">
+        <div className="rounded-xl border border-zinc-200 bg-white p-3">
+          <p className="text-xs text-zinc-500">এই মাসে ট্রিপ</p>
+          <p className="text-lg font-semibold text-zinc-900">{monthTrips?.length ?? 0}</p>
+        </div>
+        <div className="rounded-xl border border-zinc-200 bg-white p-3">
+          <p className="text-xs text-zinc-500">ভাড়া আদায় / Fares</p>
+          <p className="text-lg font-semibold text-zinc-900">৳{faresCollected}</p>
+        </div>
+        <div className="rounded-xl border border-zinc-200 bg-white p-3">
+          <p className="text-xs text-zinc-500">কমিশন বাকি / Owed</p>
+          <p className="text-lg font-semibold text-zinc-900">৳{balance}</p>
+        </div>
+        <div className="rounded-xl border border-zinc-200 bg-white p-3">
+          <p className="text-xs text-zinc-500">পেমেন্ট / Paid</p>
+          <p className="text-lg font-semibold text-zinc-900">৳{paymentsMade}</p>
+        </div>
+      </section>
 
       {trip ? (
         <section className="flex flex-col gap-3 rounded-xl border-2 border-emerald-300 bg-white p-4">
