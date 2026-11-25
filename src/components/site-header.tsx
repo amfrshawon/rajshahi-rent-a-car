@@ -12,7 +12,7 @@ const COPY = {
   primaryNav: { bn: "প্রধান মেনু", en: "Primary" },
 } as const;
 
-export function SiteHeader({ locale }: { locale: Locale }) {
+export function SiteHeader({ locale, ambulance = false }: { locale: Locale; ambulance?: boolean }) {
   return (
     <header className="border-border bg-bg/95 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 py-3 md:gap-6 md:px-6 md:py-4">
@@ -62,7 +62,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {/* Round call button, shown at every size — the number is the most
               valuable action on the site. */}
-          <CallButton locale={locale} />
+          <CallButton locale={locale} ambulance={ambulance} />
 
           <LanguageSwitch locale={locale} className="max-[374px]:hidden" />
 

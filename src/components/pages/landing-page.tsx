@@ -34,6 +34,8 @@ export function LandingPage({ locale, content }: { locale: Locale; content: Land
   const contact = route(locale, "contact");
   const home = route(locale, "home");
   const path = content.paths[locale];
+  const ambulance = content.paths.en.includes("/ambulance-near-");
+  const serviceContact = ambulance ? SITE.ambulance : SITE;
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -50,7 +52,7 @@ export function LandingPage({ locale, content }: { locale: Locale; content: Land
   );
 
   return (
-    <PageShell locale={locale}>
+    <PageShell locale={locale} mobileAction={ambulance ? "ambulance" : "booking"}>
       <JsonLd data={faqSchema} />
       <JsonLd
         data={breadcrumbSchema(locale, [
@@ -74,13 +76,13 @@ export function LandingPage({ locale, content }: { locale: Locale; content: Land
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <a
-                href={`tel:${SITE.phone}`}
+                href={`tel:${serviceContact.phone}`}
                 className="bg-bg text-leaf inline-flex min-h-12 items-center gap-2 rounded-lg px-6 font-semibold transition active:scale-[0.98]"
               >
                 <PhoneIcon className="size-5" />
-                {t(locale, SITE.phoneDisplay)}
+                {t(locale, serviceContact.phoneDisplay)}
               </a>
-              <a href={`https://wa.me/${SITE.whatsapp}?text=${waText}`} className="btn-whatsapp">
+              <a href={`https://wa.me/${serviceContact.whatsapp}?text=${waText}`} className="btn-whatsapp">
                 <WhatsAppIcon className="size-5" />
                 {t(locale, { bn: "হোয়াটসঅ্যাপ", en: "WhatsApp" })}
               </a>
@@ -165,7 +167,7 @@ export function LandingPage({ locale, content }: { locale: Locale; content: Land
           </ul>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href={`tel:${SITE.phone}`} className="btn-primary">
+            <a href={`tel:${serviceContact.phone}`} className="btn-primary">
               <PhoneIcon className="size-5" />
               {t(locale, { bn: "কল করুন", en: "Call now" })}
             </a>

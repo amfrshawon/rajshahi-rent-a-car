@@ -7,17 +7,24 @@ export const SITE = {
   url: "https://rajshahirentacar.bd",
   name: { bn: "রাজশাহী রেন্ট এ কার", en: "Rajshahi Rent A Car" },
 
-  phone: "+8801714424241",
+  phone: "+8801711440837",
   /** Digits only, for wa.me links. */
-  whatsapp: "8801714424241",
-  phoneDisplay: { bn: "০১৭১৪-৪২৪২৪১", en: "+880 1714 424 241" },
+  whatsapp: "8801711440837",
+  phoneDisplay: { bn: "০১৭১১-৪৪০৮৩৭", en: "01711-440837" },
 
   email: "info@rajshahirentacar.bd",
   bookingEmail: "booking@rajshahirentacar.bd",
 
   address: {
-    bn: "কাদিরগঞ্জ, গ্রেটার রোড, রাজশাহী",
-    en: "Kadirgonj Greater Road, Rajshahi, Bangladesh",
+    bn: "তেরখাদিয়া, ডাবলটা, রাজশাহী ৬২০২",
+    en: "Terokhadia, Dablota, Rajshahi 6202",
+  },
+  rentalMaps: "https://www.google.com/maps?cid=1862505938153046976",
+  ambulance: {
+    phone: "+8801714424241",
+    whatsapp: "8801714424241",
+    phoneDisplay: { bn: "০১৭১৪-৪২৪২৪১", en: "01714-424241" },
+    maps: "https://share.google/52MSxbL6RCxlZ1huf",
   },
   hours: { bn: "২৪/৭ খোলা", en: "Open 24/7" },
 } as const;

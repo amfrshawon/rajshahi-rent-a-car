@@ -7,7 +7,7 @@ import { type Locale, t } from "@/lib/locale";
 export type MobileActionVariant = "booking" | "ambulance";
 
 const COPY = {
-  call: { bn: "কল করুন", en: "Call" },
+  call: { bn: "গাড়ি ভাড়ার জন্য কল করুন", en: "Call for car rental" },
   book: { bn: "বুক করুন", en: "Book now" },
   label: { bn: "দ্রুত যোগাযোগ", en: "Quick contact" },
   emergencyLabel: { bn: "জরুরি অ্যাম্বুলেন্স", en: "Emergency ambulance" },
@@ -43,7 +43,7 @@ export function MobileActionBar({
         style={SAFE_AREA}
       >
         <a
-          href={`tel:${SITE.phone}`}
+          href={`tel:${SITE.ambulance.phone}`}
           className="bg-emergency text-emergency-fg flex min-h-12 items-center justify-center gap-2 rounded-lg font-semibold transition active:scale-[0.98]"
         >
           <PhoneIcon className="size-5" />

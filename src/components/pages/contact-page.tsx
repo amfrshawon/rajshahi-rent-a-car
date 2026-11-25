@@ -60,14 +60,26 @@ export function ContactPage({ locale }: { locale: Locale }) {
 
       <section className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[1fr_1.3fr]">
         <div>
+          <div className="border-border bg-surface mb-5 rounded-2xl border p-5">
+            <h2 className="text-xl font-bold">{locale === "bn" ? "গুগল ম্যাপে রাজশাহী রেন্ট এ কার" : "Rajshahi Rent A Car on Google Maps"}</h2>
+            <p className="text-muted mt-2">{t(locale, SITE.address)}</p>
+            <a href={SITE.rentalMaps} className="btn-primary mt-4">
+              {locale === "bn" ? "প্রোফাইল ও দিকনির্দেশনা দেখুন" : "View profile and directions"}
+            </a>
+          </div>
           {/* Real contact methods as a plain list — no icon cards. */}
           <dl className="border-border border-t">
-            <Row label={t(locale, COPY.phone)}>
+            <Row label={locale === "bn" ? "গাড়ি ভাড়া" : "Car rental"}>
               <a
                 href={`tel:${SITE.phone}`}
                 className="text-leaf inline-flex min-h-11 items-center font-semibold"
               >
                 {t(locale, SITE.phoneDisplay)}
+              </a>
+            </Row>
+            <Row label={locale === "bn" ? "অ্যাম্বুলেন্স" : "Ambulance"}>
+              <a href={`tel:${SITE.ambulance.phone}`} className="text-emergency-ink inline-flex min-h-11 items-center font-semibold">
+                {t(locale, SITE.ambulance.phoneDisplay)}
               </a>
             </Row>
             <Row label={t(locale, COPY.email)}>

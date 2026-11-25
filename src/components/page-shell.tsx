@@ -25,7 +25,7 @@ export function PageShell({
       >
         {locale === "bn" ? "মূল অংশে যান" : "Skip to content"}
       </a>
-      <SiteHeader locale={locale} />
+      <SiteHeader locale={locale} ambulance={mobileAction === "ambulance"} />
       {/*
         Route crossfade. PageShell renders inside each page (not a layout),
         so on navigation this region is part of the swapping subtree and the

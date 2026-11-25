@@ -5,7 +5,7 @@ import { AboutPage } from "@/components/pages/about-page";
 export const metadata: Metadata = {
   ...social("en", "/en/about/"),
   title: "About Us",
-  description: "A rent-a-car service based in Kadirgonj, Rajshahi, serving locals and visitors alike.",
+  description: "A rent-a-car service based in Terokhadia, Rajshahi, serving locals and visitors alike.",
   alternates: {
     canonical: "/en/about/",
     languages: {

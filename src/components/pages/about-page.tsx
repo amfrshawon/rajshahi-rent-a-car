@@ -14,8 +14,8 @@ import { type Locale, t } from "@/lib/locale";
 const COPY = {
   title: { bn: "আমাদের সম্পর্কে", en: "About Us" },
   lead: {
-    bn: "রাজশাহী শহরের কাদিরগঞ্জে আমাদের অফিস। স্থানীয় পরিবার থেকে শুরু করে দেশ-বিদেশের ভ্রমণকারী — সবার জন্য গাড়ি ভাড়ার সেবা।",
-    en: "Our office is in Kadirgonj, Rajshahi. We rent to local families and to visitors from across the country and abroad.",
+    bn: "রাজশাহী শহরের তেরখাদিয়ায় আমাদের অফিস। স্থানীয় পরিবার থেকে শুরু করে দেশ-বিদেশের ভ্রমণকারী — সবার জন্য গাড়ি ভাড়ার সেবা।",
+    en: "Our office is in Terokhadia, Rajshahi. We rent to local families and to visitors from across the country and abroad.",
   },
   whatTitle: { bn: "আমরা যা করি", en: "What we do" },
   whereTitle: { bn: "কোথায় পাবেন", en: "Where to find us" },

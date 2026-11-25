@@ -4,7 +4,6 @@
  * Only facts the owner has published are encoded. Notably absent:
  *   - `geo` coordinates — the exact location is not on record, and a wrong
  *     pin actively harms local search and maps.
- *   - `postalCode` — not published anywhere.
  *   - `aggregateRating` — the live site shows Google reviews, but inventing
  *     a rating value is both wrong and a structured-data policy violation.
  * Add these once confirmed (docs/PLAN.md §12).
@@ -15,9 +14,6 @@ import type { Article } from "@/lib/content";
 import { type Locale, localePath, t } from "@/lib/locale";
 
 const ORGANISATION_ID = `${SITE.url}/#organisation`;
-
-/** The owner's Google Business Profile — factual, and already linked from the ambulance page. */
-const GOOGLE_BUSINESS_PROFILE = "https://share.google/52MSxbL6RCxlZ1huf";
 
 function absolute(locale: Locale, path: string): string {
   return new URL(localePath(locale, path), SITE.url).toString();
@@ -45,13 +41,14 @@ export function businessSchema(locale: Locale) {
     // Google's local-business logo comes from these two fields.
     logo,
     image: logo,
-    sameAs: [GOOGLE_BUSINESS_PROFILE, ...(PROFILE.facebookUrl ? [PROFILE.facebookUrl] : [])],
+    sameAs: [SITE.rentalMaps, ...(PROFILE.facebookUrl ? [PROFILE.facebookUrl] : [])],
     ...(PROFILE.geo ? { geo: { "@type": "GeoCoordinates", ...PROFILE.geo } } : {}),
-    ...(PROFILE.mapUrl ? { hasMap: PROFILE.mapUrl } : {}),
+    hasMap: SITE.rentalMaps,
     address: {
       "@type": "PostalAddress",
-      streetAddress: locale === "bn" ? "কাদিরগঞ্জ, গ্রেটার রোড" : "Kadirgonj Greater Road",
+      streetAddress: locale === "bn" ? "তেরখাদিয়া, ডাবলটা" : "Terokhadia, Dablota",
       addressLocality: locale === "bn" ? "রাজশাহী" : "Rajshahi",
+      postalCode: "6202",
       addressCountry: "BD",
     },
     openingHoursSpecification: {

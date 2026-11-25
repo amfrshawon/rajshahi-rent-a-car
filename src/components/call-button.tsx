@@ -3,7 +3,7 @@ import { SITE } from "@/config/site";
 import { type Locale, t } from "@/lib/locale";
 
 const COPY = {
-  callAria: { bn: "কল করুন", en: "Call" },
+  callAria: { bn: "গাড়ি ভাড়ার জন্য কল করুন", en: "Call for car rental" },
   available: { bn: "২৪/৭ খোলা", en: "Open 24/7" },
 } as const;
 
@@ -16,11 +16,12 @@ const COPY = {
  * room for it. The slow pulsing ring is gone; it blinked in the corner of the
  * eye on every page.
  */
-export function CallButton({ locale, className = "" }: { locale: Locale; className?: string }) {
+export function CallButton({ locale, className = "", ambulance = false }: { locale: Locale; className?: string; ambulance?: boolean }) {
+  const contact = ambulance ? SITE.ambulance : SITE;
   return (
     <a
-      href={`tel:${SITE.phone}`}
-      aria-label={`${t(locale, COPY.callAria)} ${t(locale, SITE.phoneDisplay)} — ${t(locale, COPY.available)}`}
+      href={`tel:${contact.phone}`}
+      aria-label={`${t(locale, ambulance ? { bn: "অ্যাম্বুলেন্স কল করুন", en: "Call ambulance" } : COPY.callAria)} ${t(locale, contact.phoneDisplay)} — ${t(locale, COPY.available)}`}
       className={`bg-brand text-brand-fg flex size-11 items-center justify-center rounded-full transition active:scale-95 ${className}`}
     >
       <PhoneIcon className="size-5" />

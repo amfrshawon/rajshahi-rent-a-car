@@ -8,7 +8,7 @@ import { route } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { type Locale, localeDigits, t } from "@/lib/locale";
 
-const GBP_URL = "https://share.google/52MSxbL6RCxlZ1huf";
+const GBP_URL = SITE.ambulance.maps;
 
 const SERVICES = [
   {
@@ -84,8 +84,8 @@ const PAGE_LINKS = [
 export function AmbulancePage({ locale }: { locale: Locale }) {
   const bn = locale === "bn";
   const name = "Rajshahi Ambulance Service";
-  const phone = t(locale, SITE.phoneDisplay);
-  const tel = `tel:${SITE.phone}`;
+  const phone = t(locale, SITE.ambulance.phoneDisplay);
+  const tel = `tel:${SITE.ambulance.phone}`;
   const url = new URL(bn ? "/ambulance-service/" : "/en/ambulance-service/", SITE.url).href;
   const schema = {
     "@context": "https://schema.org",
@@ -95,7 +95,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
     alternateName: "রাজশাহী অ্যাম্বুলেন্স সার্ভিস",
     url: new URL("/ambulance-service/", SITE.url).href,
     mainEntityOfPage: url,
-    telephone: SITE.phone,
+    telephone: SITE.ambulance.phone,
     image: new URL("/images/ambulance/exterior.webp", SITE.url).href,
     address: {
       "@type": "PostalAddress",
@@ -129,7 +129,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
                 <span className="sr-only">{bn ? "বুকিংয়ের জন্য কল করুন " : "Call to book "}</span>
                 <span dir="ltr">{phone}</span>
               </a>
-              <a href={`https://wa.me/${SITE.whatsapp}`} className={styles.message}>
+              <a href={`https://wa.me/${SITE.ambulance.whatsapp}`} className={styles.message}>
                 <WhatsAppIcon className="size-5" />
                 {bn ? "হোয়াটসঅ্যাপ" : "WhatsApp"}
               </a>
