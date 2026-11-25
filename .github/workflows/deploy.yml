@@ -2,9 +2,7 @@ name: Build and deploy
 
 # Branch model:
 #   dev  → builds and deploys to dev.rajshahirentacar.bd (environment `dev`)
-#   main → builds only. Production deploys are a deliberate, manual act
-#          (workflow_dispatch → production) until cutover is done; after
-#          cutover, auto-deploying main is a one-line change.
+#   main → builds and deploys to rajshahirentacar.bd (environment `production`)
 on:
   push:
     branches: [dev, main]
@@ -24,7 +22,7 @@ on:
 
 concurrency:
   group: deploy-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -45,13 +43,13 @@ jobs:
       # URLs is missing from the export.
       #
       # Every artifact this workflow produces is a non-production copy (the
-      # dev site or an archive) except a production dispatch — those carry
+      # dev site or an archive) except a production build — those carry
       # noindex meta + disallow-all robots.txt so they can never compete
       # with the live domain. .htaccess adds the header layer on top.
       - name: Build
         run: npm run build
         env:
-          NEXT_PUBLIC_IS_PREVIEW: ${{ github.event_name == 'push' || inputs.target != 'production' }}
+          NEXT_PUBLIC_IS_PREVIEW: ${{ (github.event_name == 'push' && github.ref != 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.target != 'production') }}
 
       - name: Verify every blog page
         run: npm run verify:blog
@@ -71,12 +69,11 @@ jobs:
     # Nothing to deploy to until the FTP secrets are configured
     # (docs/DEPLOY.md §3). Skip rather than fail every push until then.
     #
-    # push → dev deploys; push → main does not deploy (manual dispatch only).
+    # Restrict production uploads to main, including manual recovery runs.
     if: >-
       vars.FTP_CONFIGURED == 'true' &&
-      (github.event_name == 'workflow_dispatch' ||
-       (github.event_name == 'push' && github.ref == 'refs/heads/dev'))
-    environment: ${{ inputs.target || 'dev' }}
+      (github.event_name == 'push' || inputs.target == 'dev' || github.ref == 'refs/heads/main')
+    environment: ${{ inputs.target || (github.ref == 'refs/heads/main' && 'production' || 'dev') }}
     steps:
       - uses: actions/download-artifact@v4
         with:
