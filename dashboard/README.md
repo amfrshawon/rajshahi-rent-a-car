@@ -3,14 +3,14 @@
 A dispatch system for Rajshahi Rent A Car. The owner takes calls, partner
 drivers take the trips, and the owner earns a fixed commission per trip.
 
-**Status (2026-11-25): M0 done except a local Docker check.** The Supabase
-project is live (Singapore, ref `jqxycbdvsednzhwhocub`); keys sit in the
-gitignored `dashboard/app/.env.local`; `pg_cron` is enabled through the
-first migration in `dashboard/supabase/migrations/`; the M0 check page
-verifies the connection under `npm run dev`. Remaining: `supabase db reset`
-locally, which needs Docker. The detailed design review (screens, edge
-cases) happens at the start of Milestone 1 — see
-[06-ambulance-build-plan.md](docs/06-ambulance-build-plan.md).
+**Status (2026-11-25): M0 complete.** The Supabase project is live
+(Singapore, ref `jqxycbdvsednzhwhocub`); keys sit in the gitignored
+`dashboard/app/.env.local`; `pg_cron` is enabled through the first
+migration in `dashboard/supabase/migrations/`; the M0 check page verifies
+the connection under `npm run dev`. The local stack runs on Colima (Docker
+CLI) and `supabase db reset` rebuilds the database from the migrations.
+The detailed design review (screens, edge cases) happens at the start of
+Milestone 1 — see [06-ambulance-build-plan.md](docs/06-ambulance-build-plan.md).
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.

@@ -35,6 +35,10 @@ jobs:
 
       - run: npm run lint
 
+      # Route-aware global types (LayoutProps/PageProps) exist only after
+      # typegen, dev or build; typegen is the cheap one.
+      - run: npx next typegen
+
       - run: npx tsc --noEmit
 
       # The M0 check page is force-dynamic, so no Supabase environment is
