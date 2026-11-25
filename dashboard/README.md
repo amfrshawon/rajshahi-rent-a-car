@@ -4,13 +4,17 @@ A dispatch system for Rajshahi Rent A Car. The owner takes calls, partner
 drivers take the trips, and the owner earns a fixed commission per trip.
 
 **Status (2026-11-25): M3, M4 and M7 done; M5/M6 code in place, Android
-builds owner-side.** Dispatch, money, reports and CSV export are live and
-covered by SQL tests plus the end-to-end browser smoke. Push plumbing is
-deployed (`eligible_drivers` + the capability-authenticated `dispatch-push`,
+builds owner-side.** The dashboard is **deployed at
+https://rajshahi-dashboard.vercel.app** (Vercel project
+`rajshahi-dashboard`; the three Supabase env vars are set for production and
+preview) and the whole owner → driver → money → reports flow passes against
+production. The custom domain `dashboard.rajshahirentacar.bd` still needs a
+DNS CNAME to `cname.vercel-dns.com`. Push plumbing is deployed
+(`eligible_drivers` + the capability-authenticated `dispatch-push`,
 answering `sent:0` until Firebase secrets exist). The Capacitor driver shell
 and the Kotlin call logger are scaffolded; both need a JDK + Android SDK and
 the owner's Firebase project before an APK exists. Owner setup still
-pending: real fares, MacroDroid, Firebase, dashboard hosting.
+pending: real fares, MacroDroid, Firebase, custom domain.
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.

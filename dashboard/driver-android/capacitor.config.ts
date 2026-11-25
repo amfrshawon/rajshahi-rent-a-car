@@ -4,10 +4,10 @@ const config: CapacitorConfig = {
   appId: "bd.rajshahirentacar.driver",
   appName: "Rajshahi Driver",
   webDir: "www",
-  // The driver screens are hosted by the dashboard app. Replace this with the
-  // production dashboard URL once M3's deploy step is done.
+  // The driver screens are hosted by the dashboard app on Vercel. Swap in
+  // https://dashboard.rajshahirentacar.bd once that domain's DNS is set.
   server: {
-    url: "https://dashboard.rajshahirentacar.bd/driver",
+    url: "https://rajshahi-dashboard.vercel.app/driver",
   },
   android: {
     allowMixedContent: false,

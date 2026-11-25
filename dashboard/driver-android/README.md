@@ -15,8 +15,9 @@ project — both are owner-side steps.
    `supabase secrets set`): `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`,
    `FIREBASE_PRIVATE_KEY` (from the Firebase service-account JSON; keep the
    `\n` escapes).
-3. **Hosting:** set `server.url` in `capacitor.config.ts` to the deployed
-   dashboard URL (M3 deploy step).
+3. **Hosting:** `server.url` in `capacitor.config.ts` already points at the
+   live deployment, `https://rajshahi-dashboard.vercel.app/driver`. Swap in
+   the custom domain once its DNS is set.
 
 ## Build
 

@@ -2,6 +2,9 @@ import Link from "next/link";
 import { requireOwner } from "@/lib/auth";
 import { signOut } from "./actions";
 
+// Every dashboard screen is session-dependent: never prerender at build.
+export const dynamic = "force-dynamic";
+
 const NAV = [
   { href: "/trips", label: "ট্রিপ", en: "Trips" },
   { href: "/calls", label: "কল", en: "Calls" },

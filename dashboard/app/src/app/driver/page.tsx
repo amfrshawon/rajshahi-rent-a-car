@@ -3,6 +3,9 @@ import { signOut } from "@/app/(dashboard)/actions";
 import { acceptTrip, advanceTrip, driverCancel, setDuty } from "./actions";
 import { DriverWatch, GeoButton } from "./driver-watch";
 
+// Session-dependent screen: never prerender at build.
+export const dynamic = "force-dynamic";
+
 const STATUS_TEXT: Record<string, string> = {
   accepted: "ট্রিপ নেওয়া হয়েছে — এখন রওনা দিন",
   on_the_way: "আপনি পথে আছেন — পৌঁছে পৌঁছেছি চাপুন",
