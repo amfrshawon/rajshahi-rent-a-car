@@ -3,12 +3,13 @@
 A dispatch system for Rajshahi Rent A Car. The owner takes calls, partner
 drivers take the trips, and the owner earns a fixed commission per trip.
 
-**Status (2026-11-24): M0 scaffold in place.** `dashboard/app` (Next.js 16 +
-Supabase client) and `dashboard/supabase` (CLI config; migrations from M1)
-exist, with a separate `dashboard-ci.yml` workflow. Still open for M0: the
-Supabase project itself (owner's account, Singapore region, `pg_cron` on)
-and a local `supabase db reset` (needs Docker). The detailed design review
-(screens, edge cases) happens at the start of Milestone 1 — see
+**Status (2026-11-25): M0 done except a local Docker check.** The Supabase
+project is live (Singapore, ref `jqxycbdvsednzhwhocub`); keys sit in the
+gitignored `dashboard/app/.env.local`; `pg_cron` is enabled through the
+first migration in `dashboard/supabase/migrations/`; the M0 check page
+verifies the connection under `npm run dev`. Remaining: `supabase db reset`
+locally, which needs Docker. The detailed design review (screens, edge
+cases) happens at the start of Milestone 1 — see
 [06-ambulance-build-plan.md](docs/06-ambulance-build-plan.md).
 
 **Build order:** the ambulance service first, then car-rental price bidding,
