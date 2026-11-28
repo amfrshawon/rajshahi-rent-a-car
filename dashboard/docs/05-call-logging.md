@@ -34,6 +34,10 @@ Family calls  →  owner's Android phone
 MacroDroid is a free Android automation app from the Play Store. It proves
 the whole system works in week one.
 
+> **Update 2026-11-28:** the stage-2 app below is built and its test call
+> reached the dashboard, so the owner's phone should run `call-logger`
+> instead. MacroDroid stays as the fallback.
+
 **Macro "Call ended → dashboard"**
 
 - **Trigger:** Call Ended (incoming, any contact). Add a second macro with the

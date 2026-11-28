@@ -13,9 +13,10 @@ DNS CNAME to `cname.vercel-dns.com`. Push plumbing is deployed
 (`eligible_drivers` + the capability-authenticated `dispatch-push`,
 answering `sent:0` until Firebase secrets exist). **Both Android apps build**
 (JDK 21 + SDK 35 on the dev Mac; `android.yml` builds them in CI): the
-Capacitor driver shell and the Kotlin call logger — debug APKs are installable
-today. Owner setup still pending: real fares, MacroDroid, Firebase, custom
-domain.
+Capacitor driver shell and the Kotlin call logger — the call logger's APK is
+installed on the owner's phone and its test call reached the dashboard
+(2026-11-28), so MacroDroid is optional now. Owner setup still pending: a
+real incoming call check, real fares, Firebase, custom domain.
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.
