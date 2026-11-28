@@ -128,8 +128,8 @@ const HOMEPAGE_FAQS = [
   {
     q: { bn: "কী কী গাড়ি পাওয়া যায়?", en: "Which vehicles are available?" },
     a: {
-      bn: "টয়োটা প্রিমিও ও এক্সিও (প্রাইভেট কার, ৪ আসন) এবং টয়োটা হাইএস (মাইক্রোবাস, ১৫ আসন)। সবগুলোই এসি।",
-      en: "Toyota Premio and Axio sedans (4 seats) and a Toyota Hiace microbus (15 seats). All are air-conditioned.",
+      bn: "টয়োটা প্রিমিও ও এক্সিও (প্রাইভেট কার, ৪ আসন) এবং টয়োটা হাইএস (মাইক্রোবাস, ১০ আসন)। সবগুলোই এসি।",
+      en: "Toyota Premio and Axio sedans (4 seats) and a Toyota Hiace microbus (10 seats). All are air-conditioned.",
     },
   },
   {

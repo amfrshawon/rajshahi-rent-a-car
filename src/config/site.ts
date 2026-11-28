@@ -71,7 +71,7 @@ export const FLEET: readonly Vehicle[] = [
     slug: "toyota-hiace",
     name: "Toyota Hiace",
     type: { bn: "মাইক্রোবাস", en: "Microbus" },
-    seats: 15,
+    seats: 10,
     fuel: { bn: "এলপিজি / পেট্রোল", en: "LPG / Petrol" },
     transmission: { bn: "ম্যানুয়াল", en: "Manual" },
     pricePerDay: 8000,

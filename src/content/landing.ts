@@ -31,8 +31,8 @@ export const LANDING = {
       {
         heading: { bn: "রাজশাহী–ঢাকা যাত্রা", en: "The Rajshahi–Dhaka run" },
         body: {
-          bn: "ঢাকা যাওয়ার জন্য টয়োটা প্রিমিও বা এক্সিও (৪ আসন) নিতে পারেন, আর বেশি যাত্রী বা লাগেজ থাকলে টয়োটা হাইএস মাইক্রোবাস (১৫ আসন)। গাড়ি ও অভিজ্ঞ ড্রাইভার দুটোই ভাড়ার সাথে থাকে।",
-          en: "Take a Toyota Premio or Axio sedan (4 seats) for Dhaka, or a Toyota Hiace microbus (15 seats) when there are more passengers or luggage. The car and an experienced driver are both part of the rental.",
+          bn: "ঢাকা যাওয়ার জন্য টয়োটা প্রিমিও বা এক্সিও (৪ আসন) নিতে পারেন, আর বেশি যাত্রী বা লাগেজ থাকলে টয়োটা হাইএস মাইক্রোবাস (১০ আসন)। গাড়ি ও অভিজ্ঞ ড্রাইভার দুটোই ভাড়ার সাথে থাকে।",
+          en: "Take a Toyota Premio or Axio sedan (4 seats) for Dhaka, or a Toyota Hiace microbus (10 seats) when there are more passengers or luggage. The car and an experienced driver are both part of the rental.",
         },
       },
       {
@@ -80,7 +80,7 @@ export const LANDING = {
       {
         q: { bn: "বেশি যাত্রী হলে কী গাড়ি?", en: "Which car for more passengers?" },
         a: {
-          bn: "টয়োটা হাইএস মাইক্রোবাসে ১৫ আসন, ড্রাইভারসহ।",
+          bn: "টয়োটা হাইএস মাইক্রোবাসে ১০ আসন, ড্রাইভারসহ।",
           en: "The Toyota Hiace microbus seats 15, with the driver included.",
         },
       },
@@ -89,14 +89,14 @@ export const LANDING = {
 
   microbus: {
     paths: { bn: "/মাইক্রোবাস-ভাড়া-রাজশাহী/", en: "/en/microbus-rental-rajshahi/" },
-    eyebrow: { bn: "১৫ আসন · ড্রাইভারসহ", en: "15 seats · with driver" },
+    eyebrow: { bn: "১০ আসন · ড্রাইভারসহ", en: "10 seats · with driver" },
     title: {
       bn: "রাজশাহীতে মাইক্রোবাস ভাড়া",
       en: "Microbus rental in Rajshahi",
     },
     lead: {
-      bn: "টয়োটা হাইএস — ১৫ আসন, এসি, অভিজ্ঞ ড্রাইভারসহ। পরিবার, দল বা অফিসের জন্য।",
-      en: "Toyota Hiace — 15 seats, air-conditioned, with an experienced driver. For families, groups and offices.",
+      bn: "টয়োটা হাইএস — ১০ আসন, এসি, অভিজ্ঞ ড্রাইভারসহ। পরিবার, দল বা অফিসের জন্য।",
+      en: "Toyota Hiace — 10 seats, air-conditioned, with an experienced driver. For families, groups and offices.",
     },
     photo: {
       ...hiace.photo,
@@ -104,10 +104,10 @@ export const LANDING = {
     },
     sections: [
       {
-        heading: { bn: "একসাথে ১৫ জন", en: "Fifteen people at once" },
+        heading: { bn: "একসাথে ১০ জন", en: "Ten people at once" },
         body: {
-          bn: "টয়োটা হাইএস আমাদের একমাত্র মাইক্রোবাস — ১৫ আসন, এসি এবং ড্রাইভারসহ। বড় পরিবার, অফিসের দল বা অতিথি আনা-নেওয়ার জন্য এক গাড়িতেই হয়ে যায়।",
-          en: "The Toyota Hiace is our microbus: 15 seats, air-conditioned, with a driver. It covers a large family, an office group or guest transfers in one vehicle.",
+          bn: "টয়োটা হাইএস আমাদের একমাত্র মাইক্রোবাস — ১০ আসন, এসি এবং ড্রাইভারসহ। বড় পরিবার, অফিসের দল বা অতিথি আনা-নেওয়ার জন্য এক গাড়িতেই হয়ে যায়।",
+          en: "The Toyota Hiace is our microbus: 10 seats, air-conditioned, with a driver. It covers a large family, an office group or guest transfers in one vehicle.",
         },
       },
       {
@@ -119,7 +119,7 @@ export const LANDING = {
       },
     ],
     inclusions: [
-      { bn: "১৫ আসন, এসি", en: "15 seats, air-conditioned" },
+      { bn: "১০ আসন, এসি", en: "10 seats, air-conditioned" },
       { bn: "অভিজ্ঞ ড্রাইভার", en: "An experienced driver" },
       { bn: "ভাড়া আগেই ঠিক করা", en: "The fare agreed before you travel" },
       { bn: "বড় দল বা লাগেজের জায়গা", en: "Room for a group or their luggage" },
@@ -133,8 +133,8 @@ export const LANDING = {
       {
         q: { bn: "মাইক্রোবাসে কতজন বসতে পারে?", en: "How many people fit in the microbus?" },
         a: {
-          bn: "টয়োটা হাইএস-এ ১৫টি আসন আছে, ড্রাইভার আলাদা।",
-          en: "The Toyota Hiace has 15 seats; the driver is separate.",
+          bn: "টয়োটা হাইএস-এ ১০টি আসন আছে, ড্রাইভার আলাদা।",
+          en: "The Toyota Hiace has 10 seats; the driver is separate.",
         },
       },
       {

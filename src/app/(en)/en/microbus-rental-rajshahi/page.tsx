@@ -6,8 +6,8 @@ import { social } from "@/lib/metadata";
 const content = LANDING.microbus;
 
 export const metadata: Metadata = {
-  title: "Microbus rental in Rajshahi — 15 seats",
-  description: "Toyota Hiace microbus (15 seats, air-conditioned) with a driver in Rajshahi — for families, groups and offices. Fares quoted by phone.",
+  title: "Microbus rental in Rajshahi — 10 seats",
+  description: "Toyota Hiace microbus (10 seats, air-conditioned) with a driver in Rajshahi — for families, groups and offices. Fares quoted by phone.",
   ...social("en", content.paths.en),
   alternates: {
     canonical: content.paths.en,

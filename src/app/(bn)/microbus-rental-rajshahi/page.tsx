@@ -6,8 +6,8 @@ import { social } from "@/lib/metadata";
 const content = LANDING.microbus;
 
 export const metadata: Metadata = {
-  title: "রাজশাহীতে মাইক্রোবাস ভাড়া — ১৫ আসন",
-  description: "টয়োটা হাইএস মাইক্রোবাস (১৫ আসন, এসি) ড্রাইভারসহ ভাড়া — রাজশাহীতে পরিবার, দল বা অফিসের জন্য। ভাড়া ফোনে জানানো হয়।",
+  title: "রাজশাহীতে মাইক্রোবাস ভাড়া — ১০ আসন",
+  description: "টয়োটা হাইএস মাইক্রোবাস (১০ আসন, এসি) ড্রাইভারসহ ভাড়া — রাজশাহীতে পরিবার, দল বা অফিসের জন্য। ভাড়া ফোনে জানানো হয়।",
   ...social("bn", content.paths.bn),
   alternates: {
     canonical: content.paths.bn,
