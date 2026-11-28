@@ -16,8 +16,8 @@ export const SITE = {
   bookingEmail: "booking@rajshahirentacar.bd",
 
   address: {
-    bn: "তেরখাদিয়া, ডাবলটা, রাজশাহী ৬২০২",
-    en: "Terokhadia, Dablota, Rajshahi 6202",
+    bn: "তেরখাদিয়া, দাবতলা, রাজশাহী ৬২০২",
+    en: "Terokhadia, Dabtola, Rajshahi 6202",
   },
   rentalMaps: "https://www.google.com/maps?cid=1862505938153046976",
   ambulance: {
