@@ -37,4 +37,11 @@ object Config {
     fun heartbeat(context: android.content.Context) {
         prefs(context).edit().putLong("last_heartbeat", System.currentTimeMillis()).apply()
     }
+
+    fun lastError(context: android.content.Context): String =
+        prefs(context).getString("last_error", "") ?: ""
+
+    fun setLastError(context: android.content.Context, message: String) {
+        prefs(context).edit().putString("last_error", message).apply()
+    }
 }

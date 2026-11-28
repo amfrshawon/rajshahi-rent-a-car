@@ -98,25 +98,33 @@ class CallLoggerService : Service() {
 
     @Suppress("DEPRECATION")
     private fun listenForCalls() {
-        telephony = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        telephony.listen(object : PhoneStateListener() {
-            override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                if (state == TelephonyManager.CALL_STATE_RINGING && phoneNumber != null) {
-                    ringingNumber = phoneNumber
-                    enqueue(phoneNumber, "incoming", 0, event = "ringing")
+        try {
+            telephony = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            telephony.listen(object : PhoneStateListener() {
+                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                    if (state == TelephonyManager.CALL_STATE_RINGING && phoneNumber != null) {
+                        ringingNumber = phoneNumber
+                        enqueue(phoneNumber, "incoming", 0, event = "ringing")
+                    }
                 }
-            }
-        }, PhoneStateListener.LISTEN_CALL_STATE)
+            }, PhoneStateListener.LISTEN_CALL_STATE)
 
-        contentResolver.registerContentObserver(
-            CallLog.Calls.CONTENT_URI,
-            true,
-            object : ContentObserver(Handler(Looper.getMainLooper())) {
-                override fun onChange(selfChange: Boolean) {
-                    readNewestCall()
-                }
-            },
-        )
+            contentResolver.registerContentObserver(
+                CallLog.Calls.CONTENT_URI,
+                true,
+                object : ContentObserver(Handler(Looper.getMainLooper())) {
+                    override fun onChange(selfChange: Boolean) {
+                        try {
+                            readNewestCall()
+                        } catch (exception: Exception) {
+                            Config.setLastError(this@CallLoggerService, "observer: ${exception.message}")
+                        }
+                    }
+                },
+            )
+        } catch (exception: Exception) {
+            Config.setLastError(this, "listen: ${exception.message}")
+        }
     }
 
     private fun readNewestCall() {
@@ -142,7 +150,6 @@ class CallLoggerService : Service() {
             val sim = cursor.getString(4)
 
             if (!matchesBusinessSim(sim)) return
-            if (ringingNumber == null && sim == null) return
 
             val direction = when (type) {
                 CallLog.Calls.MISSED_TYPE -> "missed"
