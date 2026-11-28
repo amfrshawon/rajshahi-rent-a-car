@@ -11,10 +11,11 @@ preview) and the whole owner → driver → money → reports flow passes agains
 production. The custom domain `dashboard.rajshahirentacar.bd` still needs a
 DNS CNAME to `cname.vercel-dns.com`. Push plumbing is deployed
 (`eligible_drivers` + the capability-authenticated `dispatch-push`,
-answering `sent:0` until Firebase secrets exist). The Capacitor driver shell
-and the Kotlin call logger are scaffolded; both need a JDK + Android SDK and
-the owner's Firebase project before an APK exists. Owner setup still
-pending: real fares, MacroDroid, Firebase, custom domain.
+answering `sent:0` until Firebase secrets exist). **Both Android apps build**
+(JDK 21 + SDK 35 on the dev Mac; `android.yml` builds them in CI): the
+Capacitor driver shell and the Kotlin call logger — debug APKs are installable
+today. Owner setup still pending: real fares, MacroDroid, Firebase, custom
+domain.
 
 **Build order:** the ambulance service first, then car-rental price bidding,
 then customer payments. Each is a separate phase with its own build plan.

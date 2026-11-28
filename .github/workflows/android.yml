@@ -1,0 +1,48 @@
+name: Android APKs
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "dashboard/driver-android/**"
+      - "dashboard/call-logger/**"
+      - ".github/workflows/android.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: dashboard/driver-android/package-lock.json
+
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      - name: Build the driver APK
+        working-directory: dashboard/driver-android
+        run: |
+          npm ci
+          npx cap sync android
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Build the call-logger APK
+        working-directory: dashboard/call-logger
+        run: ./gradlew assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rajshahi-apks
+          path: |
+            dashboard/driver-android/android/app/build/outputs/apk/debug/app-debug.apk
+            dashboard/call-logger/app/build/outputs/apk/debug/app-debug.apk

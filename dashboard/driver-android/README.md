@@ -1,9 +1,12 @@
 # Driver app (Android) — M5
 
 Capacitor shell around the hosted `/driver` screens, plus FCM push for the
-loud trip alerts. **The APK build needs a machine with the Android SDK and a
-JDK** (not installed on the dev Mac as of 2026-11-25), and a Firebase
-project — both are owner-side steps.
+loud trip alerts.
+
+**Status: debug APK builds** (`android/app/build/outputs/apk/debug/app-debug.apk`,
+~4.6 MB, pointing at `https://rajshahi-dashboard.vercel.app/driver`). Push is
+wired but inert until `google-services.json` and the Firebase secrets exist —
+without them the app still works; the driver screen polls every 5 s.
 
 ## One-time setup
 

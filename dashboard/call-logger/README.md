@@ -5,8 +5,10 @@ MacroDroid: a foreground service watches the business SIM's calls and POSTs
 them to `ingest-call`, with an offline queue and a ringing pop-up that shows
 the caller's past trips before the owner answers.
 
-**Status: source scaffold.** Building needs a JDK + Android SDK; neither is
-installed on the dev Mac (2026-11-25), so this has not been compiled yet.
+**Status: compiles and builds** — debug APK at
+`call-logger/app/build/outputs/apk/debug/app-debug.apk` (~805 KB), built with
+JDK 21 + Android SDK 35. Install it from an APK file; the Play Store is not an
+option for `READ_CALL_LOG` apps.
 
 ## Setup
 

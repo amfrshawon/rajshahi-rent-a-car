@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Rajshahi Driver</string>
+    <string name="title_activity_main">Rajshahi Driver</string>
+    <string name="package_name">bd.rajshahirentacar.driver</string>
+    <string name="custom_url_scheme">bd.rajshahirentacar.driver</string>
+</resources>
