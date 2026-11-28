@@ -85,6 +85,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
   const bn = locale === "bn";
   const name = "Rajshahi Ambulance Service";
   const phone = t(locale, SITE.ambulance.phoneDisplay);
+  const whatsapp = `https://wa.me/${SITE.ambulance.whatsapp}`;
   const tel = `tel:${SITE.ambulance.phone}`;
   const url = new URL(bn ? "/ambulance-service/" : "/en/ambulance-service/", SITE.url).href;
   const schema = {
@@ -129,7 +130,7 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
                 <span className="sr-only">{bn ? "বুকিংয়ের জন্য কল করুন " : "Call to book "}</span>
                 <span dir="ltr">{phone}</span>
               </a>
-              <a href={`https://wa.me/${SITE.ambulance.whatsapp}`} className={styles.message}>
+              <a href={whatsapp} className={styles.message}>
                 <WhatsAppIcon className="size-5" />
                 {bn ? "হোয়াটসঅ্যাপ" : "WhatsApp"}
               </a>
@@ -283,10 +284,16 @@ export function AmbulancePage({ locale }: { locale: Locale }) {
 
       <section className="bg-emergency text-emergency-fg px-4 py-9 text-center">
         <h2 className="text-2xl font-bold">{bn ? "গাড়ির প্রাপ্যতা ও ভাড়া জানতে কল করুন" : "Call to confirm availability and fare"}</h2>
-        <a href={tel} className="text-emergency-ink mt-4 inline-flex min-h-14 items-center gap-3 rounded-lg bg-white px-6 text-xl font-bold">
-          <PhoneIcon className="size-6" />
-          <span dir="ltr">{phone}</span>
-        </a>
+        <div className="mx-auto mt-4 flex w-full max-w-sm flex-col justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap">
+          <a href={tel} className="text-emergency-ink inline-flex min-h-14 items-center justify-center gap-3 rounded-lg bg-white px-6 text-xl font-bold">
+            <PhoneIcon className="size-6" />
+            <span dir="ltr">{phone}</span>
+          </a>
+          <a href={whatsapp} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-lg border border-white px-6 font-bold text-white hover:bg-white/10">
+            <WhatsAppIcon className="size-5 shrink-0" />
+            {bn ? "হোয়াটসঅ্যাপ" : "WhatsApp"}
+          </a>
+        </div>
       </section>
     </PageShell>
   );
