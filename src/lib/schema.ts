@@ -46,7 +46,7 @@ export function businessSchema(locale: Locale) {
     hasMap: SITE.rentalMaps,
     address: {
       "@type": "PostalAddress",
-      streetAddress: locale === "bn" ? "তেরখাদিয়া, দাবতলা" : "Terokhadia, Dabtola",
+      streetAddress: locale === "bn" ? "তেরোখাদিয়া, ডাবতলা" : "Terokhadia, Dabtola",
       addressLocality: locale === "bn" ? "রাজশাহী" : "Rajshahi",
       postalCode: "6202",
       addressCountry: "BD",

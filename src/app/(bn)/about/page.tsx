@@ -5,7 +5,7 @@ import { AboutPage } from "@/components/pages/about-page";
 export const metadata: Metadata = {
   ...social("bn", "/আমাদের-সম্পর্কে/"),
   title: "আমাদের সম্পর্কে",
-  description: "রাজশাহীর তেরখাদিয়ায় অবস্থিত রেন্ট এ কার সার্ভিস — স্থানীয় ও ভ্রমণকারী সবার জন্য।",
+  description: "রাজশাহীর তেরোখাদিয়ায় অবস্থিত রেন্ট এ কার সার্ভিস — স্থানীয় ও ভ্রমণকারী সবার জন্য।",
   alternates: {
     canonical: "/আমাদের-সম্পর্কে/",
     languages: {
