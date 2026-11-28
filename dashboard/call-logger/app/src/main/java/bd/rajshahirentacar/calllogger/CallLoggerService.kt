@@ -4,9 +4,9 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.database.ContentObserver
 import android.database.sqlite.SQLiteDatabase
 import android.net.ConnectivityManager
@@ -43,7 +43,16 @@ class CallLoggerService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
-        startForeground(NOTIFICATION_ID, buildNotification())
+        val notification = buildNotification()
+        if (Build.VERSION.SDK_INT >= 34) {
+            startForeground(
+                NOTIFICATION_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+            )
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
         db = openOrCreateDatabase("call_queue.db", MODE_PRIVATE, null)
         db.execSQL(
             """create table if not exists queue (
@@ -53,6 +62,20 @@ class CallLoggerService : Service() {
         )
         listenForCalls()
         scheduleDrain()
+        startHeartbeat()
+    }
+
+    private val heartbeatHandler = Handler(Looper.getMainLooper())
+    private val heartbeat = object : Runnable {
+        override fun run() {
+            Config.heartbeat(this@CallLoggerService)
+            heartbeatHandler.postDelayed(this, 60_000)
+        }
+    }
+
+    private fun startHeartbeat() {
+        Config.heartbeat(this)
+        heartbeatHandler.postDelayed(heartbeat, 60_000)
     }
 
     private fun createChannel() {
@@ -216,6 +239,7 @@ class CallLoggerService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
+        heartbeatHandler.removeCallbacks(heartbeat)
         worker.shutdown()
         super.onDestroy()
     }

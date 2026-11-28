@@ -29,4 +29,12 @@ object Config {
 
     fun setSimSubscriptionId(context: android.content.Context, value: Int) =
         prefs(context).edit().putInt("sim_subscription_id", value).apply()
+
+    /** The service writes this every minute; the settings screen shows it. */
+    fun lastHeartbeat(context: android.content.Context): Long =
+        prefs(context).getLong("last_heartbeat", 0L)
+
+    fun heartbeat(context: android.content.Context) {
+        prefs(context).edit().putLong("last_heartbeat", System.currentTimeMillis()).apply()
+    }
 }

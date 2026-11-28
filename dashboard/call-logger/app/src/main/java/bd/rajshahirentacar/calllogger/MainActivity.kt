@@ -2,8 +2,10 @@ package bd.rajshahirentacar.calllogger
 
 import android.Manifest
 import android.app.Activity
-import android.os.Build
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -22,6 +24,14 @@ class MainActivity : Activity() {
 
     private lateinit var urlField: EditText
     private lateinit var keyField: EditText
+    private lateinit var status: TextView
+    private val handler = Handler(Looper.getMainLooper())
+    private val refresh = object : Runnable {
+        override fun run() {
+            renderStatus()
+            handler.postDelayed(this, 2000)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +67,10 @@ class MainActivity : Activity() {
             setOnClickListener { sendTest() }
         })
 
+        status = TextView(this).apply { setPadding(0, 32, 0, 0) }
+        layout.addView(status)
+        renderStatus()
+
         setContentView(layout)
         requestPermissions(
             arrayOf(
@@ -66,6 +80,36 @@ class MainActivity : Activity() {
             ),
             1,
         )
+    }
+
+    private fun granted(permission: String) =
+        checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+
+    private fun renderStatus() {
+        val phone = granted(Manifest.permission.READ_PHONE_STATE)
+        val callLog = granted(Manifest.permission.READ_CALL_LOG)
+        val last = Config.lastHeartbeat(this)
+        val ageSec = (System.currentTimeMillis() - last) / 1000
+        val service = when {
+            last == 0L -> "never started"
+            ageSec < 120 -> "running (${ageSec}s ago)"
+            else -> "stopped (${ageSec / 60}m ago)"
+        }
+        status.text = buildString {
+            appendLine("Phone state: ${if (phone) "granted" else "MISSING"}")
+            appendLine("Call log: ${if (callLog) "granted" else "MISSING"}")
+            append("Service: $service")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handler.post(refresh)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(refresh)
     }
 
     private fun sendTest() {
